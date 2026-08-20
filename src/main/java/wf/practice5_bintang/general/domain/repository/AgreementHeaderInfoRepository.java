@@ -65,8 +65,7 @@ public class AgreementHeaderInfoRepository {
 		result.add(AgreementDbConstants.COLUMN_EFFECTIVE_FROM, DbValueUtils.parseSqlDate(model.getEffective_from()));
 		result.add(AgreementDbConstants.COLUMN_EFFECTIVE_TO, DbValueUtils.parseSqlDate(model.getEffective_to()));
 		result.add(AgreementDbConstants.COLUMN_COMPANY_RELATION, model.getCompany_relation());
-		result.add(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_FROM,
-				DbValueUtils.parseSqlDate(model.getEstimated_delivery_from()));
+		result.add(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_FROM, DbValueUtils.parseSqlDate(model.getEstimated_delivery_from()));
 		result.add(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_TO, DbValueUtils.parseSqlDate(model.getEstimated_delivery_to()));
 		result.add(AgreementDbConstants.COLUMN_AGREEMENT_SUMMARY, model.getAgreement_summary());
 		result.add(AgreementDbConstants.COLUMN_PURCHASE_CATEGORY, model.getPurchase_category());

@@ -24,8 +24,7 @@ public class AgreementPaymentDetailTempRepository {
 	public Collection<AgreementPaymentDetailModel> selectPaymentDetailTemp(String filterValue, String condition) throws Exception {
 		SQLManager sqlMngr = new SQLManager();
 
-		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_PAYMENT_DETAILS_TEMP + " WHERE "
-				+ condition + " = ? ORDER BY row_no ASC";
+		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_PAYMENT_DETAILS_TEMP + " WHERE " + condition + " = ? ORDER BY row_no ASC";
 
 		Collection<Object> parameters = new ArrayList<Object>();
 
@@ -66,13 +65,13 @@ public class AgreementPaymentDetailTempRepository {
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_CREATED_AT, timestamp);
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
-	
+
 		} else if (condition.equals(WorkflowCommonConstants.CONDITION_UPDATE)) {
 			result.add(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, model.getSystem_matter_id());
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
 		}
-		
+
 		result.add(AgreementDbConstants.COLUMN_ROW_NO, DbValueUtils.parseInteger(model.getRow_no()));
 		result.add(AgreementDbConstants.COLUMN_BRAND, model.getBrand());
 		result.add(AgreementDbConstants.COLUMN_TYPE, model.getType());
@@ -81,7 +80,7 @@ public class AgreementPaymentDetailTempRepository {
 		result.add(AgreementDbConstants.COLUMN_CATEGORY, model.getCategory());
 		result.add(AgreementDbConstants.COLUMN_RECURRING, model.getRecurring());
 		result.add(AgreementDbConstants.COLUMN_PAID_BY, model.getPaid_by());
-		
+
 		return result;
 	}
 }

@@ -16,7 +16,7 @@ import jp.co.intra_mart.foundation.exception.BizApiException;
 
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.constant.AgreementDbConstants;
-import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoTempModel;
+import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.util.DbValueUtils;
 
 public class AgreementHeaderInfoTempRepository {
@@ -24,7 +24,7 @@ public class AgreementHeaderInfoTempRepository {
 	private String selectDataAll = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER_INFO_TEMP;
 	private String selectDataByMatterId = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER_INFO_TEMP + " WHERE system_matter_id = ?";
 
-	public void insertHeaderInfoTemp(AgreementHeaderInfoTempModel model) throws Exception {
+	public void insertHeaderInfoTemp(AgreementHeaderInfoModel model) throws Exception {
 		try {
 			SQLManager sqlManager = new SQLManager();
 			ColumnValues columnVal = this.buildColumnValues(model, WorkflowCommonConstants.CONDITION_CREATE);
@@ -37,7 +37,7 @@ public class AgreementHeaderInfoTempRepository {
 
 	}
 
-	private ColumnValues buildColumnValues(AgreementHeaderInfoTempModel model, String condition) {
+	private ColumnValues buildColumnValues(AgreementHeaderInfoModel model, String condition) {
 		ColumnValues result = new ColumnValues();
 
 		LocalDateTime now = LocalDateTime.now();
@@ -73,8 +73,7 @@ public class AgreementHeaderInfoTempRepository {
 		result.add(AgreementDbConstants.COLUMN_EFFECTIVE_FROM, DbValueUtils.parseSqlDate(model.getEffective_from()));
 		result.add(AgreementDbConstants.COLUMN_EFFECTIVE_TO, DbValueUtils.parseSqlDate(model.getEffective_to()));
 		result.add(AgreementDbConstants.COLUMN_COMPANY_RELATION, model.getCompany_relation());
-		result.add(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_FROM,
-				DbValueUtils.parseSqlDate(model.getEstimated_delivery_from()));
+		result.add(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_FROM, DbValueUtils.parseSqlDate(model.getEstimated_delivery_from()));
 		result.add(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_TO, DbValueUtils.parseSqlDate(model.getEstimated_delivery_to()));
 		result.add(AgreementDbConstants.COLUMN_AGREEMENT_SUMMARY, model.getAgreement_summary());
 		result.add(AgreementDbConstants.COLUMN_PURCHASE_CATEGORY, model.getPurchase_category());
@@ -103,8 +102,7 @@ public class AgreementHeaderInfoTempRepository {
 		return result;
 	}
 
-	public Collection<AgreementHeaderInfoTempModel> selectHeaderInfoTemp(String selectValue, String selectWhere)
-			throws Exception {
+	public Collection<AgreementHeaderInfoModel> selectHeaderInfoTemp(String selectValue, String selectWhere) throws Exception {
 		try {
 			SQLManager sqlManager = new SQLManager();
 			Collection<Object> parameters = new ArrayList<>();
@@ -119,9 +117,7 @@ public class AgreementHeaderInfoTempRepository {
 				selectQuery = this.selectDataAll;
 			}
 
-			Collection<AgreementHeaderInfoTempModel> result = sqlManager.select(AgreementHeaderInfoTempModel.class,
-					selectQuery,
-					parameters);
+			Collection<AgreementHeaderInfoModel> result = sqlManager.select(AgreementHeaderInfoModel.class, selectQuery, parameters);
 			return result;
 
 		} catch (Exception e) {
@@ -130,7 +126,7 @@ public class AgreementHeaderInfoTempRepository {
 		}
 	}
 
-	public void updateHeaderInfoTemp(AgreementHeaderInfoTempModel model) throws Exception {
+	public void updateHeaderInfoTemp(AgreementHeaderInfoModel model) throws Exception {
 		try {
 			SQLManager sqlManager = new SQLManager();
 
@@ -141,8 +137,7 @@ public class AgreementHeaderInfoTempRepository {
 
 			sqlManager.update(AgreementDbConstants.TABLE_HEADER_INFO_TEMP, columnVal, searchCondition);
 
-		} catch (AccessSecurityException | IllegalArgumentException | NamingException | BizApiException
-				| SQLException var6) {
+		} catch (AccessSecurityException | IllegalArgumentException | NamingException | BizApiException | SQLException var6) {
 			var6.printStackTrace();
 			throw new Exception("DB Error in UpdateHeader");
 

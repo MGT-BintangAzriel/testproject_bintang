@@ -16,29 +16,16 @@ import java.time.LocalDateTime;
 
 public class AgreementAttachFileRepository {
 
-	private String columnTable = "id,"
-			+ "system_matter_id,"
-			+ "user_data_id,"
-			+ "file_name,"
-			+ "file_path,"
-			+ "file_real_name,"
-			+ "file_type,"
-			+ "file_size,"
-			+ "file_extension,"
-			+ "created_at,"
-			+ "updated_at";
-
-	public void insertTempAttachment(AgreementAttachmentModel model) throws Exception {
+	public void insertAttachment(AgreementAttachmentModel model) throws Exception {
 		SQLManager sqlManager = new SQLManager();
 		ColumnValues columnValues = buildColumnValues(model, WorkflowCommonConstants.CONDITION_CREATE);
-		sqlManager.insert(AgreementDbConstants.TABLE_ATTACH_TEMP, columnValues);
+		sqlManager.insert(AgreementDbConstants.TABLE_ATTACH, columnValues);
 	}
 
-	public Collection<AgreementAttachmentModel> selectTempAttachment(String filterValue, String condition) throws Exception {
+	public Collection<AgreementAttachmentModel> selectAttachment(String filterValue, String condition) throws Exception {
 		SQLManager sqlMngr = new SQLManager();
 
-		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_ATTACH_TEMP + " WHERE "
-				+ condition + " = ?";
+		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_ATTACH + " WHERE " + condition + " = ?";
 
 		Collection<Object> parameters = new ArrayList<Object>();
 
@@ -51,34 +38,21 @@ public class AgreementAttachFileRepository {
 		return result;
 	}
 
-	public void updateTempAttachment(AgreementAttachmentModel model, String filterValue, String condition) throws Exception {
+	public void updateAttachment(AgreementAttachmentModel model, String filterValue, String condition) throws Exception {
 		SQLManager sqlManager = new SQLManager();
 		SearchCondition search = new SearchCondition();
 		search.addCondition(condition, filterValue);
 
 		ColumnValues columnValues = buildColumnValues(model, WorkflowCommonConstants.CONDITION_UPDATE);
-		sqlManager.update(AgreementDbConstants.TABLE_ATTACH_TEMP, columnValues, search);
+		sqlManager.update(AgreementDbConstants.TABLE_ATTACH, columnValues, search);
 	}
 
-	public void deleteTempAttachment(String filterValue, String condition) throws Exception {
+	public void deleteAttachment(String filterValue, String condition) throws Exception {
 		SQLManager sqlManager = new SQLManager();
 
 		SearchCondition searchCondition = new SearchCondition();
 		searchCondition.addCondition(condition, filterValue);
-		sqlManager.delete(AgreementDbConstants.TABLE_ATTACH_TEMP, searchCondition);
-	}
-
-	public void moveAttachmentFromTempToMain(String systemMatterId) throws Exception {
-		SQLManager sqlManager = new SQLManager();
-
-		String sql = "INSERT INTO " + AgreementDbConstants.TABLE_ATTACH + " (" + columnTable + ") SELECT "
-				+ "id, system_matter_id, user_data_id, file_name, file_path, "
-				+ "file_real_name, file_type, file_size, file_extension, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP "
-				+ "FROM " + AgreementDbConstants.TABLE_ATTACH_TEMP + " WHERE system_matter_id = ?";
-
-		Collection<Object> parameters = new ArrayList<Object>();
-		parameters.add(systemMatterId);
-		sqlManager.insert(sql, parameters);
+		sqlManager.delete(AgreementDbConstants.TABLE_ATTACH, searchCondition);
 	}
 
 	private ColumnValues buildColumnValues(AgreementAttachmentModel model, String condition) throws Exception {
@@ -92,13 +66,13 @@ public class AgreementAttachFileRepository {
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_CREATED_AT, timestamp);
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
-	
+
 		} else if (condition.equals(WorkflowCommonConstants.CONDITION_UPDATE)) {
 			result.add(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, model.getSystem_matter_id());
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
 		}
-		
+
 		result.add(AgreementDbConstants.COLUMN_FILE_NAME, model.getFile_name());
 		result.add(AgreementDbConstants.COLUMN_FILE_PATH, model.getFile_path());
 		result.add(AgreementDbConstants.COLUMN_FILE_REAL_NAME, model.getFile_real_name());

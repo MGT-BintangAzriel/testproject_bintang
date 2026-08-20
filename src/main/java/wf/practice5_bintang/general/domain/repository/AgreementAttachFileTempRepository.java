@@ -25,8 +25,7 @@ public class AgreementAttachFileTempRepository {
 	public Collection<AgreementAttachmentModel> selectAttachmentTemp(String filterValue, String condition) throws Exception {
 		SQLManager sqlMngr = new SQLManager();
 
-		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_ATTACH_TEMP + " WHERE "
-				+ condition + " = ?";
+		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_ATTACH_TEMP + " WHERE " + condition + " = ?";
 
 		Collection<Object> parameters = new ArrayList<Object>();
 
@@ -67,13 +66,13 @@ public class AgreementAttachFileTempRepository {
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_CREATED_AT, timestamp);
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
-	
+
 		} else if (condition.equals(WorkflowCommonConstants.CONDITION_UPDATE)) {
 			result.add(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, model.getSystem_matter_id());
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
 		}
-		
+
 		result.add(AgreementDbConstants.COLUMN_FILE_NAME, model.getFile_name());
 		result.add(AgreementDbConstants.COLUMN_FILE_PATH, model.getFile_path());
 		result.add(AgreementDbConstants.COLUMN_FILE_REAL_NAME, model.getFile_real_name());

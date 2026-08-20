@@ -7,7 +7,7 @@ public class AgreementHeaderInfoModel {
 	private String user_data_id;
 	private String created_at;
 	private String updated_at;
-	
+
 	private String application_number;
 	private String application_date;
 	private String applicant_number;

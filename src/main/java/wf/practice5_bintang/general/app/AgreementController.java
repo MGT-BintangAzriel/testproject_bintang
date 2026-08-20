@@ -20,123 +20,126 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
-import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
 import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
 
 @Controller
 @RequestMapping("practice5_bintang/")
 public class AgreementController {
 
-    private static final String MODEL_KEY_SAVED_FORM_DATA = "savedFormData";
-    private static final String MODEL_KEY_WORKFLOW_REQUEST_FORM = "workflowRequestForm";
+	private static final String MODEL_KEY_SAVED_FORM_DATA = "savedFormData";
+	private static final String MODEL_KEY_WORKFLOW_REQUEST_FORM = "workflowRequestForm";
 
-    private static final String BASE_VIEW_PATH = "wf/practice5_bintang/general/";
-    private static final String VIEW_PATH_APPLY = BASE_VIEW_PATH + "apply.jsp";
-    private static final String VIEW_PATH_APPROVE = BASE_VIEW_PATH + "approve.jsp";
-    private static final String VIEW_PATH_DETAIL = BASE_VIEW_PATH + "detail.jsp";
-    private static final String VIEW_PATH_DOWNLOAD = "AgreementDownloadAttachmentService.Downloadview";
-    
-//    private AccountContext accountContext = Contexts.get(AccountContext.class);
-//    private UserContext userContext; 
+	private static final String BASE_VIEW_PATH = "wf/practice5_bintang/general/";
+	private static final String VIEW_PATH_APPLY = BASE_VIEW_PATH + "apply.jsp";
+	private static final String VIEW_PATH_APPROVE = BASE_VIEW_PATH + "approve.jsp";
+	private static final String VIEW_PATH_DETAIL = BASE_VIEW_PATH + "detail.jsp";
+	private static final String VIEW_PATH_DOWNLOAD = "AgreementDownloadAttachmentService.Downloadview";
 
-    @RequestMapping(value = "apply")
-    public final String apply(final Model model, final AgreementForm workflowRequestForm) throws Exception {
-    	
-    	AgreementForm savedFormData = new AgreementForm();
-    	AgreementWorkflowService workflowService = new AgreementWorkflowService();
+	// private AccountContext accountContext =
+	// Contexts.get(AccountContext.class);
+	// private UserContext userContext;
 
-        if (PageType.pageTyp_App.toString().equals(workflowRequestForm.getImwPageType())) {
-            String userDataId = "";
-            final Identifier identifier = new Identifier();
-            userDataId = identifier.get();
-            workflowRequestForm.setImwUserDataId(userDataId);
-            
-            savedFormData = workflowService.getHeaderInfoTempFormApply();
+	@RequestMapping(value = "apply")
+	public final String apply(final Model model, final AgreementForm workflowRequestForm) throws Exception {
 
-        } else {
-            savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(),
-                    WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
-        }
+		AgreementForm savedFormData = new AgreementForm();
+		AgreementWorkflowService workflowService = new AgreementWorkflowService();
 
-        model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
-        model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
-        final String path = VIEW_PATH_APPLY;
-        return path;
-    }
+		if (PageType.pageTyp_App.toString().equals(workflowRequestForm.getImwPageType())) {
+			String userDataId = "";
+			final Identifier identifier = new Identifier();
+			userDataId = identifier.get();
+			workflowRequestForm.setImwUserDataId(userDataId);
 
-    @RequestMapping(value = "approve")
-    public final String approve(final Model model, final AgreementForm workflowRequestForm)
-            throws AccessSecurityException, IOException {
-        try {
-            // System.out.println("=== [DEBUG APPROVE] ===");
-            // System.out.println("imwSystemMatterId : " + (workflowRequestForm != null ? workflowRequestForm.getImwSystemMatterId() : "null"));
-            // System.out.println("imwUserDataId     : " + (workflowRequestForm != null ? workflowRequestForm.getImwUserDataId() : "null"));
-            // System.out.println("imwNodeId         : " + (workflowRequestForm != null ? workflowRequestForm.getImwNodeId() : "null"));
-            // System.out.println("imwPageType       : " + (workflowRequestForm != null ? workflowRequestForm.getImwPageType() : "null"));
+			savedFormData = workflowService.getHeaderInfoTempFormApply();
 
-            AgreementWorkflowService workflowService = new AgreementWorkflowService();
-            AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(),
-                    WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+		} else {
+			savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+		}
 
-            model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
-            model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
-        } catch (Exception e) {
-            System.out.println("Error Approve Exception: " + e.getMessage());
-            e.printStackTrace();
-        }
+		model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
+		model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+		final String path = VIEW_PATH_APPLY;
+		return path;
+	}
 
-        final String path = VIEW_PATH_APPROVE;
-        return path;
-    }
+	@RequestMapping(value = "approve")
+	public final String approve(final Model model, final AgreementForm workflowRequestForm) throws AccessSecurityException, IOException {
+		try {
+			// System.out.println("=== [DEBUG APPROVE] ===");
+			// System.out.println("imwSystemMatterId : " + (workflowRequestForm
+			// != null ? workflowRequestForm.getImwSystemMatterId() : "null"));
+			// System.out.println("imwUserDataId : " + (workflowRequestForm !=
+			// null ? workflowRequestForm.getImwUserDataId() : "null"));
+			// System.out.println("imwNodeId : " + (workflowRequestForm != null
+			// ? workflowRequestForm.getImwNodeId() : "null"));
+			// System.out.println("imwPageType : " + (workflowRequestForm !=
+			// null ? workflowRequestForm.getImwPageType() : "null"));
 
-    @RequestMapping(value = "detail")
-    public final String detail(final Model model, final AgreementForm workflowRequestForm)
-            throws AccessSecurityException, IOException {
-        try {
-            // System.out.println("=== [DEBUG DETAIL] ===");
-            // System.out.println("imwSystemMatterId : " + (workflowRequestForm != null ? workflowRequestForm.getImwSystemMatterId() : "null"));
-            // System.out.println("imwUserDataId     : " + (workflowRequestForm != null ? workflowRequestForm.getImwUserDataId() : "null"));
-            // System.out.println("imwNodeId         : " + (workflowRequestForm != null ? workflowRequestForm.getImwNodeId() : "null"));
-            // System.out.println("imwPageType       : " + (workflowRequestForm != null ? workflowRequestForm.getImwPageType() : "null"));
+			AgreementWorkflowService workflowService = new AgreementWorkflowService();
+			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 
-            AgreementWorkflowService workflowService = new AgreementWorkflowService();
-            AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(),
-                    WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
+			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+		} catch (Exception e) {
+			System.out.println("Error Approve Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
 
-            model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
-            model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
-        } catch (Exception e) {
-            System.out.println("Error Detail Exception: " + e.getMessage());
-            e.printStackTrace();
-        }
+		final String path = VIEW_PATH_APPROVE;
+		return path;
+	}
 
-        final String path = VIEW_PATH_DETAIL;
-        return path;
-    }
-    
-    @RequestMapping(value = "download/**")
-    public String download(final Model model, HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "detail")
+	public final String detail(final Model model, final AgreementForm workflowRequestForm) throws AccessSecurityException, IOException {
+		try {
+			// System.out.println("=== [DEBUG DETAIL] ===");
+			// System.out.println("imwSystemMatterId : " + (workflowRequestForm
+			// != null ? workflowRequestForm.getImwSystemMatterId() : "null"));
+			// System.out.println("imwUserDataId : " + (workflowRequestForm !=
+			// null ? workflowRequestForm.getImwUserDataId() : "null"));
+			// System.out.println("imwNodeId : " + (workflowRequestForm != null
+			// ? workflowRequestForm.getImwNodeId() : "null"));
+			// System.out.println("imwPageType : " + (workflowRequestForm !=
+			// null ? workflowRequestForm.getImwPageType() : "null"));
 
-        String urlStr = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-        String fileId = urlStr.substring(urlStr.lastIndexOf('/') + 1);
+			AgreementWorkflowService workflowService = new AgreementWorkflowService();
+			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 
-        AgreementAttachFileRepository FileRepository = new AgreementAttachFileRepository();
-        List<AgreementAttachmentModel> rowsFile = new ArrayList<AgreementAttachmentModel>(
-                FileRepository.selectTempAttachment(fileId.toString(), "id"));
-        String fileName = rowsFile.get(0).getFile_name();
-        String fileRealPath = rowsFile.get(0).getFile_path();
-        String fileDecode = URLDecoder.decode(fileRealPath.toString(), "UTF-8");
+			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
+			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+		} catch (Exception e) {
+			System.out.println("Error Detail Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
 
-        final PublicStorage storage = new PublicStorage(fileDecode);
-        if (!storage.isFile()) {
+		final String path = VIEW_PATH_DETAIL;
+		return path;
+	}
 
-            throw new FileNotFoundException("Could not find a file");
-        }
+	@RequestMapping(value = "download/**")
+	public String download(final Model model, HttpServletRequest request) throws Exception {
 
-        model.addAttribute("download_file_name", fileName);
-        model.addAttribute("storage", storage);
-        final String path = VIEW_PATH_DOWNLOAD;
-        return path;
-    }
+		String urlStr = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+		String fileId = urlStr.substring(urlStr.lastIndexOf('/') + 1);
+
+		AgreementAttachFileTempRepository FileRepository = new AgreementAttachFileTempRepository();
+		List<AgreementAttachmentModel> rowsFile = new ArrayList<AgreementAttachmentModel>(FileRepository.selectAttachmentTemp(fileId.toString(), "id"));
+		String fileName = rowsFile.get(0).getFile_name();
+		String fileRealPath = rowsFile.get(0).getFile_path();
+		String fileDecode = URLDecoder.decode(fileRealPath.toString(), "UTF-8");
+
+		final PublicStorage storage = new PublicStorage(fileDecode);
+		if (!storage.isFile()) {
+
+			throw new FileNotFoundException("Could not find a file");
+		}
+
+		model.addAttribute("download_file_name", fileName);
+		model.addAttribute("storage", storage);
+		final String path = VIEW_PATH_DOWNLOAD;
+		return path;
+	}
 
 }

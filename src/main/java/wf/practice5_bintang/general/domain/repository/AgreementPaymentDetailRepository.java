@@ -14,32 +14,17 @@ import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
 import wf.practice5_bintang.general.domain.util.DbValueUtils;
 
 public class AgreementPaymentDetailRepository {
-	
-	private String columnTable = "id,"
-			+ "system_matter_id,"
-			+ "user_data_id,"
-			+ "row_no,"
-			+ "brand,"
-			+ "type,"
-			+ "payment_amount,"
-			+ "payment_date,"
-			+ "category,"
-			+ "recurring,"
-			+ "paid_by,"
-			+ "created_at,"
-			+ "updated_at";
 
-	public void insertTempPaymentDetail(AgreementPaymentDetailModel model) throws Exception {
+	public void insertPaymentDetail(AgreementPaymentDetailModel model) throws Exception {
 		SQLManager sqlManager = new SQLManager();
 		ColumnValues columnValues = buildColumnValues(model, WorkflowCommonConstants.CONDITION_CREATE);
-		sqlManager.insert(AgreementDbConstants.TABLE_PAYMENT_DETAILS_TEMP, columnValues);
+		sqlManager.insert(AgreementDbConstants.TABLE_PAYMENT_DETAILS, columnValues);
 	}
 
-	public Collection<AgreementPaymentDetailModel> selectTempPaymentDetail(String filterValue, String condition) throws Exception {
+	public Collection<AgreementPaymentDetailModel> selectPaymentDetail(String filterValue, String condition) throws Exception {
 		SQLManager sqlMngr = new SQLManager();
 
-		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_PAYMENT_DETAILS_TEMP + " WHERE "
-				+ condition + " = ? ORDER BY row_no ASC";
+		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_PAYMENT_DETAILS + " WHERE " + condition + " = ? ORDER BY row_no ASC";
 
 		Collection<Object> parameters = new ArrayList<Object>();
 
@@ -52,34 +37,21 @@ public class AgreementPaymentDetailRepository {
 		return result;
 	}
 
-	public void updateTempPaymentDetail(AgreementPaymentDetailModel model, String filterValue, String condition) throws Exception {
+	public void updatePaymentDetail(AgreementPaymentDetailModel model, String filterValue, String condition) throws Exception {
 		SQLManager sqlManager = new SQLManager();
 		SearchCondition search = new SearchCondition();
 		search.addCondition(condition, filterValue);
 
 		ColumnValues columnValues = buildColumnValues(model, WorkflowCommonConstants.CONDITION_UPDATE);
-		sqlManager.update(AgreementDbConstants.TABLE_PAYMENT_DETAILS_TEMP, columnValues, search);
+		sqlManager.update(AgreementDbConstants.TABLE_PAYMENT_DETAILS, columnValues, search);
 	}
 
-	public void deleteTempPaymentDetail(String filterValue, String condition) throws Exception {
+	public void deletePaymentDetail(String filterValue, String condition) throws Exception {
 		SQLManager sqlManager = new SQLManager();
 		SearchCondition search = new SearchCondition();
 		search.addCondition(condition, filterValue);
 
-		sqlManager.delete(AgreementDbConstants.TABLE_PAYMENT_DETAILS_TEMP, search);
-	}
-
-	public void movePaymentDetailFromTempToMain(String systemMatterId) throws Exception {
-		SQLManager sqlManager = new SQLManager();
-
-		String sql = "INSERT INTO " + AgreementDbConstants.TABLE_PAYMENT_DETAILS + " (" + columnTable + ") SELECT "
-				+ "id, system_matter_id, user_data_id, row_no, brand, type, payment_amount, payment_date, category, recurring, paid_by, "
-				+ "CURRENT_TIMESTAMP, CURRENT_TIMESTAMP "
-				+ "FROM " + AgreementDbConstants.TABLE_PAYMENT_DETAILS_TEMP + " WHERE system_matter_id = ?";
-
-		Collection<Object> parameters = new ArrayList<Object>();
-		parameters.add(systemMatterId);
-		sqlManager.insert(sql, parameters);
+		sqlManager.delete(AgreementDbConstants.TABLE_PAYMENT_DETAILS, search);
 	}
 
 	private ColumnValues buildColumnValues(AgreementPaymentDetailModel model, String condition) throws Exception {
@@ -93,13 +65,13 @@ public class AgreementPaymentDetailRepository {
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_CREATED_AT, timestamp);
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
-	
+
 		} else if (condition.equals(WorkflowCommonConstants.CONDITION_UPDATE)) {
 			result.add(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, model.getSystem_matter_id());
 			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, model.getUser_data_id());
 			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
 		}
-		
+
 		result.add(AgreementDbConstants.COLUMN_ROW_NO, DbValueUtils.parseInteger(model.getRow_no()));
 		result.add(AgreementDbConstants.COLUMN_BRAND, model.getBrand());
 		result.add(AgreementDbConstants.COLUMN_TYPE, model.getType());
@@ -108,7 +80,7 @@ public class AgreementPaymentDetailRepository {
 		result.add(AgreementDbConstants.COLUMN_CATEGORY, model.getCategory());
 		result.add(AgreementDbConstants.COLUMN_RECURRING, model.getRecurring());
 		result.add(AgreementDbConstants.COLUMN_PAID_BY, model.getPaid_by());
-		
+
 		return result;
 	}
 }

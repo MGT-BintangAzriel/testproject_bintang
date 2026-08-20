@@ -12,72 +12,58 @@ import wf.common.constant.MailStatus;
 
 public class AgreementEmailService {
 
-    public void sendApprovalNotificationEmail(String matterId, String recipientEmail, AgreementForm formClassRows) throws Exception {
+	public void sendApprovalNotificationEmail(String matterId, String recipientEmail, AgreementForm formClassRows) throws Exception {
 
-        String targetMatterId = formClassRows.getF_system_matter_id();
+		String targetMatterId = formClassRows.getF_system_matter_id();
 
-        String matterNumber = "";
-        String matterName = "";
-        String matterDatetime = "";
-        String matterDate = "";
+		String matterNumber = "";
+		String matterName = "";
+		String matterDatetime = "";
+		String matterDate = "";
 
-        try {
-            CplMatter cplMatter = new CplMatter(targetMatterId);
-            matterNumber = cplMatter.getMatter().getMatterNumber();
-            matterName = cplMatter.getMatter().getMatterName();
-            matterDatetime = cplMatter.getMatter().getApplyDate();
+		try {
+			CplMatter cplMatter = new CplMatter(targetMatterId);
+			matterNumber = cplMatter.getMatter().getMatterNumber();
+			matterName = cplMatter.getMatter().getMatterName();
+			matterDatetime = cplMatter.getMatter().getApplyDate();
 
-            if (matterDatetime != null && matterDatetime.contains(" ")) {
-                matterDate = matterDatetime.split(" ")[0];
-            } else {
-                matterDate = matterDatetime != null ? matterDatetime : "";
-            }
+			if (matterDatetime != null && matterDatetime.contains(" ")) {
+				matterDate = matterDatetime.split(" ")[0];
+			} else {
+				matterDate = matterDatetime != null ? matterDatetime : "";
+			}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        StandardMail createMail = new StandardMail();
+		StandardMail createMail = new StandardMail();
 
-        createMail.setFrom("system-notification@imart.co.jp", "intra-mart ワークフロー自動通知");
-        createMail.setSubject("【通知】契約捺印申請 承認完了のお知らせ（案件番号: " + matterNumber + "）");
-        createMail.setText("関係者 各位\r\n" +
-                "\r\n" +
-                "以下の契約捺印申請の承認処理が完了いたしました。\r\n" +
-                "\r\n" +
-                "【案件番号】: " + matterNumber + "\r\n" +
-                "【案件名】  : " + matterName + "\r\n" +
-                "【申請日】  : " + matterDate + "\r\n" +
-                "\r\n" +
-                "※申請の詳細内容につきましては、intra-martにログインして「案件一覧（処理済み）」画面よりご確認ください。\r\n" +
-                "\r\n" +
-                "---------------------------------------------------\r\n" +
-                "本メールはシステムからの自動送信メールです。\r\n" +
-                "---------------------------------------------------\r\n");
-        createMail.addTo(recipientEmail);
+		createMail.setFrom("system-notification@imart.co.jp", "intra-mart ワークフロー自動通知");
+		createMail.setSubject("【通知】契約捺印申請 承認完了のお知らせ（案件番号: " + matterNumber + "）");
+		createMail.setText("関係者 各位\r\n" + "\r\n" + "以下の契約捺印申請の承認処理が完了いたしました。\r\n" + "\r\n" + "【案件番号】: " + matterNumber + "\r\n" + "【案件名】  : " + matterName + "\r\n" + "【申請日】  : " + matterDate + "\r\n" + "\r\n"
+				+ "※申請の詳細内容につきましては、intra-martにログインして「案件一覧（処理済み）」画面よりご確認ください。\r\n" + "\r\n" + "---------------------------------------------------\r\n" + "本メールはシステムからの自動送信メールです。\r\n"
+				+ "---------------------------------------------------\r\n");
+		createMail.addTo(recipientEmail);
 
-        try {
-            JavaMailSender sender = new JavaMailSender(createMail);
-            sender.send();
+		try {
+			JavaMailSender sender = new JavaMailSender(createMail);
+			sender.send();
 
-            AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
-            AgreementHeaderModel rowsHeader = agreementHeaderDb
-                    .selectHeader(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator()
-                    .next();
-            rowsHeader.setMail_status(MailStatus.SENT.getCode());
-            agreementHeaderDb.updateHeader(rowsHeader);
+			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
+			AgreementHeaderModel rowsHeader = agreementHeaderDb.selectHeader(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
+			rowsHeader.setMail_status(MailStatus.SENT.getCode());
+			agreementHeaderDb.updateHeader(rowsHeader);
 
-        } catch (MailSenderException e) {
-            AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
-            AgreementHeaderModel rowsHeader = agreementHeaderDb
-                    .selectHeader(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator()
-                    .next();
-            rowsHeader.setMail_status(MailStatus.FAILED.getCode());
-            agreementHeaderDb.updateHeader(rowsHeader);
+		} catch (MailSenderException e) {
+			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
+			AgreementHeaderModel rowsHeader = agreementHeaderDb.selectHeader(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
+			rowsHeader.setMail_status(MailStatus.FAILED.getCode());
+			agreementHeaderDb.updateHeader(rowsHeader);
 
-            e.printStackTrace();
-            throw new MailSenderException("Error in sendApprovalNotificationEmail()", e);
-        }
-    }
+			e.printStackTrace();
+			throw new MailSenderException("Error in sendApprovalNotificationEmail()", e);
+		}
+	}
 
 }

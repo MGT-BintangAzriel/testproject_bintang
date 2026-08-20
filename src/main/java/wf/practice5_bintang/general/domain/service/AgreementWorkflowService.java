@@ -1,66 +1,57 @@
 package wf.practice5_bintang.general.domain.service;
 
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.SessionScopeStorage;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
-import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.app.AgreementForm;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
-import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoTempModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
-import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoTempRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
-import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailTempRepository;
 
 public class AgreementWorkflowService {
 
 	public AgreementForm getHeaderInfoTempForm(String selectValue, String selectWhere) throws Exception {
 		AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
-		AgreementPaymentDetailRepository agreementPaymentDetailDb = new AgreementPaymentDetailRepository();
-		AgreementAttachFileRepository agreementAttachFileDb = new AgreementAttachFileRepository();
 		AgreementHeaderInfoTempRepository headerInfoTempDb = new AgreementHeaderInfoTempRepository();
+		AgreementPaymentDetailTempRepository agreementPaymentDetailTempDb = new AgreementPaymentDetailTempRepository();
+		AgreementAttachFileTempRepository agreementAttachFileTempDb = new AgreementAttachFileTempRepository();
 
 		Collection<AgreementHeaderModel> headerList = agreementHeaderDb.selectHeader(selectValue, selectWhere);
-		AgreementHeaderModel headerModel = (headerList != null && !headerList.isEmpty()) ? headerList.iterator().next()
-				: null;
+		AgreementHeaderModel headerModel = (headerList != null && !headerList.isEmpty()) ? headerList.iterator().next() : null;
 
-		Collection<AgreementPaymentDetailModel> paymentDetailModels = agreementPaymentDetailDb
-				.selectTempPaymentDetail(selectValue, selectWhere);
-		Collection<AgreementAttachmentModel> attachFileModels = agreementAttachFileDb.selectTempAttachment(selectValue,
-				selectWhere);
-		Collection<AgreementHeaderInfoTempModel> headerInfoTempModels = headerInfoTempDb
-				.selectHeaderInfoTemp(selectValue, selectWhere);
+		Collection<AgreementHeaderInfoModel> headerInfoTempModels = headerInfoTempDb.selectHeaderInfoTemp(selectValue, selectWhere);
+		Collection<AgreementPaymentDetailModel> paymentDetailModels = agreementPaymentDetailTempDb.selectPaymentDetailTemp(selectValue, selectWhere);
+		Collection<AgreementAttachmentModel> attachFileModels = agreementAttachFileTempDb.selectAttachmentTemp(selectValue, selectWhere);
 
-		return buildFormFromTempModel(headerModel, paymentDetailModels, attachFileModels, headerInfoTempModels);
+		return buildFormFromTempModel(headerModel, headerInfoTempModels, paymentDetailModels, attachFileModels);
 	}
 
-	private AgreementForm buildFormFromTempModel(AgreementHeaderModel headerModel,
-			Collection<AgreementPaymentDetailModel> paymentDetailModels,
-			Collection<AgreementAttachmentModel> attachFileModels,
-			Collection<AgreementHeaderInfoTempModel> headerInfoTempModels) {
+	private AgreementForm buildFormFromTempModel(AgreementHeaderModel headerModel, Collection<AgreementHeaderInfoModel> headerInfoTempModels, Collection<AgreementPaymentDetailModel> paymentDetailModels,
+			Collection<AgreementAttachmentModel> attachFileModels) {
 
 		AgreementForm form = new AgreementForm();
 		if (headerInfoTempModels == null || headerInfoTempModels.isEmpty()) {
 			return form;
 		}
 
-		AgreementHeaderInfoTempModel headerInfoTempModel = headerInfoTempModels.iterator().next();
+		AgreementHeaderInfoModel headerInfoTempModel = headerInfoTempModels.iterator().next();
 
 		form.setF_application_number(headerInfoTempModel.getApplication_number());
 		form.setF_application_date(getDateFormat(headerInfoTempModel.getApplication_date(), "yyyy/MM/dd"));
@@ -133,8 +124,7 @@ public class AgreementWorkflowService {
 			}
 		}
 
-		form.setF_estimated_delivery_from(
-				getDateFormat(headerInfoTempModel.getEstimated_delivery_from(), "yyyy/MM/dd"));
+		form.setF_estimated_delivery_from(getDateFormat(headerInfoTempModel.getEstimated_delivery_from(), "yyyy/MM/dd"));
 		form.setF_estimated_delivery_to(getDateFormat(headerInfoTempModel.getEstimated_delivery_to(), "yyyy/MM/dd"));
 		form.setF_agreement_summary(headerInfoTempModel.getAgreement_summary());
 
@@ -287,8 +277,7 @@ public class AgreementWorkflowService {
 
 	}
 
-	private Collection<AgreementPaymentDetailModel> convertPayment(
-			Collection<AgreementPaymentDetailModel> paymentDetailModels) {
+	private Collection<AgreementPaymentDetailModel> convertPayment(Collection<AgreementPaymentDetailModel> paymentDetailModels) {
 
 		Collection<AgreementPaymentDetailModel> converted = new ArrayList<>();
 
@@ -317,7 +306,7 @@ public class AgreementWorkflowService {
 
 	public String getDateFormat(String date, String date_format) {
 		try {
-			if(date == null) {
+			if (date == null) {
 				return "";
 			}
 
@@ -331,139 +320,9 @@ public class AgreementWorkflowService {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private AgreementForm buildFormFromTempModel(Collection<AgreementHeaderInfoTempModel> headerInfoTempModels) {
-		AgreementForm form = new AgreementForm();
-		if (headerInfoTempModels == null || headerInfoTempModels.isEmpty()) {
-			return form;
-		}
-
-		AgreementHeaderInfoTempModel headerInfoTempModel = headerInfoTempModels.iterator().next();
-		AgreementAttachFileRepository attachFileDb = new AgreementAttachFileRepository();
-		AgreementPaymentDetailRepository paymentDetailDb = new AgreementPaymentDetailRepository();
-
-		try {
-			form.setF_system_matter_id(headerInfoTempModel.getSystem_matter_id());
-			form.setF_user_data_id(headerInfoTempModel.getUser_data_id());
-
-			form.setF_counter_party(headerInfoTempModel.getCounter_party());
-			form.setF_currency(headerInfoTempModel.getCurrency());
-			form.setF_total_amount(headerInfoTempModel.getTotal_amount());
-			form.setF_agreement_status(headerInfoTempModel.getAgreement_status());
-			form.setF_total_duration(headerInfoTempModel.getTotal_duration());
-			form.setF_auto_extension(headerInfoTempModel.getAuto_extension());
-			form.setF_po_required(headerInfoTempModel.getPo_required());
-			form.setF_agreement_title(headerInfoTempModel.getAgreement_title());
-			form.setF_effective_from(headerInfoTempModel.getEffective_from());
-			form.setF_effective_to(headerInfoTempModel.getEffective_to());
-			form.setF_company_relation(headerInfoTempModel.getCompany_relation());
-			form.setF_estimated_delivery_from(headerInfoTempModel.getEstimated_delivery_from());
-			form.setF_estimated_delivery_to(headerInfoTempModel.getEstimated_delivery_to());
-			form.setF_agreement_summary(headerInfoTempModel.getAgreement_summary());
-			form.setF_purchase_category(headerInfoTempModel.getPurchase_category());
-			form.setF_start_using_date(headerInfoTempModel.getStart_using_date());
-			form.setF_deprec_month(headerInfoTempModel.getDeprec_month());
-			form.setF_budget_pl_impact(headerInfoTempModel.getBudget_pl_impact());
-			form.setF_budget_pl_month(headerInfoTempModel.getBudget_pl_month());
-			form.setF_pl_impact(headerInfoTempModel.getPl_impact());
-			form.setF_pl_month(headerInfoTempModel.getPl_month());
-			form.setF_asset_number(headerInfoTempModel.getAsset_number());
-			form.setF_book_value(headerInfoTempModel.getBook_value());
-			form.setF_total_payment_amount(headerInfoTempModel.getTotal_payment_amount());
-			form.setF_agreement_classification(headerInfoTempModel.getAgreement_classification());
-			form.setF_pd_sub_condition(headerInfoTempModel.getPd_sub_condition());
-			form.setF_ec_approval(headerInfoTempModel.getEc_approval());
-			form.setF_ec_sub_condition(headerInfoTempModel.getEc_sub_condition());
-			form.setF_psd_area(headerInfoTempModel.getPsd_area());
-			form.setF_psd_process(headerInfoTempModel.getPsd_process());
-			form.setF_dic_reason(headerInfoTempModel.getDic_reason());
-			form.setF_dd_process(headerInfoTempModel.getDd_process());
-			form.setF_anti_bribery(headerInfoTempModel.getAnti_bribery());
-			form.setF_audit_rights(headerInfoTempModel.getAudit_rights());
-			form.setF_legal_agreement_number(headerInfoTempModel.getLegal_agreement_number());
-			form.setF_legal_agreement_date(headerInfoTempModel.getLegal_agreement_date());
-
-			String matterId = headerInfoTempModel.getSystem_matter_id();
-			List<AgreementAttachmentModel> attachmentList = new ArrayList<AgreementAttachmentModel>(
-					attachFileDb.selectTempAttachment(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID));
-			form.setD_list_attachment(attachmentList);
-
-			List<AgreementPaymentDetailModel> paymentDetailList = new ArrayList<AgreementPaymentDetailModel>(
-					paymentDetailDb.selectTempPaymentDetail(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID));
-			form.setD_list_payment_detail(paymentDetailList);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return form;
-	}
-
-	public AgreementHeaderInfoModel moveTempHeaderToInfoHeader(
-			Collection<AgreementHeaderInfoTempModel> tempHeaderInfoModels) {
-
-		if (tempHeaderInfoModels == null || tempHeaderInfoModels.isEmpty()) {
-			return null;
-		}
-
-		AgreementHeaderInfoTempModel headerInfoTempModel = tempHeaderInfoModels.iterator().next();
-		AgreementHeaderInfoModel headerInfoModel = new AgreementHeaderInfoModel();
-
-		headerInfoModel.setSystem_matter_id(headerInfoTempModel.getSystem_matter_id());
-		headerInfoModel.setUser_data_id(headerInfoTempModel.getUser_data_id());
-
-		headerInfoModel.setApplication_number(headerInfoTempModel.getApplication_number());
-		headerInfoModel.setApplication_date(headerInfoTempModel.getApplication_date());
-		headerInfoModel.setApplicant_number(headerInfoTempModel.getApplicant_number());
-		headerInfoModel.setApplicant_department(headerInfoTempModel.getApplicant_department());
-		headerInfoModel.setApplicant_name(headerInfoTempModel.getApplicant_name());
-		headerInfoModel.setApplicant_post(headerInfoTempModel.getApplicant_post());
-
-		headerInfoModel.setCounter_party(headerInfoTempModel.getCounter_party());
-		headerInfoModel.setCurrency(headerInfoTempModel.getCurrency());
-		headerInfoModel.setTotal_amount(headerInfoTempModel.getTotal_amount());
-		headerInfoModel.setAgreement_status(headerInfoTempModel.getAgreement_status());
-		headerInfoModel.setTotal_duration(headerInfoTempModel.getTotal_duration());
-		headerInfoModel.setAuto_extension(headerInfoTempModel.getAuto_extension());
-		headerInfoModel.setPo_required(headerInfoTempModel.getPo_required());
-		headerInfoModel.setAgreement_title(headerInfoTempModel.getAgreement_title());
-		headerInfoModel.setEffective_from(headerInfoTempModel.getEffective_from());
-		headerInfoModel.setEffective_to(headerInfoTempModel.getEffective_to());
-		headerInfoModel.setCompany_relation(headerInfoTempModel.getCompany_relation());
-		headerInfoModel.setEstimated_delivery_from(headerInfoTempModel.getEstimated_delivery_from());
-		headerInfoModel.setEstimated_delivery_to(headerInfoTempModel.getEstimated_delivery_to());
-		headerInfoModel.setAgreement_summary(headerInfoTempModel.getAgreement_summary());
-		headerInfoModel.setPurchase_category(headerInfoTempModel.getPurchase_category());
-		headerInfoModel.setStart_using_date(headerInfoTempModel.getStart_using_date());
-		headerInfoModel.setDeprec_month(headerInfoTempModel.getDeprec_month());
-		headerInfoModel.setMultidata(headerInfoTempModel.getMultidata());
-		headerInfoModel.setBudget_pl_impact(headerInfoTempModel.getBudget_pl_impact());
-		headerInfoModel.setBudget_pl_month(headerInfoTempModel.getBudget_pl_month());
-		headerInfoModel.setPl_impact(headerInfoTempModel.getPl_impact());
-		headerInfoModel.setPl_month(headerInfoTempModel.getPl_month());
-		headerInfoModel.setAsset_number(headerInfoTempModel.getAsset_number());
-		headerInfoModel.setBook_value(headerInfoTempModel.getBook_value());
-		headerInfoModel.setTotal_payment_amount(headerInfoTempModel.getTotal_payment_amount());
-		headerInfoModel.setAgreement_classification(headerInfoTempModel.getAgreement_classification());
-		headerInfoModel.setPd_sub_condition(headerInfoTempModel.getPd_sub_condition());
-		headerInfoModel.setEc_approval(headerInfoTempModel.getEc_approval());
-		headerInfoModel.setEc_sub_condition(headerInfoTempModel.getEc_sub_condition());
-		headerInfoModel.setPsd_area(headerInfoTempModel.getPsd_area());
-		headerInfoModel.setPsd_process(headerInfoTempModel.getPsd_process());
-		headerInfoModel.setDic_reason(headerInfoTempModel.getDic_reason());
-		headerInfoModel.setDd_process(headerInfoTempModel.getDd_process());
-		headerInfoModel.setAnti_bribery(headerInfoTempModel.getAnti_bribery());
-		headerInfoModel.setAudit_rights(headerInfoTempModel.getAudit_rights());
-		headerInfoModel.setLegal_agreement_number(headerInfoTempModel.getLegal_agreement_number());
-		headerInfoModel.setLegal_agreement_date(headerInfoTempModel.getLegal_agreement_date());
-
-		return headerInfoModel;
-	}
-
 	public final Boolean transferAttachmentFile(String systemMatterId, String fileRealName) {
 		PublicStorage targetDir = new PublicStorage("practice5_bintang/" + systemMatterId + "/file_attachment");
-		PublicStorage targetFile = new PublicStorage(
-				"practice5_bintang/" + systemMatterId + "/file_attachment/" + fileRealName);
+		PublicStorage targetFile = new PublicStorage("practice5_bintang/" + systemMatterId + "/file_attachment/" + fileRealName);
 		SessionScopeStorage sessionStorageFile = new SessionScopeStorage("file_attachment/" + fileRealName);
 		try {
 			targetDir.makeDirectories();
@@ -479,7 +338,7 @@ public class AgreementWorkflowService {
 
 	public AgreementForm getHeaderInfoTempFormApply() {
 		UserContext userContext = Contexts.get(UserContext.class);
-		
+
 		AgreementForm agreementForm = new AgreementForm();
 		AgreementHeaderRepository headerDb = new AgreementHeaderRepository();
 
@@ -490,10 +349,14 @@ public class AgreementWorkflowService {
 			e.printStackTrace();
 		}
 
-//		UserContext userContext = Contexts.get(UserContext.class);
-//		String applicantNumber = userContext.getUserProfile().getUserCd() != null ? userContext.getUserProfile().getUserCd() : "1200002";
-//		String applicantName = userContext.getUserProfile().getUserName() != null ? userContext.getUserProfile().getUserName() : "Bintang";
-//		String applicantDepartment = userContext.getCurrentDepartment().getDepartmentName() != null ? userContext.getCurrentDepartment().getDepartmentName() : "人事部";
+		// UserContext userContext = Contexts.get(UserContext.class);
+		// String applicantNumber = userContext.getUserProfile().getUserCd() !=
+		// null ? userContext.getUserProfile().getUserCd() : "1200002";
+		// String applicantName = userContext.getUserProfile().getUserName() !=
+		// null ? userContext.getUserProfile().getUserName() : "Bintang";
+		// String applicantDepartment =
+		// userContext.getCurrentDepartment().getDepartmentName() != null ?
+		// userContext.getCurrentDepartment().getDepartmentName() : "人事部";
 
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
@@ -509,110 +372,118 @@ public class AgreementWorkflowService {
 		return agreementForm;
 	}
 
-	 public static String getFileExtensionCategory(String mimeType) {
-    	// This function will decide group document
-        if (mimeType == null || mimeType.equals("")) {
-            return "UNKNOWN";
-        }
+	public static String getFileExtensionCategory(String mimeType) {
+		// This function will decide group document
+		if (mimeType == null || mimeType.equals("")) {
+			return "UNKNOWN";
+		}
 
-        String mime = mimeType.trim().toLowerCase();
-        
-        if (mime.startsWith("image/")) {
-            return "IMAGE";
-        } else if (mime.startsWith("video/")) {
-            return "VIDEO";
-        } else if (mime.startsWith("audio/")) {
-            return "AUDIO";
-        } else if (mime.contains("zip") || mime.contains("compressed") || mime.contains("tar")) {
-            return "ARCHIVE";
-        }
+		String mime = mimeType.trim().toLowerCase();
 
-        // Default fallback for general files, office files, and text documents
-        return "DOCUMENT";
-    }
+		if (mime.startsWith("image/")) {
+			return "IMAGE";
+		} else if (mime.startsWith("video/")) {
+			return "VIDEO";
+		} else if (mime.startsWith("audio/")) {
+			return "AUDIO";
+		} else if (mime.contains("zip") || mime.contains("compressed") || mime.contains("tar")) {
+			return "ARCHIVE";
+		}
 
-	 public static String getFileExtension(String mimeType) {
-    	// This function will change the mime type to proper extension
-    	if (mimeType == null || mimeType.equals("")) {
-            return "UNKNOWN";
-        }
+		// Default fallback for general files, office files, and text documents
+		return "DOCUMENT";
+	}
 
-        String mime = mimeType.trim().toLowerCase();
+	public static String getFileExtension(String mimeType) {
+		// This function will change the mime type to proper extension
+		if (mimeType == null || mimeType.equals("")) {
+			return "UNKNOWN";
+		}
 
-        // 1. Direct matching for tricky/complex office and text types
-        if (mime.equals("text/plain")) return "TXT";
-        if (mime.contains("msword") || mime.contains("wordprocessingml")) return "DOCX";
-        if (mime.contains("ms-excel") || mime.contains("spreadsheetml")) return "XLSX";
-        if (mime.contains("ms-powerpoint") || mime.contains("presentationml")) return "PPTX";
+		String mime = mimeType.trim().toLowerCase();
 
-        // 2. Fallback rule for standard types (extracts everything after the '/')
-        if (mime.contains("/")) {
-            String subType = mime.substring(mime.indexOf("/") + 1).toUpperCase();
-            
-            if (subType.startsWith("X-")) subType = subType.substring(2);
-            if (subType.contains("VND.")) subType = subType.substring(subType.lastIndexOf(".") + 1);
-            if (subType.contains(";")) subType = subType.split(";")[0].trim();
-            
-            return subType;
-        }
+		// 1. Direct matching for tricky/complex office and text types
+		if (mime.equals("text/plain"))
+			return "TXT";
+		if (mime.contains("msword") || mime.contains("wordprocessingml"))
+			return "DOCX";
+		if (mime.contains("ms-excel") || mime.contains("spreadsheetml"))
+			return "XLSX";
+		if (mime.contains("ms-powerpoint") || mime.contains("presentationml"))
+			return "PPTX";
 
-        return "UNKNOWN";
-    }
+		// 2. Fallback rule for standard types (extracts everything after the
+		// '/')
+		if (mime.contains("/")) {
+			String subType = mime.substring(mime.indexOf("/") + 1).toUpperCase();
 
-	 public String formatFileSize(long bytes) {
-    	// This function will convert 1000 byte to GB, MB, KB
-        if (bytes < 0) {
-            throw new IllegalArgumentException("Byte count cannot be negative.");
-        }
+			if (subType.startsWith("X-"))
+				subType = subType.substring(2);
+			if (subType.contains("VND."))
+				subType = subType.substring(subType.lastIndexOf(".") + 1);
+			if (subType.contains(";"))
+				subType = subType.split(";")[0].trim();
 
-        // Define our units based on the 1000-byte standard
-        double kilo = 1000.0;
-        double mega = 1000.0 * 1000.0;
-        double giga = 1000.0 * 1000.0 * 1000.0;
+			return subType;
+		}
 
-        DecimalFormat df = new DecimalFormat("0.00");
+		return "UNKNOWN";
+	}
 
-        if (bytes >= giga) {
-            double value = bytes / giga;
-            return df.format(round(value)) + " GB";
-            
-        } else if (bytes >= mega) {
-            double value = bytes / mega;
-            return df.format(round(value)) + " MB";
-            
-        } else if (bytes >= kilo) {
-            double value = bytes / kilo;
-            return df.format(round(value)) + " KB";
-            
-        } else {
-            return bytes + " Bytes";
-            
-        }
-    }
-	 
-	 private double round(double value) {
-	    	// Round up value
-	        return new BigDecimal(Double.toString(value)).setScale(2, RoundingMode.HALF_UP).doubleValue();
-	        
-	    }
+	public String formatFileSize(long bytes) {
+		// This function will convert 1000 byte to GB, MB, KB
+		if (bytes < 0) {
+			throw new IllegalArgumentException("Byte count cannot be negative.");
+		}
+
+		// Define our units based on the 1000-byte standard
+		double kilo = 1000.0;
+		double mega = 1000.0 * 1000.0;
+		double giga = 1000.0 * 1000.0 * 1000.0;
+
+		DecimalFormat df = new DecimalFormat("0.00");
+
+		if (bytes >= giga) {
+			double value = bytes / giga;
+			return df.format(round(value)) + " GB";
+
+		} else if (bytes >= mega) {
+			double value = bytes / mega;
+			return df.format(round(value)) + " MB";
+
+		} else if (bytes >= kilo) {
+			double value = bytes / kilo;
+			return df.format(round(value)) + " KB";
+
+		} else {
+			return bytes + " Bytes";
+
+		}
+	}
+
+	private double round(double value) {
+		// Round up value
+		return new BigDecimal(Double.toString(value)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+	}
 
 	public Collection<AgreementAttachmentModel> convertAttachmentFiles(Collection<AgreementAttachmentModel> attachments) {
 		// This function, will set the extension category & file size data
 		Collection<AgreementAttachmentModel> result = new ArrayList<>();
-	    
-	    for (AgreementAttachmentModel attachment : attachments) {
-	    	String originalFileExtension = attachment.getFile_extension();
-	    	
-	    	attachment.setFile_extension_category(getFileExtensionCategory(originalFileExtension));
-	    	attachment.setFile_extension_convert(getFileExtension(originalFileExtension));
-	    	
-	    	String attachmentFileSize = attachment.getFile_size() != null ? attachment.getFile_size() : "0";
-	        attachment.setFile_size_convert(formatFileSize(Long.parseLong(attachmentFileSize)));
-	        
-	        result.add(attachment);
-	    }
-	    
-	    return result;
+
+		for (AgreementAttachmentModel attachment : attachments) {
+			String originalFileExtension = attachment.getFile_extension();
+
+			attachment.setFile_extension_category(getFileExtensionCategory(originalFileExtension));
+			attachment.setFile_extension_convert(getFileExtension(originalFileExtension));
+
+			String attachmentFileSize = attachment.getFile_size() != null ? attachment.getFile_size() : "0";
+			attachment.setFile_size_convert(formatFileSize(Long.parseLong(attachmentFileSize)));
+
+			result.add(attachment);
+		}
+
+		return result;
 	}
 
 }

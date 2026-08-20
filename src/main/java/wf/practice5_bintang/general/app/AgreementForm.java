@@ -10,7 +10,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 	private String f_id;
 	private String f_system_matter_id;
 	private String f_user_data_id;
-	
+
 	private String f_application_number;
 	private String f_application_date;
 	private String f_applicant_number;
@@ -26,15 +26,15 @@ public class AgreementForm extends AgreementWorkflowForm {
 	private String f_agreement_status_one_time;
 	private String f_agreement_status_amendment;
 	private String f_agreement_status_umbrella;
-	
+
 	private String f_total_duration;
 	private String f_total_duration_more_than_1_year;
 	private String f_total_duration_up_to_1_year;
-	
+
 	private String f_auto_extension;
 	private String f_auto_extension_yes;
 	private String f_auto_extension_no;
-	
+
 	private String f_po_required;
 	private String f_po_required_yes;
 	private String f_po_required_no;
@@ -651,8 +651,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_pd_more_than_1_billion;
 	}
 
-	public void setF_agreement_classification_pd_more_than_1_billion(
-			String f_agreement_classification_pd_more_than_1_billion) {
+	public void setF_agreement_classification_pd_more_than_1_billion(String f_agreement_classification_pd_more_than_1_billion) {
 		this.f_agreement_classification_pd_more_than_1_billion = f_agreement_classification_pd_more_than_1_billion;
 	}
 
@@ -660,8 +659,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_pd_more_than_12_months;
 	}
 
-	public void setF_agreement_classification_pd_more_than_12_months(
-			String f_agreement_classification_pd_more_than_12_months) {
+	public void setF_agreement_classification_pd_more_than_12_months(String f_agreement_classification_pd_more_than_12_months) {
 		this.f_agreement_classification_pd_more_than_12_months = f_agreement_classification_pd_more_than_12_months;
 	}
 
@@ -685,8 +683,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_pd_direct_procurement;
 	}
 
-	public void setF_agreement_classification_pd_direct_procurement(
-			String f_agreement_classification_pd_direct_procurement) {
+	public void setF_agreement_classification_pd_direct_procurement(String f_agreement_classification_pd_direct_procurement) {
 		this.f_agreement_classification_pd_direct_procurement = f_agreement_classification_pd_direct_procurement;
 	}
 
@@ -694,8 +691,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_pd_agreement_not_more_than_12_months;
 	}
 
-	public void setF_agreement_classification_pd_agreement_not_more_than_12_months(
-			String f_agreement_classification_pd_agreement_not_more_than_12_months) {
+	public void setF_agreement_classification_pd_agreement_not_more_than_12_months(String f_agreement_classification_pd_agreement_not_more_than_12_months) {
 		this.f_agreement_classification_pd_agreement_not_more_than_12_months = f_agreement_classification_pd_agreement_not_more_than_12_months;
 	}
 
@@ -703,8 +699,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_dic_director_approval;
 	}
 
-	public void setF_agreement_classification_dic_director_approval(
-			String f_agreement_classification_dic_director_approval) {
+	public void setF_agreement_classification_dic_director_approval(String f_agreement_classification_dic_director_approval) {
 		this.f_agreement_classification_dic_director_approval = f_agreement_classification_dic_director_approval;
 	}
 
@@ -720,8 +715,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_ec_amount_equal_more_than_1_billion;
 	}
 
-	public void setF_agreement_classification_ec_amount_equal_more_than_1_billion(
-			String f_agreement_classification_ec_amount_equal_more_than_1_billion) {
+	public void setF_agreement_classification_ec_amount_equal_more_than_1_billion(String f_agreement_classification_ec_amount_equal_more_than_1_billion) {
 		this.f_agreement_classification_ec_amount_equal_more_than_1_billion = f_agreement_classification_ec_amount_equal_more_than_1_billion;
 	}
 
@@ -729,8 +723,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_ec_period_equal_more_than_12_months;
 	}
 
-	public void setF_agreement_classification_ec_period_equal_more_than_12_months(
-			String f_agreement_classification_ec_period_equal_more_than_12_months) {
+	public void setF_agreement_classification_ec_period_equal_more_than_12_months(String f_agreement_classification_ec_period_equal_more_than_12_months) {
 		this.f_agreement_classification_ec_period_equal_more_than_12_months = f_agreement_classification_ec_period_equal_more_than_12_months;
 	}
 
@@ -738,8 +731,7 @@ public class AgreementForm extends AgreementWorkflowForm {
 		return f_agreement_classification_ec_escalate_issue_to_ec;
 	}
 
-	public void setF_agreement_classification_ec_escalate_issue_to_ec(
-			String f_agreement_classification_ec_escalate_issue_to_ec) {
+	public void setF_agreement_classification_ec_escalate_issue_to_ec(String f_agreement_classification_ec_escalate_issue_to_ec) {
 		this.f_agreement_classification_ec_escalate_issue_to_ec = f_agreement_classification_ec_escalate_issue_to_ec;
 	}
 

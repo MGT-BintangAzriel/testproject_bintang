@@ -30,8 +30,7 @@ public class AgreementHeaderRepository {
 		try {
 			SQLManager sqlManager = new SQLManager();
 
-			ColumnValues columnVal = this.buildColumnValues(model,
-					WorkflowCommonConstants.CONDITION_CREATE);
+			ColumnValues columnVal = this.buildColumnValues(model, WorkflowCommonConstants.CONDITION_CREATE);
 
 			sqlManager.insert(AgreementDbConstants.TABLE_HEADER, columnVal);
 
@@ -85,8 +84,7 @@ public class AgreementHeaderRepository {
 				selectQuery = this.selectDataAll;
 			}
 
-			Collection<AgreementHeaderModel> result = sqlManager.select(AgreementHeaderModel.class, selectQuery,
-					parameters);
+			Collection<AgreementHeaderModel> result = sqlManager.select(AgreementHeaderModel.class, selectQuery, parameters);
 			return result;
 
 		} catch (Exception e) {
@@ -100,38 +98,32 @@ public class AgreementHeaderRepository {
 			SQLManager sqlManager = new SQLManager();
 
 			SearchCondition searchCondition = new SearchCondition();
-			searchCondition.addCondition(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID,
-					model.getSystem_matter_id());
+			searchCondition.addCondition(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, model.getSystem_matter_id());
 
-			ColumnValues columnVal = this.buildColumnValues(model,
-					WorkflowCommonConstants.CONDITION_UPDATE);
+			ColumnValues columnVal = this.buildColumnValues(model, WorkflowCommonConstants.CONDITION_UPDATE);
 
 			sqlManager.update(AgreementDbConstants.TABLE_HEADER, columnVal, searchCondition);
 
-		} catch (AccessSecurityException | IllegalArgumentException | NamingException | BizApiException
-				| SQLException var6) {
+		} catch (AccessSecurityException | IllegalArgumentException | NamingException | BizApiException | SQLException var6) {
 			var6.printStackTrace();
 			throw new Exception("DB Error in UpdateHeader");
 
 		}
 
 	}
-	
+
 	public AgreementHeaderModel selectAgreementHeaderMaxId() throws Exception {
 		try {
 			SQLManager sqlManager = new SQLManager();
-			String sql = "SELECT "
-					+ "max(id) as id "
-					+ "FROM "
-					+ AgreementDbConstants.TABLE_HEADER;
-			
+			String sql = "SELECT " + "max(id) as id " + "FROM " + AgreementDbConstants.TABLE_HEADER;
+
 			Collection<Object> parameters = new ArrayList<Object>();
-			
+
 			List<AgreementHeaderModel> sqlResults = new ArrayList<AgreementHeaderModel>();
 			sqlResults = (List<AgreementHeaderModel>) sqlManager.select(AgreementHeaderModel.class, sql, parameters);
 			return sqlResults.get(0) != null ? sqlResults.get(0) : new AgreementHeaderModel();
 
-		} catch(SQLException | AccessSecurityException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException | NamingException e){
+		} catch (SQLException | AccessSecurityException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException | NamingException e) {
 			e.printStackTrace();
 			throw new Exception("DB error in selectPersonalInfoChangeHeader_MaxId()", e);
 		}

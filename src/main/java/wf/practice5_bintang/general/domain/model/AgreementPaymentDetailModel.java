@@ -1,29 +1,29 @@
 package wf.practice5_bintang.general.domain.model;
 
 public class AgreementPaymentDetailModel {
-	
+
 	private int id;
 	private String system_matter_id;
-	private String user_data_id ;
+	private String user_data_id;
 	private String created_at;
 	private String updated_at;
-	
+
 	private String row_no;
 	private String brand;
 	private String type;
 	private String payment_amount;
 	private String payment_date;
-	
+
 	private String category;
-	
+
 	private String recurring;
 	private String recurring_yes;
 	private String recurring_no;
-	
+
 	private String paid_by;
 	private String paid_by_cash;
 	private String paid_by_card;
-	
+
 	public int getId() {
 		return id;
 	}

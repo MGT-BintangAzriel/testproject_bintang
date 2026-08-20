@@ -22,14 +22,15 @@ import jp.co.intra_mart.foundation.workflow.util.WorkflowNumberingManager;
 import wf.common.constant.WorkflowStatus;
 import wf.practice5_bintang.general.AgreementActionProcessService;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
-import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
-import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoTempModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
+import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
-import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
-import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoTempRepository;
+import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
+
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
-import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoTempRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailTempRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
 import wf.common.constant.MailStatus;
 import wf.common.constant.WorkflowCommonConstants;
 
@@ -42,29 +43,27 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		String number = null;
 		try {
 			AgreementWorkflowService workflowService = new AgreementWorkflowService();
-			
+
 			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
 			AgreementHeaderInfoTempRepository agreementHeaderInfoTempDb = new AgreementHeaderInfoTempRepository();
-			AgreementAttachFileRepository agreementAttachDb = new AgreementAttachFileRepository();
-			AgreementPaymentDetailRepository agreementPaymentDetailDb = new AgreementPaymentDetailRepository();
+			AgreementAttachFileTempRepository agreementAttachTempDb = new AgreementAttachFileTempRepository();
+			AgreementPaymentDetailTempRepository agreementPaymentDetailTempDb = new AgreementPaymentDetailTempRepository();
 
 			AgreementHeaderModel headerModel = extractHeaderModel(parameter, userParameter);
 			agreementHeaderDb.insertHeader(headerModel);
 
-			AgreementHeaderInfoTempModel headerInfoTempModel = extractHeaderInfoTempModel(parameter, userParameter);
+			AgreementHeaderInfoModel headerInfoTempModel = extractHeaderInfoTempModel(parameter, userParameter);
 			agreementHeaderInfoTempDb.insertHeaderInfoTemp(headerInfoTempModel);
 
 			final List<AgreementAttachmentModel> attachmentList = extractAttachmentModels(parameter, userParameter);
 			for (int i = 0; i < attachmentList.size(); i++) {
-				agreementAttachDb.insertTempAttachment(attachmentList.get(i));
-				workflowService.transferAttachmentFile(parameter.getSystemMatterId(),
-						attachmentList.get(i).getFile_real_name());
+				agreementAttachTempDb.insertAttachmentTemp(attachmentList.get(i));
+				workflowService.transferAttachmentFile(parameter.getSystemMatterId(), attachmentList.get(i).getFile_real_name());
 			}
 
-			final List<AgreementPaymentDetailModel> paymentDetailList = extractPaymentDetailModels(parameter,
-					userParameter);
-			for (int i=0; i<paymentDetailList.size();i++) {
-				agreementPaymentDetailDb.insertTempPaymentDetail(paymentDetailList.get(i));
+			final List<AgreementPaymentDetailModel> paymentDetailList = extractPaymentDetailModels(parameter, userParameter);
+			for (int i = 0; i < paymentDetailList.size(); i++) {
+				agreementPaymentDetailTempDb.insertPaymentDetailTemp(paymentDetailList.get(i));
 			}
 
 			createMatterProperty(parameter.getUserDataId(), "practice5_bintang_po", headerInfoTempModel.getPo_required());
@@ -74,15 +73,13 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 			number = WorkflowNumberingManager.getNumber();
 
 		} catch (final WorkflowException e) {
-			throw new WorkflowExternalException(MessageManager.getInstance()
-					.getMessage(LocaleUtil.toLocale(parameter.getLocaleId()), "SAMPLE.IMW.ERR.003"));
+			throw new WorkflowExternalException(MessageManager.getInstance().getMessage(LocaleUtil.toLocale(parameter.getLocaleId()), "SAMPLE.IMW.ERR.003"));
 
 		}
 		return number;
 	}
 
-	private AgreementHeaderModel extractHeaderModel(ActionProcessParameter parameter,
-			Map<String, Object> userParameter) {
+	private AgreementHeaderModel extractHeaderModel(ActionProcessParameter parameter, Map<String, Object> userParameter) {
 		AgreementHeaderModel headerModel = new AgreementHeaderModel();
 
 		headerModel.setUser_data_id(parameter.getUserDataId());
@@ -93,9 +90,8 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		return headerModel;
 	}
 
-	private AgreementHeaderInfoTempModel extractHeaderInfoTempModel(ActionProcessParameter parameter,
-			Map<String, Object> userParameter) {
-		AgreementHeaderInfoTempModel headerInfoTempModel = new AgreementHeaderInfoTempModel();
+	private AgreementHeaderInfoModel extractHeaderInfoTempModel(ActionProcessParameter parameter, Map<String, Object> userParameter) {
+		AgreementHeaderInfoModel headerInfoTempModel = new AgreementHeaderInfoModel();
 
 		headerInfoTempModel.setUser_data_id(parameter.getUserDataId());
 		headerInfoTempModel.setSystem_matter_id(parameter.getSystemMatterId());
@@ -104,66 +100,41 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		AgreementHeaderModel agreementHeaderModels = new AgreementHeaderModel();
 
 		try {
-			agreementHeaderModels = agreementHeaderDb.selectHeader(parameter.getSystemMatterId(),
-					WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
-			headerInfoTempModel
-					.setApplication_number("AD-" + String.format("%06d", agreementHeaderModels.getId()));
+			agreementHeaderModels = agreementHeaderDb.selectHeader(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
+			headerInfoTempModel.setApplication_number("AD-" + String.format("%06d", agreementHeaderModels.getId()));
 		} catch (final Exception e) {
 			System.out.println(e);
 		}
 
-		headerInfoTempModel.setApplication_date(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICATION_DATE));
-		headerInfoTempModel.setApplicant_number(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_NUMBER));
-		headerInfoTempModel.setApplicant_department(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_DEPARTMENT));
-		headerInfoTempModel.setApplicant_name(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_NAME));
-		headerInfoTempModel.setApplicant_post(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_POST));
-		headerInfoTempModel
-				.setCounter_party(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_COUNTER_PARTY));
+		headerInfoTempModel.setApplication_date(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICATION_DATE));
+		headerInfoTempModel.setApplicant_number(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_NUMBER));
+		headerInfoTempModel.setApplicant_department(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_DEPARTMENT));
+		headerInfoTempModel.setApplicant_name(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_NAME));
+		headerInfoTempModel.setApplicant_post(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_APPLICANT_POST));
+		headerInfoTempModel.setCounter_party(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_COUNTER_PARTY));
 		headerInfoTempModel.setCurrency(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_CURRENCY));
-		headerInfoTempModel
-				.setTotal_amount(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_TOTAL_AMOUNT));
-		headerInfoTempModel.setAgreement_status(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_STATUS));
-		headerInfoTempModel
-				.setTotal_duration(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_TOTAL_DURATION));
-		headerInfoTempModel
-				.setAuto_extension(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AUTO_EXTENSION));
-		headerInfoTempModel
-				.setPo_required(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PO_REQUIRED));
-		headerInfoTempModel
-				.setAgreement_title(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_TITLE));
-		headerInfoTempModel
-				.setEffective_from(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EFFECTIVE_FROM));
-		headerInfoTempModel
-				.setEffective_to(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EFFECTIVE_TO));
-		headerInfoTempModel.setCompany_relation(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_COMPANY_RELATION));
-		headerInfoTempModel.setEstimated_delivery_from(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ESTIMATED_DELIVERY_FROM));
-		headerInfoTempModel.setEstimated_delivery_to(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ESTIMATED_DELIVERY_TO));
-		headerInfoTempModel.setAgreement_summary(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_SUMMARY));
-		headerInfoTempModel.setPurchase_category(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PURCHASE_CATEGORY));
-		headerInfoTempModel.setStart_using_date(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_START_USING_DATE));
-		headerInfoTempModel
-				.setDeprec_month(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DEPREC_MONTH));
-		
+		headerInfoTempModel.setTotal_amount(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_TOTAL_AMOUNT));
+		headerInfoTempModel.setAgreement_status(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_STATUS));
+		headerInfoTempModel.setTotal_duration(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_TOTAL_DURATION));
+		headerInfoTempModel.setAuto_extension(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AUTO_EXTENSION));
+		headerInfoTempModel.setPo_required(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PO_REQUIRED));
+		headerInfoTempModel.setAgreement_title(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_TITLE));
+		headerInfoTempModel.setEffective_from(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EFFECTIVE_FROM));
+		headerInfoTempModel.setEffective_to(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EFFECTIVE_TO));
+		headerInfoTempModel.setCompany_relation(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_COMPANY_RELATION));
+		headerInfoTempModel.setEstimated_delivery_from(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ESTIMATED_DELIVERY_FROM));
+		headerInfoTempModel.setEstimated_delivery_to(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ESTIMATED_DELIVERY_TO));
+		headerInfoTempModel.setAgreement_summary(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_SUMMARY));
+		headerInfoTempModel.setPurchase_category(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PURCHASE_CATEGORY));
+		headerInfoTempModel.setStart_using_date(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_START_USING_DATE));
+		headerInfoTempModel.setDeprec_month(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DEPREC_MONTH));
+
 		String multiData = getUserParameterValue(userParameter, AgreementFormConstants.FIELD_MULTIDATA);
 		headerInfoTempModel.setMultidata(multiData);
 
 		if (multiData.contains("pl")) {
-			headerInfoTempModel.setBudget_pl_impact(
-					getUserParameterValue(userParameter, AgreementFormConstants.FIELD_BUDGET_PL_IMPACT));
-			headerInfoTempModel
-					.setBudget_pl_month(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_BUDGET_PL_MONTH));
+			headerInfoTempModel.setBudget_pl_impact(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_BUDGET_PL_IMPACT));
+			headerInfoTempModel.setBudget_pl_month(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_BUDGET_PL_MONTH));
 			headerInfoTempModel.setPl_impact(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PL_IMPACT));
 			headerInfoTempModel.setPl_month(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PL_MONTH));
 		} else {
@@ -174,50 +145,35 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		}
 
 		if (multiData.contains("asset")) {
-			headerInfoTempModel
-					.setAsset_number(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ASSET_NUMBER));
-			headerInfoTempModel
-					.setBook_value(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_BOOK_VALUE));
+			headerInfoTempModel.setAsset_number(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ASSET_NUMBER));
+			headerInfoTempModel.setBook_value(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_BOOK_VALUE));
 		} else {
 			headerInfoTempModel.setAsset_number("");
 			headerInfoTempModel.setBook_value("");
 		}
 
 		if (multiData.contains("estimated")) {
-			headerInfoTempModel.setTotal_payment_amount(
-					getUserParameterValue(userParameter, AgreementFormConstants.FIELD_TOTAL_PAYMENT_AMOUNT));
+			headerInfoTempModel.setTotal_payment_amount(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_TOTAL_PAYMENT_AMOUNT));
 		} else {
 			headerInfoTempModel.setTotal_payment_amount("");
 		}
-		headerInfoTempModel.setAgreement_classification(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_CLASSIFICATION));
-		headerInfoTempModel.setPd_sub_condition(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PD_SUB_CONDITION));
-		headerInfoTempModel
-				.setEc_approval(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EC_APPROVAL));
-		headerInfoTempModel.setEc_sub_condition(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EC_SUB_CONDITION));
+		headerInfoTempModel.setAgreement_classification(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AGREEMENT_CLASSIFICATION));
+		headerInfoTempModel.setPd_sub_condition(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PD_SUB_CONDITION));
+		headerInfoTempModel.setEc_approval(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EC_APPROVAL));
+		headerInfoTempModel.setEc_sub_condition(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_EC_SUB_CONDITION));
 		headerInfoTempModel.setPsd_area(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PSD_AREA));
-		headerInfoTempModel
-				.setPsd_process(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PSD_PROCESS));
-		headerInfoTempModel
-				.setDic_reason(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DIC_REASON));
-		headerInfoTempModel
-				.setDd_process(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DD_PROCESS));
-		headerInfoTempModel
-				.setAnti_bribery(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ANTI_BRIBERY));
-		headerInfoTempModel
-				.setAudit_rights(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AUDIT_RIGHTS));
-		headerInfoTempModel.setLegal_agreement_number(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_LEGAL_AGREEMENT_NUMBER));
-		headerInfoTempModel.setLegal_agreement_date(
-				getUserParameterValue(userParameter, AgreementFormConstants.FIELD_LEGAL_AGREEMENT_DATE));
+		headerInfoTempModel.setPsd_process(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PSD_PROCESS));
+		headerInfoTempModel.setDic_reason(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DIC_REASON));
+		headerInfoTempModel.setDd_process(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DD_PROCESS));
+		headerInfoTempModel.setAnti_bribery(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ANTI_BRIBERY));
+		headerInfoTempModel.setAudit_rights(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AUDIT_RIGHTS));
+		headerInfoTempModel.setLegal_agreement_number(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_LEGAL_AGREEMENT_NUMBER));
+		headerInfoTempModel.setLegal_agreement_date(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_LEGAL_AGREEMENT_DATE));
 
 		return headerInfoTempModel;
 	}
 
-	private List<AgreementAttachmentModel> extractAttachmentModels(ActionProcessParameter parameter,
-			Map<String, Object> userParameter) {
+	private List<AgreementAttachmentModel> extractAttachmentModels(ActionProcessParameter parameter, Map<String, Object> userParameter) {
 		List<AgreementAttachmentModel> result = new ArrayList<AgreementAttachmentModel>();
 
 		try {
@@ -256,8 +212,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		return result;
 	}
 
-	private List<AgreementPaymentDetailModel> extractPaymentDetailModels(ActionProcessParameter parameter,
-			Map<String, Object> userParameter) {
+	private List<AgreementPaymentDetailModel> extractPaymentDetailModels(ActionProcessParameter parameter, Map<String, Object> userParameter) {
 		List<AgreementPaymentDetailModel> result = new ArrayList<AgreementPaymentDetailModel>();
 
 		if (userParameter == null) {
@@ -271,11 +226,10 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		}
 
 		int rowNo = 1;
-		while (userParameter.containsKey("f_brand_" + rowNo)
-				|| userParameter.containsKey("f_payment_amount_" + rowNo)) {
+		while (userParameter.containsKey("f_brand_" + rowNo) || userParameter.containsKey("f_payment_amount_" + rowNo)) {
 
 			AgreementPaymentDetailModel paymentDetailModel = new AgreementPaymentDetailModel();
-		
+
 			paymentDetailModel.setSystem_matter_id(parameter.getSystemMatterId());
 			paymentDetailModel.setUser_data_id(parameter.getUserDataId());
 			paymentDetailModel.setRow_no(String.valueOf(rowNo));
@@ -307,14 +261,12 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 	}
 
 	@Override
-	public String applyFromTempSave(ActionProcessParameter parameter, Map<String, Object> userParameter)
-			throws Exception {
+	public String applyFromTempSave(ActionProcessParameter parameter, Map<String, Object> userParameter) throws Exception {
 		return null;
 	}
 
 	@Override
-	public String applyFromUnapply(ActionProcessParameter parameter, Map<String, Object> userParameter)
-			throws Exception {
+	public String applyFromUnapply(ActionProcessParameter parameter, Map<String, Object> userParameter) throws Exception {
 		return null;
 	}
 
@@ -323,20 +275,27 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		try {
 			AgreementHeaderInfoTempRepository headerInfoTempDb = new AgreementHeaderInfoTempRepository();
 
-			Collection<AgreementHeaderInfoTempModel> headerInfoTempModel = headerInfoTempDb.selectHeaderInfoTemp(
-					parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+			Collection<AgreementHeaderInfoModel> headerInfoTempModel = headerInfoTempDb.selectHeaderInfoTemp(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 
 			if (headerInfoTempModel != null && !headerInfoTempModel.isEmpty()) {
-				AgreementHeaderInfoTempModel model = headerInfoTempModel.iterator().next();
+				AgreementHeaderInfoModel model = headerInfoTempModel.iterator().next();
 
-				if (userParameter.get("f_psd_area") != null) model.setPsd_area(getUserParameterValue(userParameter, "f_psd_area"));
-				if (userParameter.get("f_psd_process") != null) model.setPsd_process(getUserParameterValue(userParameter, "f_psd_process"));
-				if (userParameter.get("f_dic_reason") != null) model.setDic_reason(getUserParameterValue(userParameter, "f_dic_reason"));
-				if (userParameter.get("f_dd_process") != null) model.setDd_process(getUserParameterValue(userParameter, "f_dd_process"));
-				if (userParameter.get("f_anti_bribery") != null) model.setAnti_bribery(getUserParameterValue(userParameter, "f_anti_bribery"));
-				if (userParameter.get("f_audit_rights") != null) model.setAudit_rights(getUserParameterValue(userParameter, "f_audit_rights"));
-				if (userParameter.get("f_legal_agreement_number") != null) model.setLegal_agreement_number(getUserParameterValue(userParameter, "f_legal_agreement_number"));
-				if (userParameter.get("f_legal_agreement_date") != null) model.setLegal_agreement_date(getUserParameterValue(userParameter, "f_legal_agreement_date"));
+				if (userParameter.get("f_psd_area") != null)
+					model.setPsd_area(getUserParameterValue(userParameter, "f_psd_area"));
+				if (userParameter.get("f_psd_process") != null)
+					model.setPsd_process(getUserParameterValue(userParameter, "f_psd_process"));
+				if (userParameter.get("f_dic_reason") != null)
+					model.setDic_reason(getUserParameterValue(userParameter, "f_dic_reason"));
+				if (userParameter.get("f_dd_process") != null)
+					model.setDd_process(getUserParameterValue(userParameter, "f_dd_process"));
+				if (userParameter.get("f_anti_bribery") != null)
+					model.setAnti_bribery(getUserParameterValue(userParameter, "f_anti_bribery"));
+				if (userParameter.get("f_audit_rights") != null)
+					model.setAudit_rights(getUserParameterValue(userParameter, "f_audit_rights"));
+				if (userParameter.get("f_legal_agreement_number") != null)
+					model.setLegal_agreement_number(getUserParameterValue(userParameter, "f_legal_agreement_number"));
+				if (userParameter.get("f_legal_agreement_date") != null)
+					model.setLegal_agreement_date(getUserParameterValue(userParameter, "f_legal_agreement_date"));
 
 				headerInfoTempDb.updateHeaderInfoTemp(model);
 			}
@@ -375,37 +334,35 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 	public String reapply(ActionProcessParameter parameter, Map<String, Object> userParameter) throws Exception {
 		try {
 			AgreementWorkflowService service = new AgreementWorkflowService();
-			
-			AgreementHeaderInfoTempRepository agreementHeaderInfoTempDb = new AgreementHeaderInfoTempRepository();
-			AgreementPaymentDetailRepository agreementPaymentDetailDb = new AgreementPaymentDetailRepository();
-			AgreementAttachFileRepository agreementAttachDb = new AgreementAttachFileRepository();
 
-			AgreementHeaderInfoTempModel headerInfoTempModel = extractHeaderInfoTempModel(parameter, userParameter);
+			AgreementHeaderInfoTempRepository agreementHeaderInfoTempDb = new AgreementHeaderInfoTempRepository();
+			AgreementPaymentDetailTempRepository agreementPaymentDetailTempDb = new AgreementPaymentDetailTempRepository();
+			AgreementAttachFileTempRepository agreementAttachTempDb = new AgreementAttachFileTempRepository();
+
+			AgreementHeaderInfoModel headerInfoTempModel = extractHeaderInfoTempModel(parameter, userParameter);
 			List<AgreementPaymentDetailModel> paymentDetailList = extractPaymentDetailModels(parameter, userParameter);
 			List<AgreementAttachmentModel> attachmentList = extractAttachmentModels(parameter, userParameter);
-			System.out.println(attachmentList.size());
 
 			agreementHeaderInfoTempDb.deleteHeaderInfoTemp(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
-			agreementPaymentDetailDb.deleteTempPaymentDetail(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);	
-			agreementAttachDb.deleteTempAttachment(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+			agreementPaymentDetailTempDb.deletePaymentDetailTemp(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+			agreementAttachTempDb.deleteAttachmentTemp(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 
 			agreementHeaderInfoTempDb.insertHeaderInfoTemp(headerInfoTempModel);
-			
-			if(headerInfoTempModel.getMultidata().contains("estimated")) {
-				for(int i=0; i<paymentDetailList.size(); i++) {
-				agreementPaymentDetailDb.insertTempPaymentDetail(paymentDetailList.get(i));
+
+			if (headerInfoTempModel.getMultidata().contains("estimated")) {
+				for (int i = 0; i < paymentDetailList.size(); i++) {
+					agreementPaymentDetailTempDb.insertPaymentDetailTemp(paymentDetailList.get(i));
 				}
 			}
 
 			for (int i = 0; i < attachmentList.size(); i++) {
-				agreementAttachDb.insertTempAttachment(attachmentList.get(i));
+				agreementAttachTempDb.insertAttachmentTemp(attachmentList.get(i));
 				service.transferAttachmentFile(parameter.getSystemMatterId(), attachmentList.get(i).getFile_real_name());
 			}
 
 			updateMatterProperty(parameter.getUserDataId(), "practice5_bintang_po", headerInfoTempModel.getPo_required());
 			updateMatterProperty(parameter.getUserDataId(), "practice5_bintang_ac", headerInfoTempModel.getAgreement_classification());
 			updateMatterProperty(parameter.getUserDataId(), "practice5_bintang_ec", headerInfoTempModel.getEc_approval());
-
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -431,8 +388,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 	}
 
 	@Override
-	public void sendBackToPullBack(ActionProcessParameter parameter, Map<String, Object> userParameter)
-			throws Exception {
+	public void sendBackToPullBack(ActionProcessParameter parameter, Map<String, Object> userParameter) throws Exception {
 
 	}
 
@@ -451,8 +407,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 
 	}
 
-	private final void createMatterProperty(final String userDataId, final String matterPropertyKey,
-			final String matterPropertyValue) throws WorkflowException {
+	private final void createMatterProperty(final String userDataId, final String matterPropertyKey, final String matterPropertyValue) throws WorkflowException {
 
 		final UserMatterPropertyModel matterPropertyModel = new UserMatterPropertyModel();
 		matterPropertyModel.setUserDataId(userDataId);
@@ -466,8 +421,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		property.createMatterProperty(matterProperty);
 	}
 
-	private final void updateMatterProperty(final String userDataId, final String matterPropertyKey,
-			final String matterPropertyValue) throws WorkflowException {
+	private final void updateMatterProperty(final String userDataId, final String matterPropertyKey, final String matterPropertyValue) throws WorkflowException {
 
 		final UserMatterPropertyModel matterPropertyModel = new UserMatterPropertyModel();
 		matterPropertyModel.setUserDataId(userDataId);
@@ -482,8 +436,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 	}
 
 	@SuppressWarnings("unused")
-	private final void deleteMatterProperty(final String userDataId, final String matterPropertyKey)
-			throws WorkflowException {
+	private final void deleteMatterProperty(final String userDataId, final String matterPropertyKey) throws WorkflowException {
 
 		final UserMatterPropertyModel matterPropertyModel = new UserMatterPropertyModel();
 		matterPropertyModel.setUserDataId(userDataId);
@@ -508,7 +461,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 		}
 	}
 
-		private String getListElementSafely(List<String> list, int index) {
+	private String getListElementSafely(List<String> list, int index) {
 		try {
 			return list.get(index);
 		} catch (Exception e) {
@@ -518,14 +471,18 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 
 	private String getUserParameterValue(final Map<String, Object> userParameter, String key) {
 		// Check userParameter
-	    if (userParameter == null) { return ""; }
-	    
-	    // Check if the data Exists
-	    Object rawValue = userParameter.get(key);
-	    if (rawValue == null) { return ""; }
-	    
-	    String resultString = rawValue.toString();
-	    return resultString;
+		if (userParameter == null) {
+			return "";
+		}
+
+		// Check if the data Exists
+		Object rawValue = userParameter.get(key);
+		if (rawValue == null) {
+			return "";
+		}
+
+		String resultString = rawValue.toString();
+		return resultString;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -540,18 +497,18 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 	}
 
 	private boolean isValidFileEntity(AgreementAttachmentModel entity) {
-        String name = entity.getFile_name();
-        String realName = entity.getFile_real_name();
-        
-        // Check if the name empty
-        if (name == null || name.isEmpty() || "-".equals(name)) {
-            return false;
-        }
-        if (realName == null || realName.isEmpty() || "-".equals(realName)) {
-            return false;
-        }
-        
-        return true;
-    }
+		String name = entity.getFile_name();
+		String realName = entity.getFile_real_name();
+
+		// Check if the name empty
+		if (name == null || name.isEmpty() || "-".equals(name)) {
+			return false;
+		}
+		if (realName == null || realName.isEmpty() || "-".equals(realName)) {
+			return false;
+		}
+
+		return true;
+	}
 
 }
