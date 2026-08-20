@@ -1,0 +1,31 @@
+# Compiled class files & build outputs
+target/
+bin/
+*.class
+
+# # Eclipse / intra-mart e Builder project settings (machine-specific files)
+# .metadata/
+# .settings/
+# .loadpath
+# .recommenders/
+# .externalToolBuilders/
+
+# Temporary and log files
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE specific files
+.idea/
+*.iml
+.vscode/
+
+# Markdown documentation files
+*.md

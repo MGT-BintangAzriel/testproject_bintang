@@ -1,0 +1,122 @@
+.imui-form {
+	width: 100%;
+	table-layout: fixed;
+}
+
+#payment_detail_table td, #payment_detail_table th {
+	vertical-align: middle !important;
+}
+
+.imui-form th.th-main {
+	width: 170px;
+}
+
+.imui-form th.th-sub {
+	width: 70px;
+}
+
+.form-input-text, .form-select-currency, .form-input-textarea {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+/* Calendar Inputs - leave room for calendar icon
+input.imuiCalendar {
+	width: calc(100% - 30px) !important;
+	display: inline-block;
+} */
+.form-input-text {
+	height: 24px;
+}
+
+.form-select-currency {
+	height: 26px;
+}
+
+.sub-options {
+	margin-left: 20px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: #333;
+}
+
+.sub-option-note {
+	margin-left: 24px;
+	color: #555;
+	display: block;
+}
+
+.radio-item-gap {
+	margin-right: 20px;
+}
+
+.radio-item-sub-gap {
+	margin-right: 15px;
+}
+
+.mt-4 {
+	margin-top: 4px;
+}
+
+.mt-6 {
+	margin-top: 6px;
+}
+
+.legal-consult-note {
+	background-color: #ffff00;
+	font-style: italic;
+	font-weight: bold;
+	margin-top: 4px;
+	margin-left: 24px;
+	display: inline-block;
+	padding: 2px 6px;
+}
+
+.form-input-textarea {
+	height: 100px;
+	resize: vertical;
+}
+
+label.error:not(:empty) {
+	color: #d61657 !important;
+	display: flex !important;
+	align-items: center;
+	vertical-align: middle;
+	margin-top: 5px !important;
+	clear: both;
+}
+
+label.error:not(:empty)::before {
+	content: "" !important;
+	display: inline-block;
+	vertical-align: middle;
+	margin-top: 0px;
+	margin-right: 5px;
+	background: transparent url(../../ui/images/d.png) no-repeat -74px -162px !important;
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+}
+
+label.error:empty {
+	display: none !important;
+}
+
+.select2-container .select2-selection.imui-validation-error {
+	border: 1px solid #d61657 !important;
+}
+
+#payment_detail_table td {
+	vertical-align: top;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered
+	{
+	line-height: 24px;
+	min-height: 24px;
+}
+
+.input_text_100 {
+	width: 96% !important;
+	box-sizing: border-box;
+}

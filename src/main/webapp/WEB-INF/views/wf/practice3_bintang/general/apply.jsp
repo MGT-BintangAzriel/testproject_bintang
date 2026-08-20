@@ -1,0 +1,238 @@
+
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="imui" uri="http://www.intra-mart.co.jp/taglib/imui"%>
+<%@ taglib prefix="imart" uri="http://www.intra-mart.co.jp/taglib/core/standard"%>
+<%@ taglib prefix="workflow" uri="http://www.intra-mart.co.jp/taglib/imw/workflow"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="f" uri="http://terasoluna.org/functions"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
+<%@ taglib prefix="im" uri="http://www.intra-mart.co.jp/taglib/im-tenant"%>
+
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
+
+<imui:head>
+	<title>経費精算申請</title>
+	<workflow:workflowOpenPageCsjs />
+
+	<link href="ui/css/select2.min.css" rel="stylesheet" />
+	<script src="ui/js/select2.min.js" type="text/javascript"></script>
+	<script src="ui/js/jquery.validate.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+    function callbackSuccess(e, data) {
+      var file = data.files[0];
+      var fileName = file.name;
+      var fileSize = file.size;
+      var fileType = file.type;
+
+      //受信した情報
+      var receiveFile = data.result[0];
+      var receiveFileName = receiveFile.name;
+      var receivePhysicalFileName = receiveFile.physicalName;
+      var receiveFileSize = receiveFile.size;
+
+      var fileExtension = receiveFileName.split('.').pop().toLowerCase();
+
+      $(".file_attachment")
+          .prepend(
+              "<div class='" + receivePhysicalFileName + "'>"
+                  + "<input type='hidden' id='f_upload_file_id' name='f_upload_file_id'>"
+                  + "<input type='hidden' value='" + receiveFileName + "' id='f_upload_file_name' name='f_upload_file_name'>"
+                  + "<input type='hidden' value='" + receivePhysicalFileName + "' id='f_upload_file_real_name' name='f_upload_file_real_name'>"
+                  + "<input type='hidden' value='" + fileExtension + "' id='f_upload_file_type' name='f_upload_file_type'>"
+                  + "</div>");
+    }
+
+    function callbackRemove(e, data) {
+      var file = data.response[0];
+      var fileName = file.name;
+      $("." + fileName).remove();
+    }
+
+    function callbackError(e, data) {
+      var file = data.files[0];
+      var fileName = file.name;
+      var fileSize = file.size;
+      var fileType = file.type;
+
+    }
+
+    $(function() {
+      var rules = {
+        f_expense_content : {
+          required : true
+        },
+        f_price : {
+          required : true
+        },
+        f_reason : {
+          required : true
+        },
+      };
+
+      var messages = {
+        f_expense_content : {
+          required : "申請内容を入力してください。"
+        },
+        f_price : {
+          required : "金額を入力してください。"
+        },
+        f_reason : {
+          required : "理由を入力してください。"
+        },
+      };
+
+      $('#openPage').click(function() {
+        var attachmentCount = $('input[name="f_upload_file_real_name"]').length;
+        if (attachmentCount == 0) {
+          imuiShowErrorMessage('領収書をアップロードしてください。', [], true, 2500, false);
+          return;
+        }
+
+        var valid = imuiValidate('#workflowOpenPageForm', rules, messages);
+
+        if (valid) {
+          workflowOpenPage('${f:h(ApplyForm.imwPageType)}');
+        } else {
+          imuiShowErrorMessage('インプットのエラーが発生しました。', [], true, 2500, false);
+          return;
+        }
+
+      });
+    });
+  </script>
+
+	<!-- CSS Scripts -->
+	<style type="text/css">
+</style>
+</imui:head>
+
+<workflow:workflowUserContentsAuth imwApplyBaseDate='${f:h(ApplyForm.imwApplyBaseDate)}' imwAuthUserCode='${f:h(ApplyForm.imwAuthUserCode)}'
+	imwFlowId='${f:h(ApplyForm.imwFlowId)}' imwNodeId='${f:h(ApplyForm.imwNodeId)}' imwPageType='${f:h(ApplyForm.imwPageType)}'
+	imwSystemMatterId='${f:h(ApplyForm.imwSystemMatterId)}' imwUserDataId='${f:h(ApplyForm.imwUserDataId)}' />
+
+
+<div class="imui-title-small-window">
+	<h1>ワークフロー</h1>
+</div>
+<div class="imui-toolbar-wrap">
+	<div class="imui-toolbar-inner">
+		<ul class="imui-list-toolbar">
+			<li><a href="javascript:void(0);" id="back"> <span class="im-ui-icon-common-16-back"></span>
+			</a></li>
+		</ul>
+	</div>
+</div>
+
+<imui:tabs selected="0">
+	<imui:tabItem title="ワークフロー">
+		<div class="imui-form-container">
+			<workflow:workflowOpenPage name="workflowOpenPageForm" id="workflowOpenPageForm" method="POST" target="_top"
+				imwUserDataId="${f:h(ApplyForm.imwUserDataId)}" imwSystemMatterId="${f:h(ApplyForm.imwSystemMatterId)}"
+				imwAuthUserCode="${f:h(ApplyForm.imwAuthUserCode)}" imwApplyBaseDate="${f:h(ApplyForm.imwApplyBaseDate)}" imwNodeId="${f:h(ApplyForm.imwNodeId)}"
+				imwFlowId="${f:h(ApplyForm.imwFlowId)}" imwCallOriginalParams="${f:h(ApplyForm.imwCallOriginalParams)}"
+				imwNextScriptPath="${f:h(ApplyForm.imwCallOriginalPagePath)}">
+
+				<input type="hidden" id="jsonVendor" value="${f:h(jsonVendor)}">
+
+				<header class="imui-chapter-title">
+					<h2>経費精算申請フォーム</h2>
+				</header>
+
+				<table class="imui-form tab_header">
+					<tbody>
+						<tr>
+							<th width="250">
+								<label class="imui-required" style="margin-left: 20px">申請内容</label>
+							</th>
+							<td>
+								<input type="text" value="${FormClassRows.getF_expense_content()}" id="f_expense_content" name="f_expense_content" style="height: 20px"
+									size="50">
+							</td>
+						</tr>
+
+						<tr>
+							<th>
+								<label class="imui-required" style="margin-left: 20px">金額</label>
+							</th>
+							<td>
+								<div class="">
+									<input type="number" value="${FormClassRows.getF_price()}" id="f_price" name="f_price" min="0">
+								</div>
+							</td>
+
+						</tr>
+
+						<tr>
+							<th width="250">
+								<label class="imui-required" style="margin-left: 20px">理由</label>
+							</th>
+							<td>
+								<div class="form-group">
+									<textarea rows="3" cols="40" name="f_reason" id="f_reason" class="" style="margin-left: 5px;">${FormClassRows.getF_reason()}</textarea>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<!-- Hidden Input Attachment -->
+				<div class="file_attachment">
+					<c:forEach items="${FormClassRows.d_list_attachment}" var="attachment">
+						<div class="${attachment.file_real_name}">
+							<input type='hidden' value='${attachment.id}' id='f_upload_file_id' name='f_upload_file_id'> <input type='hidden'
+								value="${attachment.file_name}" id='f_upload_file_name' name='f_upload_file_name'> <input type='hidden'
+								value="${attachment.file_real_name}" id='f_upload_file_real_name' name='f_upload_file_real_name'> <input type='hidden'
+								value="${attachment.file_type}" id="f_upload_file_type" name="f_upload_file_type">
+						</div>
+					</c:forEach>
+				</div>
+
+			</workflow:workflowOpenPage>
+
+			<div class="imui-form-container-full">
+				<header class="imui-chapter-title">
+
+					<h2>添付</h2>
+
+				</header>
+				<table class="imui-form">
+					<tbody>
+						<tr>
+							<th width="250">
+								<label style="font-weight: Bold" class="imui-required">領収書アップロード</label>
+							</th>
+							<td>
+								<imui:fileUpload enableDelete="true" uniqueFileName="true" storeTo="file_attachment/" onSuccess="callbackSuccess" onError="callbackError"
+									onRemove="callbackRemove" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+
+	</imui:tabItem>
+</imui:tabs>
+
+
+
+<!-- Button Default -->
+<div class="imui-operation-parts">
+	<imart:decision case="0" value="${f:h(ApplyForm.imwPageType)}">
+		<input type="button" value='申請' id="openPage" name="openPage" class="imui-large-button" escapeXml="true" escapeJs="false" />
+	</imart:decision>
+	<imart:decision case="3" value="${f:h(ApplyForm.imwPageType)}">
+		<input type="button" value='再申請' id="openPage" name="openPage" class="imui-large-button" escapeXml="true" escapeJs="false" />
+	</imart:decision>
+
+</div>
+
+<form name="backForm" id="backForm" method="POST" action="${f:h(ApplyForm.imwCallOriginalPagePath)}">
+	<input type="hidden" name=imwCallOriginalParams value="${f:h(ApplyForm.imwCallOriginalParams)}" />
+</form>

@@ -1,0 +1,174 @@
+package wf.practice4_bintang.general.domain.repository;
+
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.naming.NamingException;
+
+import jp.co.intra_mart.foundation.database.ColumnValues;
+import jp.co.intra_mart.foundation.database.SQLManager;
+import jp.co.intra_mart.foundation.database.SearchCondition;
+import jp.co.intra_mart.foundation.exception.BizApiException;
+import jp.co.intra_mart.foundation.security.exception.AccessSecurityException;
+
+import wf.common.constant.WorkflowCommonConstants;
+import wf.practice4_bintang.general.domain.model.PcHeaderModel;
+
+/**
+ * PC購入申請のヘッダー情報をDBに登録・取得・更新するリポジトリクラス。
+ *
+ * @author MGT-BintangAzriel
+ * @version 1.0.0
+ */
+public class PcHeaderRepository {
+
+	// 処理対象テーブル名
+	private String tableName = "wf_pc_header";
+
+	// テーブル全件取得クエリ
+	private String selectDataAll = "SELECT * FROM " + tableName;
+
+	// システム案件IDによる取得クエリ
+	private String selectDataBy_MatterId = "SELECT * FROM " + tableName + " WHERE system_matter_id = ?";
+
+	// 案件が終了かつメールステータスが未送信のデータの取得クエリ
+	private String selectDataMail = "SELECT * FROM " + tableName + " WHERE status = '2' and mail_status = '1'";
+
+	/**
+	 * 経費申請のヘッダー情報をDBに登録するメソッド。
+	 *
+	 * @param varDataHeaderData 登録対象のヘッダー情報モデル
+	 * @throws Exception 登録処理中に例外が発生した場合
+	 */
+	public void insertDataHeader(PcHeaderModel varDataHeaderData) throws Exception {
+		try {
+			SQLManager sqlManager = new SQLManager();
+
+			new ColumnValues();
+
+			// 登録用データをカラム値に設定する
+			ColumnValues columnVal = this.setDataHeaderValue(varDataHeaderData,
+					WorkflowCommonConstants.CONDITION_CREATE);
+
+			// DBへの登録処理を実行する
+			sqlManager.insert(tableName, columnVal);
+
+		} catch (AccessSecurityException | IllegalArgumentException | NamingException var4) {
+			var4.printStackTrace();
+			throw new Exception("DB Error in InsertDataHeader");
+		}
+
+	}
+
+	/**
+	 * データをカラム値に設定するメソッド。
+	 * 実行条件（新規登録または更新）に応じてColumnValuesを構築する。
+	 *
+	 * @param varDataHeaderData ヘッダー情報モデル
+	 * @param Condition         実行条件（"create" または "update"）
+	 * @return カラム値が設定されたColumnValuesオブジェクト
+	 */
+	private ColumnValues setDataHeaderValue(PcHeaderModel varDataHeaderData, String Condition) {
+		ColumnValues result = new ColumnValues();
+
+		LocalDateTime now = LocalDateTime.now();
+		Timestamp timestamp = Timestamp.valueOf(now);
+
+		// 新規登録データのマッピング
+		if (Condition.equals(WorkflowCommonConstants.CONDITION_CREATE)) {
+			result.add(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, varDataHeaderData.getSystem_matter_id());
+			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, varDataHeaderData.getUser_data_id());
+			result.add(WorkflowCommonConstants.COLUMN_STATUS, varDataHeaderData.getStatus());
+			result.add(WorkflowCommonConstants.COLUMN_MAIL_STATUS, varDataHeaderData.getMail_status());
+			result.add(WorkflowCommonConstants.COLUMN_CREATED_AT, timestamp);
+			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
+
+			// 更新データのマッピング
+		} else if (Condition.equals(WorkflowCommonConstants.CONDITION_UPDATE)) {
+			result.add(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, varDataHeaderData.getSystem_matter_id());
+			result.add(WorkflowCommonConstants.COLUMN_USER_DATA_ID, varDataHeaderData.getUser_data_id());
+			result.add(WorkflowCommonConstants.COLUMN_STATUS, varDataHeaderData.getStatus());
+			result.add(WorkflowCommonConstants.COLUMN_MAIL_STATUS, varDataHeaderData.getMail_status());
+			result.add(WorkflowCommonConstants.COLUMN_UPDATED_AT, timestamp);
+		}
+
+		return result;
+	}
+
+	/**
+	 * DBから経費申請のヘッダー情報を取得するメソッド。
+	 *
+	 * @param select_value 検索キーに対応する値
+	 * @param select_where 検索キー名（例: "system_matter_id"）
+	 * @return 取得したヘッダー情報モデルのコレクション
+	 * @throws Exception 取得処理中に例外が発生した場合
+	 */
+	public Collection<PcHeaderModel> selectDataHeader(String select_value, String select_where) throws Exception {
+		try {
+			SQLManager sqlManager = new SQLManager();
+			Collection<Object> parameters = new ArrayList<>();
+
+			String select_query = "";
+
+			// システム案件IDで取得する場合のクエリ設定
+			if (select_where.equals(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID)) {
+				select_query = this.selectDataBy_MatterId;
+				parameters.add(select_value);
+
+				// メールステータスで取得する場合のクエリ設定
+			} else if (select_where.equals("mail")) {
+				select_query = this.selectDataMail;
+
+				// 全件取得する場合のクエリ設定
+			} else {
+				select_query = this.selectDataAll;
+			}
+
+			// DBから経費申請のヘッダー情報を取得する
+			Collection<PcHeaderModel> result = sqlManager.select(PcHeaderModel.class, select_query,
+					parameters);
+			return result;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error in selectDataHeader", e);
+		}
+	}
+
+	/**
+	 * DBの経費申請のヘッダー情報を更新するメソッド。
+	 *
+	 * @param varDataHeaderData 更新対象のヘッダー情報モデル
+	 * @throws Exception 更新処理中に例外が発生した場合
+	 */
+	public void updateDataHeader(PcHeaderModel varDataHeaderData) throws Exception {
+		try {
+			SQLManager sqlManager = new SQLManager();
+
+			new ColumnValues();
+
+			// 更新条件を設定する
+			SearchCondition searchCondition = new SearchCondition();
+			searchCondition.addCondition(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID,
+					varDataHeaderData.getSystem_matter_id());
+
+			// 更新用データをカラム値に設定する
+			ColumnValues columnVal = this.setDataHeaderValue(varDataHeaderData,
+					WorkflowCommonConstants.CONDITION_UPDATE);
+
+			// DBへの更新処理を実行する
+			sqlManager.update(tableName, columnVal, searchCondition);
+
+		} catch (AccessSecurityException | IllegalArgumentException | NamingException | BizApiException
+				| SQLException var6) {
+			var6.printStackTrace();
+			throw new Exception("DB Error in UpdateHeader");
+
+		}
+
+	}
+
+}

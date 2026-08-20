@@ -1,0 +1,8 @@
+/**
+ * 
+ */
+/**
+ * @author MgtGuest
+ *
+ */
+package wf.practice3_bintang.general.domain.job;
