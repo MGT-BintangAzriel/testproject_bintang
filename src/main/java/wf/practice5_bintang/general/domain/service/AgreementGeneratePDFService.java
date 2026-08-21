@@ -9,7 +9,6 @@ import io.woo.htmltopdf.HtmlToPdf;
 import io.woo.htmltopdf.HtmlToPdfObject;
 
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
-import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 import jp.co.intra_mart.foundation.workflow.application.history.MatterHistory;
 import jp.co.intra_mart.foundation.workflow.application.model.MatterHistoryResultModel;
 
@@ -168,14 +167,6 @@ public class AgreementGeneratePDFService {
 		try {
 			AgreementHeaderInfoRepository agreementHeaderInfoDb = new AgreementHeaderInfoRepository();
 			AgreementHeaderInfoModel model = agreementHeaderInfoDb.selectHeaderInfo(systemMatterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
-
-			String matterNumber = "";
-			try {
-				CplMatter cplMatter = new CplMatter(systemMatterId);
-				matterNumber = cplMatter.getMatter().getMatterNumber();
-			} catch (Exception cplEx) {
-				cplEx.printStackTrace();
-			}
 
 			StringBuilder html = new StringBuilder();
 			html.append("<!DOCTYPE html>")
@@ -382,9 +373,10 @@ public class AgreementGeneratePDFService {
 					throw new Exception("Error creating directory for PDF generation", e);
 				}
 
-				PublicStorage pdfFilePath = new PublicStorage("generate_pdf/" + matterNumber + ".pdf");
+				String applicationNumber = model.getApplication_number();
+				PublicStorage pdfFilePath = new PublicStorage("generate_pdf/" + applicationNumber + ".pdf");
 				pdfFilePath.save(IOUtils.toByteArray(successPdf));
-				return matterNumber + ".pdf";
+				return applicationNumber + ".pdf";
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
