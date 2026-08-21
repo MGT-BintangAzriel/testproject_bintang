@@ -33,13 +33,16 @@ import wf.practice4_bintang.general.domain.service.PcWorkflowService;
 public class PcController {
 
     // 画面に渡すモデル名を定数化する
-    private static final String MODEL_KEY_FORM_ROWS = "savedFormData";
-    private static final String MODEL_KEY_APPLY_FORM = "workflowRequestForm";
+//    private static final String MODEL_KEY_FORM_ROWS = "savedFormData";
+//    private static final String MODEL_KEY_APPLY_FORM = "workflowRequestForm";
+    private static final String MODEL_KEY_FORM_ROWS = "FormClassRows";
+    private static final String MODEL_KEY_APPLY_FORM = "ApplyForm";
     private static final String MODEL_KEY_DOWNLOAD_FILE_NAME = "download_file_name";
     private static final String MODEL_KEY_STORAGE = "storage";
 
     // JSPの共通パス
-    private static final String BASE_VIEW_PATH = "wf/personal_info_change/";
+//    private static final String BASE_VIEW_PATH = "wf/personal_info_change/";
+    private static final String BASE_VIEW_PATH = "wf/practice4_bintang/general/";
     // 申請画面のJSPパス
     private static final String VIEW_PATH_APPLY = BASE_VIEW_PATH + "apply.jsp";
     // 承認画面のJSPパス
