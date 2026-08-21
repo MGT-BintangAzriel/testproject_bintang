@@ -15,6 +15,7 @@ import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.SessionScopeStorage;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
+import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 import wf.practice5_bintang.general.app.AgreementForm;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
@@ -349,15 +350,6 @@ public class AgreementWorkflowService {
 			e.printStackTrace();
 		}
 
-		// UserContext userContext = Contexts.get(UserContext.class);
-		// String applicantNumber = userContext.getUserProfile().getUserCd() !=
-		// null ? userContext.getUserProfile().getUserCd() : "1200002";
-		// String applicantName = userContext.getUserProfile().getUserName() !=
-		// null ? userContext.getUserProfile().getUserName() : "Bintang";
-		// String applicantDepartment =
-		// userContext.getCurrentDepartment().getDepartmentName() != null ?
-		// userContext.getCurrentDepartment().getDepartmentName() : "人事部";
-
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		String formattedDate = today.format(formatter);
@@ -486,4 +478,13 @@ public class AgreementWorkflowService {
 		return result;
 	}
 
+	public String getMatterStatus(String systemMatterId) {
+		try {
+			CplMatter cplMatter = new CplMatter(systemMatterId);
+			return cplMatter.getMatter().getStatus();
+		} catch (Exception cplEx) {
+			System.out.print("Matter has not been completed");
+		}
+		return "";
+	}
 }

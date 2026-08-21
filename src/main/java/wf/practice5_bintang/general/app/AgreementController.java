@@ -35,11 +35,7 @@ public class AgreementController {
 	private static final String VIEW_PATH_APPROVE = BASE_VIEW_PATH + "approve.jsp";
 	private static final String VIEW_PATH_DETAIL = BASE_VIEW_PATH + "detail.jsp";
 	private static final String VIEW_PATH_DOWNLOAD = "AgreementDownloadAttachmentService.Downloadview";
-
-	// private AccountContext accountContext =
-	// Contexts.get(AccountContext.class);
-	// private UserContext userContext;
-
+	
 	@RequestMapping(value = "apply")
 	public final String apply(final Model model, final AgreementForm workflowRequestForm) throws Exception {
 
@@ -67,16 +63,6 @@ public class AgreementController {
 	@RequestMapping(value = "approve")
 	public final String approve(final Model model, final AgreementForm workflowRequestForm) throws AccessSecurityException, IOException {
 		try {
-			// System.out.println("=== [DEBUG APPROVE] ===");
-			// System.out.println("imwSystemMatterId : " + (workflowRequestForm
-			// != null ? workflowRequestForm.getImwSystemMatterId() : "null"));
-			// System.out.println("imwUserDataId : " + (workflowRequestForm !=
-			// null ? workflowRequestForm.getImwUserDataId() : "null"));
-			// System.out.println("imwNodeId : " + (workflowRequestForm != null
-			// ? workflowRequestForm.getImwNodeId() : "null"));
-			// System.out.println("imwPageType : " + (workflowRequestForm !=
-			// null ? workflowRequestForm.getImwPageType() : "null"));
-
 			AgreementWorkflowService workflowService = new AgreementWorkflowService();
 			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 
@@ -94,19 +80,11 @@ public class AgreementController {
 	@RequestMapping(value = "detail")
 	public final String detail(final Model model, final AgreementForm workflowRequestForm) throws AccessSecurityException, IOException {
 		try {
-			// System.out.println("=== [DEBUG DETAIL] ===");
-			// System.out.println("imwSystemMatterId : " + (workflowRequestForm
-			// != null ? workflowRequestForm.getImwSystemMatterId() : "null"));
-			// System.out.println("imwUserDataId : " + (workflowRequestForm !=
-			// null ? workflowRequestForm.getImwUserDataId() : "null"));
-			// System.out.println("imwNodeId : " + (workflowRequestForm != null
-			// ? workflowRequestForm.getImwNodeId() : "null"));
-			// System.out.println("imwPageType : " + (workflowRequestForm !=
-			// null ? workflowRequestForm.getImwPageType() : "null"));
-
 			AgreementWorkflowService workflowService = new AgreementWorkflowService();
 			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
-
+			boolean isMatterComplete = MatterEndStatus.MATTER_COMPLETE.getStatus().equals(workflowService.getMatterStatus(workflowRequestForm.getImwSystemMatterId()));
+			
+			model.addAttribute("matterComplete", isMatterComplete);
 			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
 		} catch (Exception e) {

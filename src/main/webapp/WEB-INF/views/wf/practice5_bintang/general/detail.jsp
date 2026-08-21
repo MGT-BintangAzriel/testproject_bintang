@@ -87,6 +87,11 @@
 	</imui:tabItem>
 </imui:tabs>
 
+<c:if test="${matterComplete}">
+	<div class="imui-operation-parts">
+		<input type="button" value='Export as PDF'  id="pdfgenerate" name="pdfgenerate" class="imui-large-button"/>
+	</div>
+</c:if>
 <!-- Hidden Back Form -->
 <form name="backForm" id="backForm" method="POST" action="${f:h(workflowRequestForm.imwCallOriginalPagePath)}">
 	<input type="hidden" name="imwCallOriginalParams" value="${f:h(workflowRequestForm.imwCallOriginalParams)}" />
