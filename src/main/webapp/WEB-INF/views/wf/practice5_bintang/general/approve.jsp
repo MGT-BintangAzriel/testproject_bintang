@@ -71,6 +71,9 @@
 
 				<%-- Global th colspan setting --%>
 				<c:set var="thColspan" value="2" scope="request" />
+				
+				<%-- Practice 0 Section --%>
+				<jsp:include page="include/practice0_header.jsp" />
 
 				<%-- Practice 1 Section --%>
 				<jsp:include page="include/practice1_basic.jsp" />
