@@ -10,7 +10,7 @@
 	</h2>
 </header>
 
-<table class="imui-form tab_header" style="table-layout: fixed; width: 100%">
+<table class="imui-form tab_header tab_applicant_header" style="table-layout: fixed; width: 100%">
 
 	<colgroup>
 		<col style="width: 250px;" />

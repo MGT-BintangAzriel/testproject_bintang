@@ -120,3 +120,9 @@ label.error:empty {
 	width: 96% !important;
 	box-sizing: border-box;
 }
+
+@media screen and (max-width: 1100px) {
+    .tab_applicant_header colgroup col:nth-child(odd) {
+        width: 140px !important;
+    }
+}
