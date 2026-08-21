@@ -20,7 +20,7 @@
 	<script src="ui/js/workflow-form-validation.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
-		 $(function() {
+    $(function() {
       // Initialize select2 and dynamic section visibility
       $('.select2').select2();
       setupMultiDataToggle();
@@ -29,8 +29,30 @@
       initReadOnlyAgreementForm();
       toggleDepreciation();
       disablePractice8Fields();
+      
+      $('#pdfgenerate').click(function() {
+				var system_matter_id = '${f:h(workflowRequestForm.imwSystemMatterId)}';
+				$.ajax({
+					type: "POST",
+                    url: "practice5_bintang/generatepdf", 
+					data: { 
+						system_matter_id : system_matter_id,
+					},
+					success: function (response) {
+						if (response.indexOf("error") === -1) {
+							window.location.href = "/imarttest/practice5_bintang/downloadpdf/" + encodeURIComponent(response.trim());
+						} else {
+							console.log("LOG Error :" , response);
+							alert("Failed to Generate PDF");
+						}
+					},
+					error: function (xhr, status, e) {
+						console.error("AJAX ERROR :", e);
+					}
+				});
+			});
     });
-	</script>
+  </script>
 
 </imui:head>
 
@@ -79,10 +101,10 @@
 				<jsp:include page="include/practice8_multiple_user.jsp" />
 
 			</workflow:workflowOpenPage>
-			
+
 			<%-- Practice 3 Section --%>
 			<jsp:include page="include/practice3_attachment.jsp" />
-			
+
 		</div>
 	</imui:tabItem>
 </imui:tabs>

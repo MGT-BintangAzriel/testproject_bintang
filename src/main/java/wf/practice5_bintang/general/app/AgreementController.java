@@ -15,12 +15,16 @@ import jp.co.intra_mart.foundation.workflow.code.PageType;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
 
+import wf.common.constant.MatterEndStatus;
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
+import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
 
 @Controller
@@ -29,6 +33,8 @@ public class AgreementController {
 
 	private static final String MODEL_KEY_SAVED_FORM_DATA = "savedFormData";
 	private static final String MODEL_KEY_WORKFLOW_REQUEST_FORM = "workflowRequestForm";
+	private static final String MODEL_KEY_DOWNLOAD_FILE_NAME = "download_file_name";
+    private static final String MODEL_KEY_STORAGE = "storage";
 
 	private static final String BASE_VIEW_PATH = "wf/practice5_bintang/general/";
 	private static final String VIEW_PATH_APPLY = BASE_VIEW_PATH + "apply.jsp";
@@ -114,10 +120,48 @@ public class AgreementController {
 			throw new FileNotFoundException("Could not find a file");
 		}
 
-		model.addAttribute("download_file_name", fileName);
-		model.addAttribute("storage", storage);
+		model.addAttribute(MODEL_KEY_DOWNLOAD_FILE_NAME, fileName);
+		model.addAttribute(MODEL_KEY_STORAGE, storage);
 		final String path = VIEW_PATH_DOWNLOAD;
 		return path;
 	}
+	
+	@PostMapping("generatepdf")
+    @ResponseBody
+    public String generatepdf(final HttpServletRequest request) throws Exception {
+
+        String MatterId = request.getParameter(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+
+        try {
+            AgreementGeneratePDFService pdfGenerate = new AgreementGeneratePDFService();
+            String pdfFileName = pdfGenerate.createPDF(MatterId);
+            return pdfFileName;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error:" + e.getMessage();
+        }
+
+    }
+
+    @RequestMapping(value = "downloadpdf/**")
+    public String downloadpdf(final Model model, HttpServletRequest request) throws Exception {
+
+        String urlStr = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        
+        String fileNameRaw = urlStr.substring(urlStr.lastIndexOf('/') + 1);
+        String fileName = URLDecoder.decode(fileNameRaw, "UTF-8");
+
+        final PublicStorage storage = new PublicStorage("generate_pdf/" + fileName);
+        if (!storage.isFile()) {
+            throw new FileNotFoundException("Could not find a file");
+        }
+
+        model.addAttribute(MODEL_KEY_DOWNLOAD_FILE_NAME, fileName);
+        model.addAttribute(MODEL_KEY_STORAGE, storage);
+
+        final String path = VIEW_PATH_DOWNLOAD;
+        return path;
+    }
 
 }
