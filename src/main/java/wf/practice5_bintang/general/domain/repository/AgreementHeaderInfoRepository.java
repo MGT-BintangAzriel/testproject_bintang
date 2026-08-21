@@ -2,6 +2,8 @@ package wf.practice5_bintang.general.domain.repository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.naming.NamingException;
 
@@ -15,6 +17,9 @@ import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.util.DbValueUtils;
 
 public class AgreementHeaderInfoRepository {
+	
+	private String selectDataAll = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER_INFO;
+	private String selectDataByMatterId = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER_INFO + " WHERE system_matter_id = ?";
 
 	public void insertHeaderInfo(AgreementHeaderInfoModel model) throws Exception {
 		try {
@@ -27,6 +32,30 @@ public class AgreementHeaderInfoRepository {
 			throw new Exception("DB Error in InsertDataHeaderInfoTemp");
 		}
 
+	}
+	
+	public Collection<AgreementHeaderInfoModel> selectHeaderInfo(String selectValue, String selectWhere) throws Exception {
+		try {
+			SQLManager sqlManager = new SQLManager();
+			Collection<Object> parameters = new ArrayList<>();
+
+			String selectQuery = "";
+
+			if (selectWhere.equals(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID)) {
+				selectQuery = this.selectDataByMatterId;
+				parameters.add(selectValue);
+
+			} else {
+				selectQuery = this.selectDataAll;
+			}
+
+			Collection<AgreementHeaderInfoModel> result = sqlManager.select(AgreementHeaderInfoModel.class, selectQuery, parameters);
+			return result;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error in selectHeaderInfo", e);
+		}
 	}
 
 	private ColumnValues buildColumnValues(AgreementHeaderInfoModel model, String condition) {
