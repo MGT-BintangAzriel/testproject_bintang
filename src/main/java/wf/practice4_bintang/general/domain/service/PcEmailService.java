@@ -1,9 +1,10 @@
 package wf.practice4_bintang.general.domain.service;
 
 import jp.co.intra_mart.foundation.mail.MailSenderException;
+import jp.co.intra_mart.foundation.mail.javamail.ExtendedMail;
 import jp.co.intra_mart.foundation.mail.javamail.JavaMailSender;
-import jp.co.intra_mart.foundation.mail.javamail.StandardMail;
-
+//import jp.co.intra_mart.foundation.mail.javamail.StandardMail;
+import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 
 import wf.common.constant.WorkflowCommonConstants;
@@ -59,7 +60,7 @@ public class PcEmailService {
         }
 
         // メール送信オブジェクトを設定する
-        StandardMail create_mail = new StandardMail();
+        ExtendedMail create_mail = new ExtendedMail();
         create_mail.setFrom("system-notification@imart.co.jp", "intra-mart ワークフロー自動通知");
         create_mail.setSubject("【通知】PC購入申請 承認完了のお知らせ（案件番号: " + matter_number + "）");
         create_mail.setText("関係者 各位\r\n" +
@@ -76,6 +77,22 @@ public class PcEmailService {
                 "本メールはシステムからの自動送信メールです。\r\n" +
                 "---------------------------------------------------\r\n");
         create_mail.addTo(mail);
+        
+        	// Attach PDF
+     		try {
+     			PcGeneratePDFService pdfService = new PcGeneratePDFService();
+     			String pdfFileName = pdfService.createPDF(matterId);
+
+     			PublicStorage pdfStorage = new PublicStorage("generate_pdf/" + pdfFileName);
+     			if (pdfStorage.isFile()) {
+     				create_mail.addAttachmentStorage(pdfFileName, pdfStorage);
+     			}
+
+     		} catch (Exception pdfEx) {
+     			System.err.println("Warning: Failed to attach PDF to email: " + pdfEx.getMessage());
+     			pdfEx.printStackTrace();
+     		}
+
 
         try {
             // メール送信を実行する
