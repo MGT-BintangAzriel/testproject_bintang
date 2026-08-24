@@ -40,6 +40,7 @@ public class AgreementController {
 	private static final String VIEW_PATH_APPLY = BASE_VIEW_PATH + "apply.jsp";
 	private static final String VIEW_PATH_APPROVE = BASE_VIEW_PATH + "approve.jsp";
 	private static final String VIEW_PATH_DETAIL = BASE_VIEW_PATH + "detail.jsp";
+	private static final String VIEW_PATH_CONFIRM = BASE_VIEW_PATH + "confirm.jsp";
 	private static final String VIEW_PATH_DOWNLOAD = "AgreementDownloadAttachmentService.Downloadview";
 	
 	@RequestMapping(value = "apply")
@@ -99,6 +100,23 @@ public class AgreementController {
 		}
 
 		final String path = VIEW_PATH_DETAIL;
+		return path;
+	}
+	
+	@RequestMapping(value = "confirm")
+	public final String confirm(final Model model, final AgreementForm workflowRequestForm) throws AccessSecurityException, IOException {
+		try {
+			AgreementWorkflowService workflowService = new AgreementWorkflowService();
+			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+			
+			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
+			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+		} catch (Exception e) {
+			System.out.println("Error Confirm Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		final String path = VIEW_PATH_CONFIRM;
 		return path;
 	}
 
