@@ -31,12 +31,21 @@
       // Apply Node-based field permissions for Practice 8
       var nodeId = '${f:h(workflowRequestForm.imwNodeId)}';
       applyNodePermissions(nodeId);
+      
+      $('#openPage').on('mousedown',
+          function() {
+            isApplyClicked = true;
+            imuiResetForm('#workflowOpenPageForm'); 
+            var valid = validateWorkflowForm();
 
-      // Approval Process Submit Button Handler
-      $('#openPage').click(function() {
-        workflowOpenPage('${f:h(workflowRequestForm.imwPageType)}');
-        return false;
-      });
+            if (valid) {
+              workflowOpenPage('${f:h(workflowRequestForm.imwPageType)}');
+
+            } else {
+              imuiShowErrorMessage('There are validation errors. Please check your inputs.', [],
+                  true, 2500, false);
+            }
+          });
     });
   </script>
 
