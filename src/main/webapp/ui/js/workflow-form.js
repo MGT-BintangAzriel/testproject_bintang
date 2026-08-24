@@ -159,30 +159,41 @@ function disablePractice8Fields() {
 
 // Apply node-based field permissions on Approve screen
 function applyNodePermissions(nodeId) {
-  // 1. Disable Practice 8 section fields by default
+  // Disable Practice 8 section fields by default
   disablePractice8Fields();
 
-  // 2. Unlock specific fields based on active Node ID
+  // Unlock fields based on active Node ID
   if (nodeId === "node_psd") {
+
     // PSD Officer Node -> Unlock PSD fields
     $('input[name="f_psd_area"], input[name="f_psd_process"]')
       .prop("disabled", false)
       .off("click.lock");
+
     $("#f_dic_reason").prop("readonly", false);
-    $('input[name="f_psd_process"]').on("change", toggleDicReason).trigger("change");
+
+    $('input[name="f_psd_area"]')
+      .on("change", togglePsdField)
+      .trigger("change");
+
+    $('input[name="f_psd_process"]')
+      .on("change", toggleDicReason)
+      .trigger("change");
+
   } else if (nodeId === "node_cco") {
     // CCO Compliance Node -> Unlock Compliance fields
     $(
       'input[name="f_dd_process"], input[name="f_anti_bribery"], input[name="f_audit_rights"]',
-    ).prop("disabled", false);
-    $(
-      'input[name="f_dd_process"], input[name="f_anti_bribery"], input[name="f_audit_rights"]',
-    ).off("click.lock");
+    )
+      .prop("disabled", false)
+      .off("click.lock");
+
   } else if (nodeId === "node_legal") {
     // Legal Officer Node -> Unlock Legal fields & initialize calendar
     $("#f_legal_agreement_number, #f_legal_agreement_date")
       .prop("disabled", false)
       .prop("readonly", false);
+
     $("#f_legal_agreement_date")
       .removeClass("hasDatepicker")
       .imuiCalendar({
@@ -192,6 +203,7 @@ function applyNodePermissions(nodeId) {
           $(this).trigger("change");
         },
       });
+
     $(".ui-datepicker-trigger").hide();
   }
 }
@@ -361,11 +373,48 @@ function setupDynamicPaymentTable() {
   calculateTotalPaymentAmount();
 }
 
-function toggleDicReason() {
-  if ($('input[name="f_psd_process"]:checked').val() !== "dic") {
-    $("#f_dic_reason").prop("disabled", true);
+function togglePsdField() {
+  var isPsdArea = $('input[name="f_psd_area"]:checked').val() === "psd";
+
+  if (!isPsdArea) {
+    $('input[name="f_psd_process"]')
+      .prop("checked", false)
+      .prop("disabled", true)
+      .removeClass("imui-validation-error")
+      .closest("td")
+      .find(".error_message")
+      .empty();
+
+    $("#f_dic_reason")
+      .prop("disabled", true)
+      .val("")
+      .removeClass("imui-validation-error")
+      .closest("td")
+      .find(".error_message")
+      .empty();
   } else {
-    $("#f_dic_reason").prop("disabled", false).prop("readonly", false);
+    $('input[name="f_psd_process"]').prop("disabled", false);
+    
+    toggleDicReason();
+  }
+}
+
+function toggleDicReason() {
+  var isPsdArea = $('input[name="f_psd_area"]:checked').val() === "psd";
+  var isDicProcess = $('input[name="f_psd_process"]:checked').val() === "dic";
+
+  if (isPsdArea && isDicProcess) {
+    $("#f_dic_reason")
+      .prop("disabled", false)
+      .prop("readonly", false);
+  } else {
+    $("#f_dic_reason")
+      .prop("disabled", true)
+      .val("")
+      .removeClass("imui-validation-error")
+      .closest("td")
+      .find(".error_message")
+      .empty();
   }
 }
 

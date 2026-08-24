@@ -277,25 +277,38 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 
 			Collection<AgreementHeaderInfoModel> headerInfoTempModel = headerInfoTempDb.selectHeaderInfoTemp(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 
-			if (headerInfoTempModel != null && !headerInfoTempModel.isEmpty()) {
+						if (headerInfoTempModel != null && !headerInfoTempModel.isEmpty()) {
 				AgreementHeaderInfoModel model = headerInfoTempModel.iterator().next();
 
-				if (userParameter.get("f_psd_area") != null)
-					model.setPsd_area(getUserParameterValue(userParameter, "f_psd_area"));
-				if (userParameter.get("f_psd_process") != null)
-					model.setPsd_process(getUserParameterValue(userParameter, "f_psd_process"));
-				if (userParameter.get("f_dic_reason") != null)
-					model.setDic_reason(getUserParameterValue(userParameter, "f_dic_reason"));
-				if (userParameter.get("f_dd_process") != null)
+				String nodeId = parameter.getNodeId();
+
+				if ("node_psd".equals(nodeId)) {
+					String psdArea = getUserParameterValue(userParameter, "f_psd_area");
+					model.setPsd_area(psdArea);
+
+					if ("psd".equals(psdArea)) {
+						String psdProcess = getUserParameterValue(userParameter, "f_psd_process");
+						model.setPsd_process(psdProcess);
+
+						if ("dic".equals(psdProcess)) {
+							model.setDic_reason(getUserParameterValue(userParameter, "f_dic_reason"));
+						} else {
+							model.setDic_reason(""); 							
+						}
+					} else {					
+						model.setPsd_process("");
+						model.setDic_reason("");
+					}
+
+				} else if ("node_cco".equals(nodeId)) {
 					model.setDd_process(getUserParameterValue(userParameter, "f_dd_process"));
-				if (userParameter.get("f_anti_bribery") != null)
 					model.setAnti_bribery(getUserParameterValue(userParameter, "f_anti_bribery"));
-				if (userParameter.get("f_audit_rights") != null)
 					model.setAudit_rights(getUserParameterValue(userParameter, "f_audit_rights"));
-				if (userParameter.get("f_legal_agreement_number") != null)
+					
+				} else if ("node_legal".equals(nodeId)) {
 					model.setLegal_agreement_number(getUserParameterValue(userParameter, "f_legal_agreement_number"));
-				if (userParameter.get("f_legal_agreement_date") != null)
 					model.setLegal_agreement_date(getUserParameterValue(userParameter, "f_legal_agreement_date"));
+				}
 
 				headerInfoTempDb.updateHeaderInfoTemp(model);
 			}
