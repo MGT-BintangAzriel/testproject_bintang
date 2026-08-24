@@ -21,13 +21,12 @@
 
 	<script type="text/javascript">
     $(function() {
-      // Initialize select2 and dynamic section visibility
-      $('.select2').select2();
-      setupMultiDataToggle();
 
-      // Lock form fields as read-only
+	  // Lock form fields as read-only
       initReadOnlyAgreementForm();
       toggleDepreciation();
+      setupMultiDataToggle();
+      $('.select2').select2();
 
       // Apply Node-based field permissions for Practice 8
       var nodeId = '${f:h(workflowRequestForm.imwNodeId)}';

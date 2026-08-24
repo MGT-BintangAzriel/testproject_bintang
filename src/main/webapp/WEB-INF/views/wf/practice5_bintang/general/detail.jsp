@@ -21,15 +21,13 @@
 
 	<script type="text/javascript">
     $(function() {
-      // Initialize select2 and dynamic section visibility
-      $('.select2').select2();
-      setupMultiDataToggle();
-
       // Lock form fields as read-only
       initReadOnlyAgreementForm();
-      toggleDepreciation();
       disablePractice8Fields();
-      
+      toggleDepreciation();
+      setupMultiDataToggle();
+      $('.select2').select2();
+
       $('#pdfgenerate').click(function() {
 				var system_matter_id = '${f:h(workflowRequestForm.imwSystemMatterId)}';
 				$.ajax({

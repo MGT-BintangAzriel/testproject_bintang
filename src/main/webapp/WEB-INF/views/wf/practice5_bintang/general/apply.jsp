@@ -21,8 +21,7 @@
 
 	<script type="text/javascript">
     $(function() {
-      // Format saved database dates (yyyy-mm-dd -> yyyy/mm/dd) & lock Practice 8 on Apply
-      // formatSavedDates();
+      // Disable practice8 fields
       disablePractice8Fields();
 
       // Initialize calendar inputs and select2
@@ -46,12 +45,14 @@
 
       // Toggle input for depreciation check
       toggleDepreciation();
+      $('input[name="f_purchase_category"]').on("change", toggleDepreciation);
+
+      // Multi data category section toggle
+      setupMultiDataToggle();
 
       // Dynamic payment table setup
       setupDynamicPaymentTable();
 
-      // Multi data category section toggle
-      setupMultiDataToggle();
 
       // Delete file attachment handler
       $(".file_attachment_list").on("click", "#delete_file", function() {
@@ -80,9 +81,6 @@
 
       // Hide calendar icon
       $('.ui-datepicker-trigger').hide();
-      
-      // Toggle depreciation check
-      $('input[name="f_purchase_category"]').on("change", toggleDepreciation);
 
       $('#openPage').on('mousedown',
           function() {
