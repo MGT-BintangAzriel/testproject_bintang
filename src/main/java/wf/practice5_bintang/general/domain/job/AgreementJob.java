@@ -11,17 +11,21 @@ import jp.co.intra_mart.foundation.master.user.model.User;
 import jp.co.intra_mart.foundation.master.user.model.UserBizKey;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 
-import wf.common.constant.WorkflowCommonConstants;
-import wf.practice5_bintang.general.app.AgreementForm;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
 import wf.practice5_bintang.general.domain.service.AgreementEmailService;
-import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
+import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.common.constant.MailStatus;
 
 public class AgreementJob implements Job {
 
 	public JobResult execute() throws JobExecuteException {
+
+		String matterNumber = "";
+		String matterName = "";
+		String matterDate = "";
+		String matterApplicantCode = "";
+		String recipientEmail = "";
 
 		try {
 			System.out.println("-------- RUNNING JOB SUCCESS  -----------");
@@ -31,36 +35,41 @@ public class AgreementJob implements Job {
 			Collection<AgreementHeaderModel> models = agreementHeaderDB.selectHeader(mailStatus, "mail");
 
 			for (AgreementHeaderModel model : models) {
-				AgreementWorkflowService service = new AgreementWorkflowService();
-				AgreementForm form = new AgreementForm();
-
-				form = service.getHeaderInfoTempForm(model.getSystem_matter_id(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
-
 				String matterId = model.getSystem_matter_id();
-				String mailAddress = "";
 
 				try {
 					CplMatter cplMatter = new CplMatter(matterId);
-					String matterApplicantCode = "";
+					matterNumber = cplMatter.getMatter().getMatterNumber();
+					matterName = cplMatter.getMatter().getMatterName();
 					matterApplicantCode = cplMatter.getMatter().getApplyAuthUserCode();
+
+					String matterDatetime = cplMatter.getMatter().getApplyDate();
+					if (matterDatetime != null && matterDatetime.contains(" ")) {
+						matterDate = matterDatetime.split(" ")[0];
+					} else {
+						matterDate = matterDatetime != null ? matterDatetime : "";
+					}
 
 					UserManager userManager = new UserManager();
 					UserBizKey userBizKey = new UserBizKey();
 					userBizKey.setUserCd(matterApplicantCode);
 					User user = userManager.getUser(userBizKey, new Date());
 					if (user != null) {
-						mailAddress = user.getEmailAddress1();
+						recipientEmail = user.getEmailAddress1();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
-				if (mailAddress == null || mailAddress.isEmpty()) {
-					mailAddress = "employee@gmail.com";
+				if (recipientEmail == null || recipientEmail.isEmpty()) {
+					recipientEmail = "employee@gmail.com";
 				}
+				
+				AgreementGeneratePDFService generatePDFService = new AgreementGeneratePDFService();
+				String pdfFileName = generatePDFService.createPDF(matterId);
 
 				AgreementEmailService mailService = new AgreementEmailService();
-				mailService.sendApprovalNotificationEmail(matterId, mailAddress, form);
+				mailService.sendApprovalNotificationEmail(matterId, recipientEmail, matterNumber, matterName, matterDate, pdfFileName);
 			}
 
 		} catch (Exception e) {

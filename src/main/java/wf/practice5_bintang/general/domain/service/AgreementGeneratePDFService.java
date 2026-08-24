@@ -16,7 +16,9 @@ import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoTempRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailTempRepository;
 
 public class AgreementGeneratePDFService {
 
@@ -165,9 +167,15 @@ public class AgreementGeneratePDFService {
 
 	public String createPDF(String systemMatterId) throws Exception {
 		try {
-			AgreementHeaderInfoRepository agreementHeaderInfoDb = new AgreementHeaderInfoRepository();
-			AgreementHeaderInfoModel model = agreementHeaderInfoDb.selectHeaderInfo(systemMatterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
-
+			AgreementHeaderInfoModel model = null;
+			try {
+				AgreementHeaderInfoRepository agreementHeaderInfoDb = new AgreementHeaderInfoRepository();
+				model = agreementHeaderInfoDb.selectHeaderInfo(systemMatterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
+			} catch (Exception e) {
+				AgreementHeaderInfoTempRepository agreementHeaderInfoTempDb = new AgreementHeaderInfoTempRepository();
+				model = agreementHeaderInfoTempDb.selectHeaderInfoTemp(systemMatterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
+			}
+			
 			StringBuilder html = new StringBuilder();
 			html.append("<!DOCTYPE html>")
 			    .append("<html>")
@@ -262,9 +270,17 @@ public class AgreementGeneratePDFService {
 					addRow(html, "Total Payment Amount", formatAmount(model.getTotal_payment_amount()));
 					html.append("</table>");
 
-					AgreementPaymentDetailRepository paymentRepo = new AgreementPaymentDetailRepository();
-					List<AgreementPaymentDetailModel> paymentList = (List<AgreementPaymentDetailModel>) paymentRepo
-							.selectPaymentDetail(systemMatterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+					List<AgreementPaymentDetailModel> paymentList = null;
+
+					try {
+						AgreementPaymentDetailRepository paymentRepo = new AgreementPaymentDetailRepository();
+						paymentList = (List<AgreementPaymentDetailModel>) paymentRepo
+								.selectPaymentDetail(systemMatterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+					} catch (Exception e) {
+						AgreementPaymentDetailTempRepository paymentTempRepo = new AgreementPaymentDetailTempRepository();
+						paymentList = (List<AgreementPaymentDetailModel>) paymentTempRepo
+								.selectPaymentDetailTemp(systemMatterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+					}
 
 					if (paymentList != null && !paymentList.isEmpty()) {
 						html.append("<h3>Payment (Total Cash Flow Impact)</h3>")
