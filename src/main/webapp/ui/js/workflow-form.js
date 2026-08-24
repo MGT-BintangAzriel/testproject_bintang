@@ -49,20 +49,19 @@ function setupSubOptionToggle(
     var selectedVal = $('input[name="' + parentRadioName + '"]:checked').val();
     if (selectedVal === activeValue) {
       $('input[name="' + subRadioName + '"]').prop("disabled", false);
+
       if (!$('input[name="' + subRadioName + '"]:checked').val()) {
         $("#" + defaultSubRadioId).prop("checked", true);
       }
     } else {
       $('input[name="' + subRadioName + '"]')
         .prop("checked", false)
-        .prop("disabled", true);
-      $('input[name="' + subRadioName + '"]').removeClass(
-        "imui-validation-error",
-      );
+        .prop("disabled", true)
+        .removeClass("imui-validation-error");
       $('input[name="' + subRadioName + '"]')
         .closest("td")
-        .find("label.imui-validation-error, div.imui-validation-error")
-        .remove();
+        .find(".error_message")
+        .empty();
     }
   }
   $('input[name="' + parentRadioName + '"]').on("change", toggle);
@@ -72,25 +71,19 @@ function setupSubOptionToggle(
 // Toggle depreciation check field
 function toggleDepreciation() {
   var category = $('input[name="f_purchase_category"]:checked').val();
-  if (category === "non_asset") {
-    $("#f_start_using_date").prop("disabled", true).val("");
-    $("#f_deprec_month").prop("disabled", true).val("");
 
-    $("#f_start_using_date, #f_deprec_month").removeClass(
-      "imui-validation-error",
-    );
+  if (category === "non_asset") {
     $("#f_start_using_date, #f_deprec_month")
+      .prop("disabled", true)
+      .val("")
+      .removeClass("imui-validation-error")
       .siblings(".error_message")
       .empty();
 
-    $("#f_start_using_date").closest("tr").hide();
-    $("#f_deprec_month").closest("tr").hide();
+    $("#f_start_using_date, #f_deprec_month").closest("tr").hide();
   } else {
-    $("#f_start_using_date").closest("tr").show();
-    $("#f_deprec_month").closest("tr").show();
-
-    $("#f_start_using_date").prop("disabled", false);
-    $("#f_deprec_month").prop("disabled", false);
+    $("#f_start_using_date, #f_deprec_month").closest("tr").show();
+    $("#f_start_using_date, #f_deprec_month").prop("disabled", false);
   }
 }
 
@@ -124,7 +117,7 @@ function initReadOnlyAgreementForm() {
   $("#payment_detail_table thead th[colspan='8']").attr("colspan", "7");
   var readOnlyWidths = ["4%", "25%", "15%", "14%", "15%", "12%", "15%"];
   $("#payment_detail_table colgroup col").each(function (index) {
-      $(this).css("width", readOnlyWidths[index]);
+    $(this).css("width", readOnlyWidths[index]);
   });
 
   // Format saved numbers with commas (e.g. 100000000 -> 100,000,000.00)
@@ -486,10 +479,9 @@ function setupMultiDataToggle() {
       ).rules("remove", "required");
     }
 
-    $("#section-pl, #section-asset, #section-estimated")
-      .find(".error_message")
-      .empty();
-    $("#section-pl, #section-asset, #section-estimated")
+    var $allSections = $("#section-pl, #section-asset, #section-estimated");
+    $allSections.find(".error_message").empty();
+    $allSections
       .find(".imui-validation-error")
       .removeClass("imui-validation-error");
 
@@ -514,10 +506,9 @@ function setupMultiDataToggle() {
         $("#f_pl_month").rules("add", { required: true });
       }
     } else {
-    	    $("#f_budget_pl_impact").val("");
-          $("#f_budget_pl_month").val("");
-          $("#f_pl_impact").val("");
-          $("#f_pl_month").val("");
+      $(
+        "#f_budget_pl_impact, #f_budget_pl_month, #f_pl_impact, #f_pl_month",
+      ).val("");
     }
 
     if (checkedValues.includes("asset")) {
@@ -531,8 +522,7 @@ function setupMultiDataToggle() {
         $("#f_book_value").rules("add", { required: true });
       }
     } else {
-    	  $("#f_asset_number").val("");
-    	  $("#f_book_value").val("");
+      $("#f_asset_number, #f_book_value").val("");
     }
 
     if (checkedValues.includes("estimated")) {
@@ -540,9 +530,7 @@ function setupMultiDataToggle() {
 
       rules.f_total_payment_amount = {
         required: function () {
-          return (
-            $("#payment_detail_table > tbody tr.payment-row").length === 0
-          );
+          return $("#payment_detail_table > tbody tr.payment-row").length === 0;
         },
       };
     } else {
