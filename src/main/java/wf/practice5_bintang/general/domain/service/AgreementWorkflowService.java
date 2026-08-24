@@ -483,7 +483,6 @@ public class AgreementWorkflowService {
 			CplMatter cplMatter = new CplMatter(systemMatterId);
 			return cplMatter.getMatter().getStatus();
 		} catch (Exception cplEx) {
-			System.out.println("Matter has not been completed");
 		}
 		return "";
 	}

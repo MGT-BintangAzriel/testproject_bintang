@@ -280,12 +280,6 @@ function setupDynamicPaymentTable() {
       '<div class="error_message"></div>' +
       "</td>" +
       "<td>" +
-      /*
-		 * Horizontal Layout (Old) '<label style="margin-right: 6px;"><input
-		 * type="radio" name="f_recurring_' + rowIdx + '" class="f_recurring"
-		 * value="yes"> Yes</label>' + '<label><input type="radio"
-		 * name="f_recurring_' + rowIdx + '" class="f_recurring" value="no"> No</label>' +
-		 */
       '<table style="margin: 0px;">' +
       "<tr>" +
       '<td style="border: none; padding: 0px;">' +
@@ -319,12 +313,6 @@ function setupDynamicPaymentTable() {
       '<div class="error_message"></div>' +
       "</td>" +
       "<td>" +
-      /*
-		 * Horizontal Layout (Old) '<label style="margin-right: 6px;"><input
-		 * type="checkbox" name="f_paid_by_' + rowIdx + '" class="f_paid_by"
-		 * value="card"> Card</label>' + '<label><input type="checkbox"
-		 * name="f_paid_by_' + rowIdx + '" class="f_paid_by" value="cash"> Cash</label>' +
-		 */
       '<label style="display: block; margin-bottom: 4px;"><input type="checkbox" name="f_paid_by_' +
       rowIdx +
       '" class="f_paid_by" value="card"> Card</label>' +
@@ -357,13 +345,6 @@ function setupDynamicPaymentTable() {
     $newRow.find(".select2").on("change", function () {
       $(this).valid();
     });
-    
-// if (isApplyClicked) {
-// $(
-// ".f_brand, .f_type, .f_payment_amount, .f_payment_date, .f_category,
-// .f_recurring, .f_paid_by",
-// ).valid();
-// }
   });
 
   $("#payment_detail_table").on("click", ".btn-delete-row", function () {
@@ -373,19 +354,6 @@ function setupDynamicPaymentTable() {
       $(this).closest("tr").remove();
       refreshSequenceNumbers();
     }
-
-    // else {
-    // var lastRow = $("#payment_detail_table > tbody tr.payment-row");
-    // lastRow.find("input[type='text']").val("");
-    // lastRow
-    // .find("input[type='radio'], input[type='checkbox']")
-    // .prop("checked", false);
-    // lastRow.find(".select2").val("").trigger("change");
-    // lastRow.find(".error_message").empty();
-    // lastRow
-    // .find(".imui-validation-error")
-    // .removeClass("imui-validation-error");
-    // }
 
     calculateTotalPaymentAmount();
   });
@@ -495,10 +463,7 @@ function setupMultiDataToggle() {
         $("#f_budget_pl_month").rules("add", { required: true });
         $("#f_pl_impact").rules("add", { required: true });
         $("#f_pl_month").rules("add", { required: true });
-// $(
-// "#f_budget_pl_impact, #f_budget_pl_month, #f_pl_impact, #f_pl_month",
-// ).valid();
-      } 
+      }
     } else {
     	    $("#f_budget_pl_impact").val("");
           $("#f_budget_pl_month").val("");
@@ -515,7 +480,6 @@ function setupMultiDataToggle() {
       if (isApplyClicked) {
         $("#f_asset_number").rules("add", { required: true });
         $("#f_book_value").rules("add", { required: true });
-// $("#f_asset_number, #f_book_value").valid();
       }
     } else {
     	  $("#f_asset_number").val("");
@@ -532,12 +496,6 @@ function setupMultiDataToggle() {
           );
         },
       };
-// if (isApplyClicked) {
-// $(
-// ".f_brand, .f_type, .f_payment_amount, .f_payment_date, .f_category,
-// .f_recurring, .f_paid_by",
-// ).valid();
-// }
     } else {
       resetPaymentTable();
     }
