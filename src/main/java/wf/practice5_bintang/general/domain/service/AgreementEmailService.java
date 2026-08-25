@@ -7,6 +7,7 @@ import jp.co.intra_mart.foundation.mail.javamail.ExtendedMail;
 import jp.co.intra_mart.foundation.mail.javamail.JavaMailSender;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import wf.common.constant.WorkflowCommonConstants;
+import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
@@ -37,7 +38,7 @@ public class AgreementEmailService {
 
 		// Attach PDF
 		try {
-			PublicStorage pdfStorage = new PublicStorage("generate_pdf/" + pdfFileName);
+			PublicStorage pdfStorage = new PublicStorage(AgreementFormConstants.STORAGE_PATH_GENERATE_PDF + pdfFileName);
 			if (pdfStorage.isFile()) {
 				createMail.addAttachmentStorage(pdfFileName, pdfStorage);
 			}

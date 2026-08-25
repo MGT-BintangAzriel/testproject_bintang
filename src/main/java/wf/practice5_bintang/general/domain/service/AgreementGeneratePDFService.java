@@ -13,6 +13,7 @@ import jp.co.intra_mart.foundation.workflow.application.history.MatterHistory;
 import jp.co.intra_mart.foundation.workflow.application.model.MatterHistoryResultModel;
 
 import wf.common.constant.WorkflowCommonConstants;
+import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoRepository;
@@ -381,7 +382,7 @@ public class AgreementGeneratePDFService {
 			InputStream successPdf = HtmlToPdf.create().object(HtmlToPdfObject.forHtml(html.toString())).convert();
 
 			try {
-				PublicStorage createNewDir = new PublicStorage("generate_pdf");
+				PublicStorage createNewDir = new PublicStorage(AgreementFormConstants.STORAGE_DIR_GENERATE_PDF);
 				try {
 					createNewDir.makeDirectories();
 				} catch (Exception e) {
@@ -390,7 +391,7 @@ public class AgreementGeneratePDFService {
 				}
 
 				String applicationNumber = model.getApplication_number();
-				PublicStorage pdfFilePath = new PublicStorage("generate_pdf/" + applicationNumber + ".pdf");
+				PublicStorage pdfFilePath = new PublicStorage(AgreementFormConstants.STORAGE_PATH_GENERATE_PDF + applicationNumber + ".pdf");
 				pdfFilePath.save(IOUtils.toByteArray(successPdf));
 				return applicationNumber + ".pdf";
 			} catch (Exception e) {

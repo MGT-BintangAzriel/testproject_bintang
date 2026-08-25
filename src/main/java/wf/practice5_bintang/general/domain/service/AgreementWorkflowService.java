@@ -20,6 +20,7 @@ import jp.co.intra_mart.foundation.service.client.file.SessionScopeStorage;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 import wf.practice5_bintang.general.app.AgreementForm;
+import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
@@ -285,7 +286,7 @@ public class AgreementWorkflowService {
 
 	private String getDownloadToken(HttpServletRequest request) {
 		String downloadToken = UUID.randomUUID().toString();
-		request.getSession().setAttribute("agreement_download_token", downloadToken);
+		request.getSession().setAttribute(AgreementFormConstants.SESSION_KEY_DOWNLOAD_TOKEN, downloadToken);
 		return downloadToken;
 	}
 

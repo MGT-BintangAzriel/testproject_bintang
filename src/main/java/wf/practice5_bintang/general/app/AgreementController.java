@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import wf.common.constant.MatterEndStatus;
 import wf.common.constant.WorkflowCommonConstants;
+import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
@@ -35,14 +36,23 @@ public class AgreementController {
 	private static final String MODEL_KEY_SAVED_FORM_DATA = "savedFormData";
 	private static final String MODEL_KEY_WORKFLOW_REQUEST_FORM = "workflowRequestForm";
 	private static final String MODEL_KEY_DOWNLOAD_FILE_NAME = "download_file_name";
-    private static final String MODEL_KEY_STORAGE = "storage";
+	private static final String MODEL_KEY_STORAGE = "storage";
+	private static final String MODEL_KEY_ERROR_MESSAGE_ENG = "error_message_eng";
+	private static final String MODEL_KEY_MATTER_COMPLETE = "matterComplete";
 
 	private static final String BASE_VIEW_PATH = "wf/practice5_bintang/general/";
 	private static final String VIEW_PATH_APPLY = BASE_VIEW_PATH + "apply.jsp";
 	private static final String VIEW_PATH_APPROVE = BASE_VIEW_PATH + "approve.jsp";
 	private static final String VIEW_PATH_DETAIL = BASE_VIEW_PATH + "detail.jsp";
 	private static final String VIEW_PATH_CONFIRM = BASE_VIEW_PATH + "confirm.jsp";
+	private static final String VIEW_PATH_ERROR = BASE_VIEW_PATH + "error_screen.jsp";
 	private static final String VIEW_PATH_DOWNLOAD = "AgreementDownloadAttachmentService.Downloadview";
+
+	private static final String CHARSET_UTF8 = "UTF-8";
+	private static final String ERR_MSG_UNAUTHORIZED = "(Unauthorized access: User is not logged in.)";
+	private static final String ERR_MSG_SESSION_EXPIRED = "(Unauthorized access: Session has expired. Please log in again.)";
+	private static final String ERR_MSG_LINK_INVALID = "(Access denied: Link is expired or invalid.)";
+	private static final String ERR_MSG_ATTACHMENT_NOT_FOUND = "(Data not found: No attachments found for the specified matter ID.)";
 	
 	@RequestMapping(value = "apply")
 	public final String apply(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws Exception {
@@ -92,7 +102,7 @@ public class AgreementController {
 			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
 			boolean isMatterComplete = MatterEndStatus.MATTER_COMPLETE.getStatus().equals(workflowService.getMatterStatus(workflowRequestForm.getImwSystemMatterId()));
 			
-			model.addAttribute("matterComplete", isMatterComplete);
+			model.addAttribute(MODEL_KEY_MATTER_COMPLETE, isMatterComplete);
 			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
 		} catch (Exception e) {
@@ -133,18 +143,17 @@ public class AgreementController {
 		AgreementAttachmentModel attachment = attachFileTempDb.selectAttachmentTempBySystemMatterIdAndFileId(fileId, systemMatterId);
 		
 		if(attachment == null) {
-			model.addAttribute("error_message_eng", "(Data not found: No attachments found for the specified matter ID.)");
-        	return "wf/practice5_bintang/general/error_screen.jsp";
+			model.addAttribute(MODEL_KEY_ERROR_MESSAGE_ENG, ERR_MSG_ATTACHMENT_NOT_FOUND);
+        	return VIEW_PATH_ERROR;
 		}
 
 		String fileName = attachment.getFile_name();
 		String fileRealPath = attachment.getFile_path();
-		String fileDecode = URLDecoder.decode(fileRealPath.toString(), "UTF-8");
+		String fileDecode = URLDecoder.decode(fileRealPath.toString(), CHARSET_UTF8);
 
 		final PublicStorage storage = new PublicStorage(fileDecode);
 		if (!storage.isFile()) {
-
-			throw new FileNotFoundException("Could not find a file");
+			throw new FileNotFoundException("Could not find attachment file: " + fileDecode);
 		}
 
 		model.addAttribute(MODEL_KEY_DOWNLOAD_FILE_NAME, fileName);
@@ -159,14 +168,14 @@ public class AgreementController {
 		AccountContext accountContext = Contexts.get(AccountContext.class);
 	    String userId = accountContext != null ? accountContext.getUserCd() : null;
 	    if (userId == null || userId.isEmpty() || "anonymous".equals(userId)) {
-			return "Unauthorized access: User is not logged in.";
+			return ERR_MSG_UNAUTHORIZED;
 		}
 	    
 	    String matterId = request.getParameter(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 	    AgreementWorkflowService workflowService = new AgreementWorkflowService();
 	    boolean isMatterComplete = MatterEndStatus.MATTER_COMPLETE.getStatus().equals(workflowService.getMatterStatus(matterId));
 	    if (!isMatterComplete) {
-	        return "Error: Cannot generate PDF for incomplete matter";
+	        return "(Error: Cannot generate PDF for incomplete matter)";
 	    }
 
         try {
@@ -188,11 +197,11 @@ public class AgreementController {
 			return validateDownload;
 		}
 
-        String fileNameDecode = URLDecoder.decode(fileName, "UTF-8");
+        String fileNameDecode = URLDecoder.decode(fileName, CHARSET_UTF8);
 
-        final PublicStorage storage = new PublicStorage("generate_pdf/" + fileNameDecode);
+        final PublicStorage storage = new PublicStorage(AgreementFormConstants.STORAGE_PATH_GENERATE_PDF + fileNameDecode);
         if (!storage.isFile()) {
-            throw new FileNotFoundException("Could not find a file");
+            throw new FileNotFoundException("Could not find generated PDF file: " + fileNameDecode);
         }
 
         model.addAttribute(MODEL_KEY_DOWNLOAD_FILE_NAME, fileName);
@@ -208,27 +217,27 @@ public class AgreementController {
 			String userId = accountContext.getUserCd();
 
 			if (userId == null || userId.isEmpty() || "anonymous".equals(userId)) {
-				model.addAttribute("error_message_eng", "(Unauthorized access: User is not logged in.)");
-	        	return "wf/practice5_bintang/general/error_screen.jsp";
+				model.addAttribute(MODEL_KEY_ERROR_MESSAGE_ENG, ERR_MSG_UNAUTHORIZED);
+	        	return VIEW_PATH_ERROR;
 			}
 		} catch (Exception e) {
-			model.addAttribute("error_message_eng", "(Unauthorized access: User is not logged in.)");
-        	return "wf/practice5_bintang/general/error_screen.jsp";
+			model.addAttribute(MODEL_KEY_ERROR_MESSAGE_ENG, ERR_MSG_UNAUTHORIZED);
+        	return VIEW_PATH_ERROR;
 		}
 
 		HttpSession session = request.getSession(false);
-		String clientToken = request.getParameter("token");
+		String clientToken = request.getParameter(AgreementFormConstants.PARAM_TOKEN);
 
 		if (session == null || clientToken == null) {
-			model.addAttribute("error_message_eng", "(Unauthorized access: Session has expired. Please log in again.)");
-        	return "wf/practice5_bintang/general/error_screen.jsp";
+			model.addAttribute(MODEL_KEY_ERROR_MESSAGE_ENG, ERR_MSG_SESSION_EXPIRED);
+        	return VIEW_PATH_ERROR;
 		}
 
-		String sessionToken = (String) session.getAttribute("agreement_download_token");
+		String sessionToken = (String) session.getAttribute(AgreementFormConstants.SESSION_KEY_DOWNLOAD_TOKEN);
 
 		if (!clientToken.equals(sessionToken)) {
-        	model.addAttribute("error_message_eng", "(Access denied: Link is expired or invalid.)");
-        	return "wf/practice5_bintang/general/error_screen.jsp";
+        	model.addAttribute(MODEL_KEY_ERROR_MESSAGE_ENG, ERR_MSG_LINK_INVALID);
+        	return VIEW_PATH_ERROR;
 	    }
 		return null;
 	}

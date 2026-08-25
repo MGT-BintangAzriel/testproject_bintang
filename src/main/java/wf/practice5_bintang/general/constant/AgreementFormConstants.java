@@ -52,4 +52,11 @@ public final class AgreementFormConstants {
     public static final String FIELD_LEGAL_AGREEMENT_NUMBER = "f_legal_agreement_number";
     public static final String FIELD_LEGAL_AGREEMENT_DATE = "f_legal_agreement_date";
     public static final String FIELD_D_LIST_ATTACHMENT = "d_list_attachment";
+    public static final String FIELD_DOWNLOAD_TOKEN = "f_download_token";
+
+    // Download & Storage Constants
+    public static final String SESSION_KEY_DOWNLOAD_TOKEN = "agreement_download_token";
+    public static final String PARAM_TOKEN = "token";
+    public static final String STORAGE_DIR_GENERATE_PDF = "generate_pdf";
+    public static final String STORAGE_PATH_GENERATE_PDF = "generate_pdf/";
 }
