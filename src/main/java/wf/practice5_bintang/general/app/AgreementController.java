@@ -156,12 +156,22 @@ public class AgreementController {
 	@PostMapping("generatepdf")
     @ResponseBody
     public String generatepdf(final HttpServletRequest request) throws Exception {
-
-        String MatterId = request.getParameter(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+		AccountContext accountContext = Contexts.get(AccountContext.class);
+	    String userId = accountContext != null ? accountContext.getUserCd() : null;
+	    if (userId == null || userId.isEmpty() || "anonymous".equals(userId)) {
+			return "Unauthorized access: User is not logged in.";
+		}
+	    
+	    String matterId = request.getParameter(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+	    AgreementWorkflowService workflowService = new AgreementWorkflowService();
+	    boolean isMatterComplete = MatterEndStatus.MATTER_COMPLETE.getStatus().equals(workflowService.getMatterStatus(matterId));
+	    if (!isMatterComplete) {
+	        return "Error: Cannot generate PDF for incomplete matter";
+	    }
 
         try {
             AgreementGeneratePDFService pdfGenerate = new AgreementGeneratePDFService();
-            String pdfFileName = pdfGenerate.createPDF(MatterId);
+            String pdfFileName = pdfGenerate.createPDF(matterId);
             return pdfFileName;
 
         } catch (Exception e) {
