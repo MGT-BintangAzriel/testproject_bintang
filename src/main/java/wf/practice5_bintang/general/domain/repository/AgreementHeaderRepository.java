@@ -15,7 +15,6 @@ import jp.co.intra_mart.foundation.database.SQLManager;
 import jp.co.intra_mart.foundation.database.SearchCondition;
 import jp.co.intra_mart.foundation.exception.BizApiException;
 import jp.co.intra_mart.foundation.security.exception.AccessSecurityException;
-
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.constant.AgreementDbConstants;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;

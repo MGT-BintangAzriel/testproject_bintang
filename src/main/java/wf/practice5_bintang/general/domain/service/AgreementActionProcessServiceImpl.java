@@ -18,21 +18,19 @@ import jp.co.intra_mart.foundation.workflow.exception.WorkflowException;
 import jp.co.intra_mart.foundation.workflow.exception.WorkflowExternalException;
 import jp.co.intra_mart.foundation.workflow.plugin.process.action.ActionProcessParameter;
 import jp.co.intra_mart.foundation.workflow.util.WorkflowNumberingManager;
-
+import wf.common.constant.MailStatus;
+import wf.common.constant.WorkflowCommonConstants;
 import wf.common.constant.WorkflowStatus;
 import wf.practice5_bintang.general.AgreementActionProcessService;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
-import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
-import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
-import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
-
-import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
-import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoTempRepository;
-import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailTempRepository;
+import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
+import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
+import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
-import wf.common.constant.MailStatus;
-import wf.common.constant.WorkflowCommonConstants;
+import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoTempRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailTempRepository;
 
 @Service
 @Transactional(propagation = Propagation.MANDATORY)
@@ -277,7 +275,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 
 			Collection<AgreementHeaderInfoModel> headerInfoTempModel = headerInfoTempDb.selectHeaderInfoTemp(parameter.getSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
 
-						if (headerInfoTempModel != null && !headerInfoTempModel.isEmpty()) {
+			if (headerInfoTempModel != null && !headerInfoTempModel.isEmpty()) {
 				AgreementHeaderInfoModel model = headerInfoTempModel.iterator().next();
 
 				String nodeId = parameter.getNodeId();
@@ -293,9 +291,9 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 						if ("dic".equals(psdProcess)) {
 							model.setDic_reason(getUserParameterValue(userParameter, "f_dic_reason"));
 						} else {
-							model.setDic_reason(""); 							
+							model.setDic_reason("");
 						}
-					} else {					
+					} else {
 						model.setPsd_process("");
 						model.setDic_reason("");
 					}
@@ -304,7 +302,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 					model.setDd_process(getUserParameterValue(userParameter, "f_dd_process"));
 					model.setAnti_bribery(getUserParameterValue(userParameter, "f_anti_bribery"));
 					model.setAudit_rights(getUserParameterValue(userParameter, "f_audit_rights"));
-					
+
 				} else if ("node_legal".equals(nodeId)) {
 					model.setLegal_agreement_number(getUserParameterValue(userParameter, "f_legal_agreement_number"));
 					model.setLegal_agreement_date(getUserParameterValue(userParameter, "f_legal_agreement_date"));

@@ -10,14 +10,13 @@ import javax.naming.NamingException;
 import jp.co.intra_mart.foundation.database.ColumnValues;
 import jp.co.intra_mart.foundation.database.SQLManager;
 import jp.co.intra_mart.foundation.security.exception.AccessSecurityException;
-
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.constant.AgreementDbConstants;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.util.DbValueUtils;
 
 public class AgreementHeaderInfoRepository {
-	
+
 	private String selectDataAll = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER_INFO;
 	private String selectDataByMatterId = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER_INFO + " WHERE system_matter_id = ?";
 
@@ -33,7 +32,7 @@ public class AgreementHeaderInfoRepository {
 		}
 
 	}
-	
+
 	public Collection<AgreementHeaderInfoModel> selectHeaderInfo(String selectValue, String selectWhere) throws Exception {
 		try {
 			SQLManager sqlManager = new SQLManager();

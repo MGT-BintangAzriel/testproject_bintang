@@ -12,15 +12,14 @@ import jp.co.intra_mart.foundation.master.user.UserManager;
 import jp.co.intra_mart.foundation.master.user.model.User;
 import jp.co.intra_mart.foundation.master.user.model.UserBizKey;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
-
-import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
+import wf.common.constant.MailStatus;
+import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
+import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
 import wf.practice5_bintang.general.domain.service.AgreementEmailService;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
-import wf.common.constant.MailStatus;
-import wf.common.constant.WorkflowCommonConstants;
 
 public class AgreementJob implements Job {
 
@@ -70,10 +69,10 @@ public class AgreementJob implements Job {
 				if (recipientEmail == null || recipientEmail.isEmpty()) {
 					recipientEmail = "employee@gmail.com";
 				}
-				
+
 				AgreementGeneratePDFService generatePDFService = new AgreementGeneratePDFService();
 				String pdfFileName = generatePDFService.createPDF(matterId);
-				
+
 				List<AgreementAttachmentModel> attachments = new ArrayList<>(agreementAttachFileDb.selectAttachment(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID));
 
 				AgreementEmailService mailService = new AgreementEmailService();
