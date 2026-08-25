@@ -260,7 +260,7 @@
 				</c:forEach>
 
 				<!-- Initial Blank Row for New Form -->
-				<c:if test="${empty savedFormData.d_list_payment_detail}">
+				<c:if test="${empty savedFormData.d_list_payment_detail and (workflowRequestForm.imwPageType == '0' || workflowRequestForm.imwPageType == '3')}">
 					<tr class="payment-row">
 						<td style="text-align: center;" class="row-seq-no">1</td>
 						<td style="text-align: center;">

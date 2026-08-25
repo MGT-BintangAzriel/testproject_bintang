@@ -24,6 +24,7 @@ import wf.common.constant.MatterEndStatus;
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
+import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
@@ -68,7 +69,7 @@ public class AgreementController {
 			savedFormData = workflowService.getHeaderInfoTempFormApply();
 
 		} else {
-			savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+			savedFormData = workflowService.getAgreementFormData(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
 		}
 
 		model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
@@ -81,7 +82,7 @@ public class AgreementController {
 	public final String approve(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws AccessSecurityException, IOException {
 		try {
 			AgreementWorkflowService workflowService = new AgreementWorkflowService();
-			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+			AgreementForm savedFormData = workflowService.getAgreementFormData(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
 
 			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
@@ -98,7 +99,8 @@ public class AgreementController {
 	public final String detail(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws AccessSecurityException, IOException {
 		try {
 			AgreementWorkflowService workflowService = new AgreementWorkflowService();
-			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+			AgreementForm savedFormData = workflowService.getAgreementFormData(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+
 			boolean isMatterComplete = MatterEndStatus.MATTER_COMPLETE.getStatus().equals(workflowService.getMatterStatus(workflowRequestForm.getImwSystemMatterId()));
 
 			model.addAttribute(MODEL_KEY_MATTER_COMPLETE, isMatterComplete);
@@ -117,7 +119,7 @@ public class AgreementController {
 	public final String confirm(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws AccessSecurityException, IOException {
 		try {
 			AgreementWorkflowService workflowService = new AgreementWorkflowService();
-			AgreementForm savedFormData = workflowService.getHeaderInfoTempForm(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+			AgreementForm savedFormData = workflowService.getAgreementFormData(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
 
 			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
@@ -138,8 +140,17 @@ public class AgreementController {
 		}
 
 		String systemMatterId = request.getParameter(WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
-		AgreementAttachFileTempRepository attachFileTempDb = new AgreementAttachFileTempRepository();
-		AgreementAttachmentModel attachment = attachFileTempDb.selectAttachmentTempBySystemMatterIdAndFileId(fileId, systemMatterId);
+		AgreementWorkflowService workflowService = new AgreementWorkflowService();
+		boolean isMatterComplete = MatterEndStatus.MATTER_COMPLETE.getStatus().equals(workflowService.getMatterStatus(systemMatterId));
+
+		AgreementAttachmentModel attachment;
+		if (isMatterComplete) {
+			AgreementAttachFileRepository attachFileDb = new AgreementAttachFileRepository();
+			attachment = attachFileDb.selectAttachmentBySystemMatterIdAndFileId(fileId, systemMatterId);
+		} else {
+			AgreementAttachFileTempRepository attachFileTempDb = new AgreementAttachFileTempRepository();
+			attachment = attachFileTempDb.selectAttachmentTempBySystemMatterIdAndFileId(fileId, systemMatterId);
+		}
 
 		if (attachment == null) {
 			model.addAttribute(MODEL_KEY_ERROR_MESSAGE_ENG, ERR_MSG_ATTACHMENT_NOT_FOUND);

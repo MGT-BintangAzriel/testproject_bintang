@@ -19,263 +19,287 @@ import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.SessionScopeStorage;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
+import wf.common.constant.MatterEndStatus;
 import wf.practice5_bintang.general.app.AgreementForm;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
+import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderInfoTempRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailTempRepository;
 
 public class AgreementWorkflowService {
 
-	public AgreementForm getHeaderInfoTempForm(String selectValue, String selectWhere, HttpServletRequest request) throws Exception {
-		AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
-		AgreementHeaderInfoTempRepository headerInfoTempDb = new AgreementHeaderInfoTempRepository();
-		AgreementPaymentDetailTempRepository agreementPaymentDetailTempDb = new AgreementPaymentDetailTempRepository();
-		AgreementAttachFileTempRepository agreementAttachFileTempDb = new AgreementAttachFileTempRepository();
+	public AgreementForm getAgreementFormData(String selectValue, String selectWhere, HttpServletRequest request) throws Exception {
+		boolean isMatterComplete = MatterEndStatus.MATTER_COMPLETE.getStatus().equals(getMatterStatus(selectValue));
+		return getAgreementFormData(selectValue, selectWhere, request, isMatterComplete);
+	}
 
+	public AgreementForm getAgreementFormData(String selectValue, String selectWhere, HttpServletRequest request, boolean isMatterComplete) throws Exception {
+		AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
 		Collection<AgreementHeaderModel> headerList = agreementHeaderDb.selectHeader(selectValue, selectWhere);
 		AgreementHeaderModel headerModel = (headerList != null && !headerList.isEmpty()) ? headerList.iterator().next() : null;
 
-		Collection<AgreementHeaderInfoModel> headerInfoTempModels = headerInfoTempDb.selectHeaderInfoTemp(selectValue, selectWhere);
-		Collection<AgreementPaymentDetailModel> paymentDetailModels = agreementPaymentDetailTempDb.selectPaymentDetailTemp(selectValue, selectWhere);
-		Collection<AgreementAttachmentModel> attachFileModels = agreementAttachFileTempDb.selectAttachmentTemp(selectValue, selectWhere);
+		Collection<AgreementHeaderInfoModel> headerInfoModels = null;
+		Collection<AgreementPaymentDetailModel> paymentDetailModels = null;
+		Collection<AgreementAttachmentModel> attachFileModels = null;
 
-		return buildFormFromTempModel(headerModel, headerInfoTempModels, paymentDetailModels, attachFileModels, request);
+		if (isMatterComplete) {
+			AgreementHeaderInfoRepository headerInfoDb = new AgreementHeaderInfoRepository();
+			AgreementPaymentDetailRepository agreementPaymentDetailDb = new AgreementPaymentDetailRepository();
+			AgreementAttachFileRepository agreementAttachFileDb = new AgreementAttachFileRepository();
+
+			headerInfoModels = headerInfoDb.selectHeaderInfo(selectValue, selectWhere);
+			paymentDetailModels = agreementPaymentDetailDb.selectPaymentDetail(selectValue, selectWhere);
+			attachFileModels = agreementAttachFileDb.selectAttachment(selectValue, selectWhere);
+			
+		} else {
+			AgreementHeaderInfoTempRepository headerInfoTempDb = new AgreementHeaderInfoTempRepository();
+			AgreementPaymentDetailTempRepository agreementPaymentDetailTempDb = new AgreementPaymentDetailTempRepository();
+			AgreementAttachFileTempRepository agreementAttachFileTempDb = new AgreementAttachFileTempRepository();
+
+			headerInfoModels = headerInfoTempDb.selectHeaderInfoTemp(selectValue, selectWhere);
+			paymentDetailModels = agreementPaymentDetailTempDb.selectPaymentDetailTemp(selectValue, selectWhere);
+			attachFileModels = agreementAttachFileTempDb.selectAttachmentTemp(selectValue, selectWhere);
+		}
+
+		return buildFormFromModel(headerModel, headerInfoModels, paymentDetailModels, attachFileModels, request);
 	}
 
-	private AgreementForm buildFormFromTempModel(AgreementHeaderModel headerModel, Collection<AgreementHeaderInfoModel> headerInfoTempModels, Collection<AgreementPaymentDetailModel> paymentDetailModels,
+	private AgreementForm buildFormFromModel(AgreementHeaderModel headerModel, Collection<AgreementHeaderInfoModel> headerInfoModels, Collection<AgreementPaymentDetailModel> paymentDetailModels,
 			Collection<AgreementAttachmentModel> attachFileModels, HttpServletRequest request) {
 
 		AgreementForm form = new AgreementForm();
-		if (headerInfoTempModels == null || headerInfoTempModels.isEmpty()) {
+		if (headerInfoModels == null || headerInfoModels.isEmpty()) {
 			return form;
 		}
 
-		AgreementHeaderInfoModel headerInfoTempModel = headerInfoTempModels.iterator().next();
+		AgreementHeaderInfoModel headerInfoModel = headerInfoModels.iterator().next();
 
 		form.setF_download_token(getDownloadToken(request));
 
-		form.setF_application_number(headerInfoTempModel.getApplication_number());
-		form.setF_application_date(getDateFormat(headerInfoTempModel.getApplication_date(), "yyyy/MM/dd"));
-		form.setF_applicant_number(headerInfoTempModel.getApplicant_number());
-		form.setF_applicant_department(headerInfoTempModel.getApplicant_department());
-		form.setF_applicant_name(headerInfoTempModel.getApplicant_name());
-		form.setF_applicant_post(headerInfoTempModel.getApplicant_post());
+		form.setF_application_number(headerInfoModel.getApplication_number());
+		form.setF_application_date(getDateFormat(headerInfoModel.getApplication_date(), "yyyy/MM/dd"));
+		form.setF_applicant_number(headerInfoModel.getApplicant_number());
+		form.setF_applicant_department(headerInfoModel.getApplicant_department());
+		form.setF_applicant_name(headerInfoModel.getApplicant_name());
+		form.setF_applicant_post(headerInfoModel.getApplicant_post());
 
-		form.setF_system_matter_id(headerInfoTempModel.getSystem_matter_id());
-		form.setF_user_data_id(headerInfoTempModel.getUser_data_id());
+		form.setF_system_matter_id(headerInfoModel.getSystem_matter_id());
+		form.setF_user_data_id(headerInfoModel.getUser_data_id());
 
-		form.setF_counter_party(headerInfoTempModel.getCounter_party());
-		form.setF_currency(headerInfoTempModel.getCurrency());
-		form.setF_total_amount(headerInfoTempModel.getTotal_amount());
+		form.setF_counter_party(headerInfoModel.getCounter_party());
+		form.setF_currency(headerInfoModel.getCurrency());
+		form.setF_total_amount(headerInfoModel.getTotal_amount());
 
-		form.setF_agreement_status(headerInfoTempModel.getAgreement_status());
-		if (headerInfoTempModel.getAgreement_status() != null) {
-			if (headerInfoTempModel.getAgreement_status().contains("one_time")) {
+		form.setF_agreement_status(headerInfoModel.getAgreement_status());
+		if (headerInfoModel.getAgreement_status() != null) {
+			if (headerInfoModel.getAgreement_status().contains("one_time")) {
 				form.setF_agreement_status_one_time("checked");
 			}
-			if (headerInfoTempModel.getAgreement_status().contains("amendment")) {
+			if (headerInfoModel.getAgreement_status().contains("amendment")) {
 				form.setF_agreement_status_amendment("checked");
 			}
-			if (headerInfoTempModel.getAgreement_status().contains("umbrella")) {
+			if (headerInfoModel.getAgreement_status().contains("umbrella")) {
 				form.setF_agreement_status_umbrella("checked");
 			}
 		}
 
-		form.setF_total_duration(headerInfoTempModel.getTotal_duration());
-		if (headerInfoTempModel.getTotal_duration() != null) {
-			if (headerInfoTempModel.getTotal_duration().contains("more_than_1_year")) {
+		form.setF_total_duration(headerInfoModel.getTotal_duration());
+		if (headerInfoModel.getTotal_duration() != null) {
+			if (headerInfoModel.getTotal_duration().contains("more_than_1_year")) {
 				form.setF_total_duration_more_than_1_year("checked");
 			}
-			if (headerInfoTempModel.getTotal_duration().contains("up_to_1_year")) {
+			if (headerInfoModel.getTotal_duration().contains("up_to_1_year")) {
 				form.setF_total_duration_up_to_1_year("checked");
 			}
 		}
 
-		form.setF_auto_extension(headerInfoTempModel.getAuto_extension());
-		if (headerInfoTempModel.getAuto_extension() != null) {
-			if (headerInfoTempModel.getAuto_extension().contains("yes")) {
+		form.setF_auto_extension(headerInfoModel.getAuto_extension());
+		if (headerInfoModel.getAuto_extension() != null) {
+			if (headerInfoModel.getAuto_extension().contains("yes")) {
 				form.setF_auto_extension_yes("checked");
 			}
-			if (headerInfoTempModel.getAuto_extension().contains("no")) {
+			if (headerInfoModel.getAuto_extension().contains("no")) {
 				form.setF_auto_extension_no("checked");
 			}
 		}
 
-		form.setF_po_required(headerInfoTempModel.getPo_required());
-		if (headerInfoTempModel.getPo_required() != null) {
-			if (headerInfoTempModel.getPo_required().contains("yes")) {
+		form.setF_po_required(headerInfoModel.getPo_required());
+		if (headerInfoModel.getPo_required() != null) {
+			if (headerInfoModel.getPo_required().contains("yes")) {
 				form.setF_po_required_yes("checked");
 			}
-			if (headerInfoTempModel.getPo_required().contains("no")) {
+			if (headerInfoModel.getPo_required().contains("no")) {
 				form.setF_po_required_no("checked");
 			}
 		}
 
-		form.setF_agreement_title(headerInfoTempModel.getAgreement_title());
-		form.setF_effective_from(getDateFormat(headerInfoTempModel.getEffective_from(), "yyyy/MM/dd"));
-		form.setF_effective_to(getDateFormat(headerInfoTempModel.getEffective_to(), "yyyy/MM/dd"));
+		form.setF_agreement_title(headerInfoModel.getAgreement_title());
+		form.setF_effective_from(getDateFormat(headerInfoModel.getEffective_from(), "yyyy/MM/dd"));
+		form.setF_effective_to(getDateFormat(headerInfoModel.getEffective_to(), "yyyy/MM/dd"));
 
-		form.setF_company_relation(headerInfoTempModel.getCompany_relation());
-		if (headerInfoTempModel.getCompany_relation() != null) {
-			if (headerInfoTempModel.getCompany_relation().contains("related_parties")) {
+		form.setF_company_relation(headerInfoModel.getCompany_relation());
+		if (headerInfoModel.getCompany_relation() != null) {
+			if (headerInfoModel.getCompany_relation().contains("related_parties")) {
 				form.setF_company_relation_related_parties("checked");
 			}
-			if (headerInfoTempModel.getCompany_relation().contains("non_related_parties")) {
+			if (headerInfoModel.getCompany_relation().contains("non_related_parties")) {
 				form.setF_company_relation_non_related_parties("checked");
 			}
 		}
 
-		form.setF_estimated_delivery_from(getDateFormat(headerInfoTempModel.getEstimated_delivery_from(), "yyyy/MM/dd"));
-		form.setF_estimated_delivery_to(getDateFormat(headerInfoTempModel.getEstimated_delivery_to(), "yyyy/MM/dd"));
-		form.setF_agreement_summary(headerInfoTempModel.getAgreement_summary());
+		form.setF_estimated_delivery_from(getDateFormat(headerInfoModel.getEstimated_delivery_from(), "yyyy/MM/dd"));
+		form.setF_estimated_delivery_to(getDateFormat(headerInfoModel.getEstimated_delivery_to(), "yyyy/MM/dd"));
+		form.setF_agreement_summary(headerInfoModel.getAgreement_summary());
 
-		form.setF_purchase_category(headerInfoTempModel.getPurchase_category());
-		if (headerInfoTempModel.getPurchase_category() != null) {
-			if (headerInfoTempModel.getPurchase_category().contains("tangible_asset")) {
+		form.setF_purchase_category(headerInfoModel.getPurchase_category());
+		if (headerInfoModel.getPurchase_category() != null) {
+			if (headerInfoModel.getPurchase_category().contains("tangible_asset")) {
 				form.setF_purchase_category_tangible_asset("checked");
 			}
-			if (headerInfoTempModel.getPurchase_category().contains("intangible_asset")) {
+			if (headerInfoModel.getPurchase_category().contains("intangible_asset")) {
 				form.setF_purchase_category_intangible_asset("checked");
 			}
-			if (headerInfoTempModel.getPurchase_category().contains("non_asset")) {
+			if (headerInfoModel.getPurchase_category().contains("non_asset")) {
 				form.setF_purchase_category_non_asset("checked");
 			}
 		}
 
-		form.setF_start_using_date(getDateFormat(headerInfoTempModel.getStart_using_date(), "yyyy/MM/dd"));
-		form.setF_deprec_month(headerInfoTempModel.getDeprec_month());
+		form.setF_start_using_date(getDateFormat(headerInfoModel.getStart_using_date(), "yyyy/MM/dd"));
+		form.setF_deprec_month(headerInfoModel.getDeprec_month());
 
-		form.setF_multidata(headerInfoTempModel.getMultidata());
-		if (headerInfoTempModel.getMultidata() != null) {
-			if (headerInfoTempModel.getMultidata().contains("pl")) {
+		form.setF_multidata(headerInfoModel.getMultidata());
+		if (headerInfoModel.getMultidata() != null) {
+			if (headerInfoModel.getMultidata().contains("pl")) {
 				form.setF_multidata_pl("checked");
 			}
-			if (headerInfoTempModel.getMultidata().contains("asset")) {
+			if (headerInfoModel.getMultidata().contains("asset")) {
 				form.setF_multidata_asset("checked");
 			}
-			if (headerInfoTempModel.getMultidata().contains("estimated")) {
+			if (headerInfoModel.getMultidata().contains("estimated")) {
 				form.setF_multidata_estimated("checked");
 			}
 		}
 
-		form.setF_budget_pl_impact(headerInfoTempModel.getBudget_pl_impact());
-		form.setF_budget_pl_month(headerInfoTempModel.getBudget_pl_month());
-		form.setF_pl_impact(headerInfoTempModel.getPl_impact());
-		form.setF_pl_month(headerInfoTempModel.getPl_month());
-		form.setF_asset_number(headerInfoTempModel.getAsset_number());
-		form.setF_book_value(headerInfoTempModel.getBook_value());
-		form.setF_total_payment_amount(headerInfoTempModel.getTotal_payment_amount());
+		form.setF_budget_pl_impact(headerInfoModel.getBudget_pl_impact());
+		form.setF_budget_pl_month(headerInfoModel.getBudget_pl_month());
+		form.setF_pl_impact(headerInfoModel.getPl_impact());
+		form.setF_pl_month(headerInfoModel.getPl_month());
+		form.setF_asset_number(headerInfoModel.getAsset_number());
+		form.setF_book_value(headerInfoModel.getBook_value());
+		form.setF_total_payment_amount(headerInfoModel.getTotal_payment_amount());
 
-		form.setF_agreement_classification(headerInfoTempModel.getAgreement_classification());
-		if ("pd".equals(headerInfoTempModel.getAgreement_classification())) {
+		form.setF_agreement_classification(headerInfoModel.getAgreement_classification());
+		if ("pd".equals(headerInfoModel.getAgreement_classification())) {
 			form.setF_agreement_classification_pd("checked");
 		}
-		if ("dic_director_approval".equals(headerInfoTempModel.getAgreement_classification())) {
+		if ("dic_director_approval".equals(headerInfoModel.getAgreement_classification())) {
 			form.setF_agreement_classification_dic_director_approval("checked");
 		}
 
-		form.setF_pd_sub_condition(headerInfoTempModel.getPd_sub_condition());
-		if (headerInfoTempModel.getPd_sub_condition() != null) {
-			if (headerInfoTempModel.getPd_sub_condition().contains("more_than_1_billion")) {
+		form.setF_pd_sub_condition(headerInfoModel.getPd_sub_condition());
+		if (headerInfoModel.getPd_sub_condition() != null) {
+			if (headerInfoModel.getPd_sub_condition().contains("more_than_1_billion")) {
 				form.setF_agreement_classification_pd_more_than_1_billion("checked");
 			}
-			if (headerInfoTempModel.getPd_sub_condition().contains("more_than_12_months")) {
+			if (headerInfoModel.getPd_sub_condition().contains("more_than_12_months")) {
 				form.setF_agreement_classification_pd_more_than_12_months("checked");
 			}
-			if (headerInfoTempModel.getPd_sub_condition().contains("specific_party")) {
+			if (headerInfoModel.getPd_sub_condition().contains("specific_party")) {
 				form.setF_agreement_classification_pd_specific_party("checked");
 			}
-			if (headerInfoTempModel.getPd_sub_condition().contains("special_issue")) {
+			if (headerInfoModel.getPd_sub_condition().contains("special_issue")) {
 				form.setF_agreement_classification_pd_special_issue("checked");
 			}
-			if (headerInfoTempModel.getPd_sub_condition().contains("direct_procurement")) {
+			if (headerInfoModel.getPd_sub_condition().contains("direct_procurement")) {
 				form.setF_agreement_classification_pd_direct_procurement("checked");
 			}
-			if (headerInfoTempModel.getPd_sub_condition().contains("agreement_not_more_than_12_months")) {
+			if (headerInfoModel.getPd_sub_condition().contains("agreement_not_more_than_12_months")) {
 				form.setF_agreement_classification_pd_agreement_not_more_than_12_months("checked");
 			}
 		}
 
-		form.setF_ec_approval(headerInfoTempModel.getEc_approval());
-		if ("yes".equals(headerInfoTempModel.getEc_approval())) {
+		form.setF_ec_approval(headerInfoModel.getEc_approval());
+		if ("yes".equals(headerInfoModel.getEc_approval())) {
 			form.setF_agreement_classification_ec_approval_yes("checked");
 		}
-		if ("no".equals(headerInfoTempModel.getEc_approval())) {
+		if ("no".equals(headerInfoModel.getEc_approval())) {
 			form.setF_agreement_classification_ec_approval_no("checked");
 		}
 
-		form.setF_ec_sub_condition(headerInfoTempModel.getEc_sub_condition());
-		if (headerInfoTempModel.getEc_sub_condition() != null) {
-			if (headerInfoTempModel.getEc_sub_condition().contains("amount_equal_more_than_1_billion")) {
+		form.setF_ec_sub_condition(headerInfoModel.getEc_sub_condition());
+		if (headerInfoModel.getEc_sub_condition() != null) {
+			if (headerInfoModel.getEc_sub_condition().contains("amount_equal_more_than_1_billion")) {
 				form.setF_agreement_classification_ec_amount_equal_more_than_1_billion("checked");
 			}
-			if (headerInfoTempModel.getEc_sub_condition().contains("period_equal_more_than_12_months")) {
+			if (headerInfoModel.getEc_sub_condition().contains("period_equal_more_than_12_months")) {
 				form.setF_agreement_classification_ec_period_equal_more_than_12_months("checked");
 			}
-			if (headerInfoTempModel.getEc_sub_condition().contains("escalate_issue_to_ec")) {
+			if (headerInfoModel.getEc_sub_condition().contains("escalate_issue_to_ec")) {
 				form.setF_agreement_classification_ec_escalate_issue_to_ec("checked");
 			}
 		}
 
-		form.setF_psd_area(headerInfoTempModel.getPsd_area());
-		if (headerInfoTempModel.getPsd_area() != null) {
-			if (headerInfoTempModel.getPsd_area().contains("psd")) {
+		form.setF_psd_area(headerInfoModel.getPsd_area());
+		if (headerInfoModel.getPsd_area() != null) {
+			if (headerInfoModel.getPsd_area().contains("psd")) {
 				form.setF_psd_area_psd("checked");
 			}
-			if (headerInfoTempModel.getPsd_area().contains("non_psd")) {
+			if (headerInfoModel.getPsd_area().contains("non_psd")) {
 				form.setF_psd_area_non_psd("checked");
 			}
 		}
 
-		form.setF_psd_process(headerInfoTempModel.getPsd_process());
-		if (headerInfoTempModel.getPsd_process() != null) {
-			if (headerInfoTempModel.getPsd_process().contains("psd")) {
+		form.setF_psd_process(headerInfoModel.getPsd_process());
+		if (headerInfoModel.getPsd_process() != null) {
+			if (headerInfoModel.getPsd_process().contains("psd")) {
 				form.setF_psd_process_psd("checked");
 			}
-			if (headerInfoTempModel.getPsd_process().contains("dic")) {
+			if (headerInfoModel.getPsd_process().contains("dic")) {
 				form.setF_psd_process_dic("checked");
 			}
 		}
-		form.setF_dic_reason(headerInfoTempModel.getDic_reason());
+		form.setF_dic_reason(headerInfoModel.getDic_reason());
 
-		form.setF_dd_process(headerInfoTempModel.getDd_process());
-		if (headerInfoTempModel.getDd_process() != null) {
-			if (headerInfoTempModel.getDd_process().contains("yes")) {
+		form.setF_dd_process(headerInfoModel.getDd_process());
+		if (headerInfoModel.getDd_process() != null) {
+			if (headerInfoModel.getDd_process().contains("yes")) {
 				form.setF_dd_process_yes("checked");
 			}
-			if (headerInfoTempModel.getDd_process().contains("no")) {
+			if (headerInfoModel.getDd_process().contains("no")) {
 				form.setF_dd_process_no("checked");
 			}
 		}
 
-		form.setF_anti_bribery(headerInfoTempModel.getAnti_bribery());
-		if (headerInfoTempModel.getAnti_bribery() != null) {
-			if (headerInfoTempModel.getAnti_bribery().contains("yes")) {
+		form.setF_anti_bribery(headerInfoModel.getAnti_bribery());
+		if (headerInfoModel.getAnti_bribery() != null) {
+			if (headerInfoModel.getAnti_bribery().contains("yes")) {
 				form.setF_anti_bribery_yes("checked");
 			}
-			if (headerInfoTempModel.getAnti_bribery().contains("no")) {
+			if (headerInfoModel.getAnti_bribery().contains("no")) {
 				form.setF_anti_bribery_no("checked");
 			}
 		}
 
-		form.setF_audit_rights(headerInfoTempModel.getAudit_rights());
-		if (headerInfoTempModel.getAudit_rights() != null) {
-			if (headerInfoTempModel.getAudit_rights().contains("yes")) {
+		form.setF_audit_rights(headerInfoModel.getAudit_rights());
+		if (headerInfoModel.getAudit_rights() != null) {
+			if (headerInfoModel.getAudit_rights().contains("yes")) {
 				form.setF_audit_rights_yes("checked");
 			}
-			if (headerInfoTempModel.getAudit_rights().contains("no")) {
+			if (headerInfoModel.getAudit_rights().contains("no")) {
 				form.setF_audit_rights_no("checked");
 			}
 		}
 
-		form.setF_legal_agreement_number(headerInfoTempModel.getLegal_agreement_number());
-		form.setF_legal_agreement_date(getDateFormat(headerInfoTempModel.getLegal_agreement_date(), "yyyy/MM/dd"));
+		form.setF_legal_agreement_number(headerInfoModel.getLegal_agreement_number());
+		form.setF_legal_agreement_date(getDateFormat(headerInfoModel.getLegal_agreement_date(), "yyyy/MM/dd"));
 
 		form.setD_list_attachment(convertAttachmentFiles(attachFileModels));
 		form.setD_list_payment_detail(convertPayment(paymentDetailModels));
