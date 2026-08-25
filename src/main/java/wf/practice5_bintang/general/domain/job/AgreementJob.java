@@ -1,7 +1,9 @@
 package wf.practice5_bintang.general.domain.job;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import jp.co.intra_mart.foundation.job_scheduler.Job;
 import jp.co.intra_mart.foundation.job_scheduler.JobResult;
@@ -12,10 +14,13 @@ import jp.co.intra_mart.foundation.master.user.model.UserBizKey;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
+import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
+import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementHeaderRepository;
 import wf.practice5_bintang.general.domain.service.AgreementEmailService;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.common.constant.MailStatus;
+import wf.common.constant.WorkflowCommonConstants;
 
 public class AgreementJob implements Job {
 
@@ -29,10 +34,11 @@ public class AgreementJob implements Job {
 
 		try {
 			System.out.println("-------- RUNNING JOB SUCCESS  -----------");
-			AgreementHeaderRepository agreementHeaderDB = new AgreementHeaderRepository();
+			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
+			AgreementAttachFileRepository agreementAttachFileDb = new AgreementAttachFileRepository();
 
 			String mailStatus = MailStatus.UNSENT.getCode();
-			Collection<AgreementHeaderModel> models = agreementHeaderDB.selectHeader(mailStatus, "mail");
+			Collection<AgreementHeaderModel> models = agreementHeaderDb.selectHeader(mailStatus, "mail");
 
 			for (AgreementHeaderModel model : models) {
 				String matterId = model.getSystem_matter_id();
@@ -67,9 +73,11 @@ public class AgreementJob implements Job {
 				
 				AgreementGeneratePDFService generatePDFService = new AgreementGeneratePDFService();
 				String pdfFileName = generatePDFService.createPDF(matterId);
+				
+				List<AgreementAttachmentModel> attachments = new ArrayList<>(agreementAttachFileDb.selectAttachment(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID));
 
 				AgreementEmailService mailService = new AgreementEmailService();
-				mailService.sendApprovalNotificationEmail(matterId, recipientEmail, matterNumber, matterName, matterDate, pdfFileName);
+				mailService.sendApprovalNotificationEmail(matterId, recipientEmail, matterNumber, matterName, matterDate, pdfFileName, attachments);
 			}
 
 		} catch (Exception e) {

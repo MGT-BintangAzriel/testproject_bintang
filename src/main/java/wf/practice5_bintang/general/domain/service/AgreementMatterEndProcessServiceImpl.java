@@ -13,7 +13,6 @@ import jp.co.intra_mart.foundation.master.user.UserManager;
 import jp.co.intra_mart.foundation.master.user.model.User;
 import jp.co.intra_mart.foundation.master.user.model.UserBizKey;
 import jp.co.intra_mart.foundation.workflow.application.general.ActvMatter;
-import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 import jp.co.intra_mart.foundation.workflow.plugin.process.matter_end.MatterEndProcessParameter;
 import wf.common.constant.MailStatus;
 import wf.common.constant.MatterEndStatus;
@@ -77,7 +76,7 @@ public class AgreementMatterEndProcessServiceImpl implements AgreementMatterEndP
 			String pdfFileName = generatePDFService.createPDF(matterId);
 			
 			AgreementEmailService mailService = new AgreementEmailService();
-			mailService.sendApprovalNotificationEmail(matterId, matterData.get(0), matterData.get(1), matterData.get(2), matterData.get(3), pdfFileName);
+			mailService.sendApprovalNotificationEmail(matterId, matterData.get(0), matterData.get(1), matterData.get(2), matterData.get(3), pdfFileName, attachmentTempModel);
 
 		} else if (MatterEndStatus.DENY.getStatus().equals(parameter.getLastResultStatus())) {
 			headerModel.setStatus(WorkflowStatus.DENIED.getCode());
@@ -98,26 +97,16 @@ public class AgreementMatterEndProcessServiceImpl implements AgreementMatterEndP
 		String recipientEmail = "emailnotfound@gmail.com";
 
 		try {
-			CplMatter cplMatter = new CplMatter(matterId);
-			matterNumber = cplMatter.getMatter().getMatterNumber();
-			matterName = cplMatter.getMatter().getMatterName();
-			matterDatetime = cplMatter.getMatter().getApplyDate();
-			matterApplicantCode = cplMatter.getMatter().getApplyAuthUserCode();
-		} catch (Exception e) {
-			try {
-				ActvMatter actvMatter = new ActvMatter(matterId);
-				matterNumber = actvMatter.getMatter().getMatterNumber();
-				matterName = actvMatter.getMatter().getMatterName();
-				matterDatetime = actvMatter.getMatter().getApplyDate();
-				matterApplicantCode = actvMatter.getMatter().getApplyAuthUserCode();
-			} catch (Exception e2) {
-				System.out.println("Error on matter data retrieval");
-				e.printStackTrace();
-			}
-			System.out.println("Mail sent using Active Matter data");
-			e.printStackTrace();
+			ActvMatter actvMatter = new ActvMatter(matterId);
+			matterNumber = actvMatter.getMatter().getMatterNumber();
+			matterName = actvMatter.getMatter().getMatterName();
+			matterDatetime = actvMatter.getMatter().getApplyDate();
+			matterApplicantCode = actvMatter.getMatter().getApplyAuthUserCode();
+		} catch (Exception e2) {
+			System.out.println("Error on matter data retrieval");
 		}
-
+		System.out.println("Mail sent using Active Matter data");
+		
 		if (matterDatetime != null && matterDatetime.contains(" ")) {
 			matterDate = matterDatetime.split(" ")[0];
 		} else {
