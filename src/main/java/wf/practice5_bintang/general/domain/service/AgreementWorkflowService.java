@@ -10,6 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
@@ -28,7 +31,7 @@ import wf.practice5_bintang.general.domain.repository.AgreementPaymentDetailTemp
 
 public class AgreementWorkflowService {
 
-	public AgreementForm getHeaderInfoTempForm(String selectValue, String selectWhere) throws Exception {
+	public AgreementForm getHeaderInfoTempForm(String selectValue, String selectWhere, HttpServletRequest request) throws Exception {
 		AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
 		AgreementHeaderInfoTempRepository headerInfoTempDb = new AgreementHeaderInfoTempRepository();
 		AgreementPaymentDetailTempRepository agreementPaymentDetailTempDb = new AgreementPaymentDetailTempRepository();
@@ -41,11 +44,11 @@ public class AgreementWorkflowService {
 		Collection<AgreementPaymentDetailModel> paymentDetailModels = agreementPaymentDetailTempDb.selectPaymentDetailTemp(selectValue, selectWhere);
 		Collection<AgreementAttachmentModel> attachFileModels = agreementAttachFileTempDb.selectAttachmentTemp(selectValue, selectWhere);
 
-		return buildFormFromTempModel(headerModel, headerInfoTempModels, paymentDetailModels, attachFileModels);
+		return buildFormFromTempModel(headerModel, headerInfoTempModels, paymentDetailModels, attachFileModels, request);
 	}
 
 	private AgreementForm buildFormFromTempModel(AgreementHeaderModel headerModel, Collection<AgreementHeaderInfoModel> headerInfoTempModels, Collection<AgreementPaymentDetailModel> paymentDetailModels,
-			Collection<AgreementAttachmentModel> attachFileModels) {
+			Collection<AgreementAttachmentModel> attachFileModels, HttpServletRequest request) {
 
 		AgreementForm form = new AgreementForm();
 		if (headerInfoTempModels == null || headerInfoTempModels.isEmpty()) {
@@ -53,6 +56,8 @@ public class AgreementWorkflowService {
 		}
 
 		AgreementHeaderInfoModel headerInfoTempModel = headerInfoTempModels.iterator().next();
+
+		form.setF_download_token(getDownloadToken(request));
 
 		form.setF_application_number(headerInfoTempModel.getApplication_number());
 		form.setF_application_date(getDateFormat(headerInfoTempModel.getApplication_date(), "yyyy/MM/dd"));
@@ -276,6 +281,12 @@ public class AgreementWorkflowService {
 
 		return form;
 
+	}
+
+	private String getDownloadToken(HttpServletRequest request) {
+		String downloadToken = UUID.randomUUID().toString();
+		request.getSession().setAttribute("agreement_download_token", downloadToken);
+		return downloadToken;
 	}
 
 	private Collection<AgreementPaymentDetailModel> convertPayment(Collection<AgreementPaymentDetailModel> paymentDetailModels) {

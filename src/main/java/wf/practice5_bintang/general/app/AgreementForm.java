@@ -11,6 +11,8 @@ public class AgreementForm extends AgreementWorkflowForm {
 	private String f_system_matter_id;
 	private String f_user_data_id;
 
+	private String f_download_token;
+
 	private String f_application_number;
 	private String f_application_date;
 	private String f_applicant_number;
@@ -821,6 +823,14 @@ public class AgreementForm extends AgreementWorkflowForm {
 
 	public void setF_audit_rights_no(String f_audit_rights_no) {
 		this.f_audit_rights_no = f_audit_rights_no;
+	}
+
+	public String getF_download_token() {
+		return f_download_token;
+	}
+
+	public void setF_download_token(String f_download_token) {
+		this.f_download_token = f_download_token;
 	}
 
 }

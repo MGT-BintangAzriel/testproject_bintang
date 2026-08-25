@@ -38,7 +38,7 @@
 					},
 					success: function (response) {
 						if (response.indexOf("error") === -1) {
-							window.location.href = "/imarttest/practice5_bintang/downloadpdf/" + encodeURIComponent(response.trim());
+							window.location.href = "/imarttest/practice5_bintang/downloadpdf/" + encodeURIComponent(response.trim()) + "?token=" + encodeURIComponent('${f:h(savedFormData.f_download_token)}');
 						} else {
 							console.log("LOG Error :" , response);
 							alert("Failed to Generate PDF");

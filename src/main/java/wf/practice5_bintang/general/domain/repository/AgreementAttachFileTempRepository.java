@@ -2,6 +2,7 @@ package wf.practice5_bintang.general.domain.repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import jp.co.intra_mart.foundation.database.ColumnValues;
 import jp.co.intra_mart.foundation.database.SQLManager;
@@ -53,6 +54,22 @@ public class AgreementAttachFileTempRepository {
 		SearchCondition searchCondition = new SearchCondition();
 		searchCondition.addCondition(condition, filterValue);
 		sqlManager.delete(AgreementDbConstants.TABLE_ATTACH_TEMP, searchCondition);
+	}
+
+	public AgreementAttachmentModel selectAttachmentTempBySystemMatterIdAndFileId(int fileId, String systemMatterId) throws Exception {
+		SQLManager sqlMngr = new SQLManager();
+
+		String sql = "SELECT * FROM " + AgreementDbConstants.TABLE_ATTACH_TEMP + " WHERE id = ? AND system_matter_id = ?";
+
+		Collection<Object> parameters = new ArrayList<Object>();
+		parameters.add(fileId);
+		parameters.add(systemMatterId);
+
+		List<AgreementAttachmentModel> result = new ArrayList<>(sqlMngr.select(AgreementAttachmentModel.class, sql, parameters));
+		if (result == null || result.isEmpty()) {
+			return null;
+		}
+		return result.get(0);
 	}
 
 	private ColumnValues buildColumnValues(AgreementAttachmentModel model, String condition) throws Exception {
