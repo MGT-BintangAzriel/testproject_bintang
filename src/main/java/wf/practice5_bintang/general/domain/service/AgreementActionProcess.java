@@ -111,7 +111,6 @@ public class AgreementActionProcess extends ActionProcessEventListener {
         @Override
         public final void sendBack(final ActionProcessParameter parameter, final Map<String, Object> userParameter)
                         throws Exception {
-                // アクション処理用のサービスを取得する
                 final AgreementActionProcessService service = ApplicationContextProvider.getApplicationContext()
                                 .getBean(AgreementActionProcessService.class);
                 service.sendBack(parameter, userParameter);

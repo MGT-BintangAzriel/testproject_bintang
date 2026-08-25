@@ -20,11 +20,6 @@
 	width: 100%;
 }
 
-/* Calendar Inputs - leave room for calendar icon
-input.imuiCalendar {
-	width: calc(100% - 30px) !important;
-	display: inline-block;
-} */
 .form-input-text {
 	height: 24px;
 }

@@ -35,23 +35,12 @@
 		</header>
 		<table class="imui-form file_attachment_list">
 			<tbody>
-				<%-- <c:forEach items="${savedFormData.d_list_attachment}" var="file">
-					<tr>
-						<td width='100' class="table-action-col">
-							<input type='button' value='Delete' name="${file.file_real_name}" id='delete_file' class='imui-medium-button' />
-						</td>
-						<td>
-							<a href="practice5_bintang/download/${file.id}">${file.file_name}</a>
-						</td>
-					</tr>
-				</c:forEach> --%>
 				<c:forEach items="${savedFormData.d_list_attachment}" var="file">
 					<tr>
 						<td width='100' class="table-action-col">
 							<input type='button' value='Delete' name="${file.file_real_name}" id='delete_file' class='imui-medium-button' />
 						</td>
 						<td>
-							<%-- <a href="practice5_bintang/download/${file.id}"> ${f:h(file.file_name)} </a> --%>
 							<a href="practice5_bintang/download/${file.id}?token=${f:h(savedFormData.f_download_token)}&system_matter_id=${f:h(workflowRequestForm.imwSystemMatterId)}">
 								${f:h(file.file_name)}
 							</a>

@@ -224,10 +224,6 @@
 							<div class="error_message"></div>
 						</td>
 						<td>
-							<%-- <label style="margin-right: 6px;"><input type="radio" name="f_recurring_${item.row_no}" value="1"
-							${item.recurring == '1' ? 'checked' : ''} class="f_recurring"> Yes</label> <label><input type="radio" name="f_recurring_${item.row_no}"
-							value="0" ${item.recurring == '0' ? 'checked' : ''} class="f_recurring"> No</label> --%>
-
 							<table style="margin: 0px;">
 								<tr>
 									<td style="border: none; padding: 0px;">
@@ -249,11 +245,6 @@
 							<div class="error_message"></div>
 						</td>
 						<td>
-							<%--
-						<label style="margin-right: 6px;"><input type="checkbox" name="f_paid_by_${item.row_no}" value="card"
-							${item.paid_by_card ? 'checked' : ''} class="f_paid_by"> Card</label> <label><input type="checkbox" name="f_paid_by_${item.row_no}"
-							value="cash" ${item.paid_by_cash ? 'checked' : ''} class="f_paid_by"> Cash</label>
-						--%>
 							<label style="display: block; margin-bottom: 4px;">
 								<input type="checkbox" name="f_paid_by_${item.row_no}" value="card" ${f:h(item.paid_by_card)} class="f_paid_by"> Card
 							</label>

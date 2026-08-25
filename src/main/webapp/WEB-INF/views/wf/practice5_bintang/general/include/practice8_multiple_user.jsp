@@ -17,7 +17,6 @@
 	</colgroup>
 	<tbody>
 		<!-- PSD Area or Non-PSD Area -->
-		<!-- PSD Area or Non-PSD Area -->
 		<tr>
 			<th colspan="${thColspan}">
 				<label class="imui-required">PSD Area or Non-PSD Area (Based on Guideline)</label>
