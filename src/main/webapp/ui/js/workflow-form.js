@@ -87,84 +87,10 @@ function toggleDepreciation() {
   }
 }
 
-// Initialize readonly view of workflow form
-function initReadOnlyAgreementForm() {
-  // Set text inputs & textareas to readonly
-  $(
-    '#workflowOpenPageForm input[type="text"], #workflowOpenPageForm textarea',
-  ).prop("readonly", true);
+// Setup multiple user input fields based on node id
+function setupMultiuserInput(nodeId) {
 
-  // Disable radios, checkboxes & selects
-  $(
-    '#workflowOpenPageForm input[type="radio"], #workflowOpenPageForm input[type="checkbox"], #workflowOpenPageForm select',
-  ).prop("disabled", true);
-
-  // Pointer-lock radios & checkboxes so they cannot be clicked
-  $(
-    '#workflowOpenPageForm input[type="radio"], #workflowOpenPageForm input[type="checkbox"]',
-  ).on("click.lock", function (e) {
-    e.preventDefault();
-  });
-
-  // Disable depreciation check if non-asset
-  if ($('input[name="f_purchase_category"]:checked').val() === "non_asset") {
-    $("#f_start_using_date, #f_deprec_month").prop("disabled", true);
-  }
-
-  // Hide action column and buttons and resize payment table
-  $(".table-action-col, #btn_add_payment_row").hide();
-  $("#payment_detail_table colgroup col.table-action-col").remove();
-  $("#payment_detail_table thead th[colspan='8']").attr("colspan", "7");
-  var readOnlyWidths = ["4%", "25%", "15%", "14%", "15%", "12%", "15%"];
-  $("#payment_detail_table colgroup col").each(function (index) {
-    $(this).css("width", readOnlyWidths[index]);
-  });
-
-  // Format saved numbers with commas (e.g. 100000000 -> 100,000,000.00)
-  $("#f_total_amount, #f_total_payment_amount, .payment-amount").each(
-    function () {
-      var val = $(this).val();
-      if (val) {
-        var num = parseFloat(val.replace(/[^0-9.]/g, "")) || 0;
-        if (num) {
-          $(this).val(
-            num.toLocaleString("en-US", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }),
-          );
-        }
-      }
-    },
-  );
-}
-
-// Disable multiple user input section fields
-function disablePractice8Fields() {
-  $(
-    'input[name="f_psd_area"], input[name="f_psd_process"], input[name="f_dd_process"], input[name="f_anti_bribery"], input[name="f_audit_rights"]',
-  ).prop("disabled", true);
-  $("#f_dic_reason, #f_legal_agreement_number, #f_legal_agreement_date").prop(
-    "disabled",
-    true,
-  );
-}
-
-// Apply node-based field permissions on Approve screen
-function applyNodePermissions(nodeId) {
-  // Disable Practice 8 section fields by default
-  disablePractice8Fields();
-
-  // Unlock fields based on active Node ID
   if (nodeId === "node_psd") {
-
-    // PSD Officer Node -> Unlock PSD fields
-    $('input[name="f_psd_area"], input[name="f_psd_process"]')
-      .prop("disabled", false)
-      .off("click.lock");
-
-    $("#f_dic_reason").prop("readonly", false);
-
     $('input[name="f_psd_area"]')
       .on("change", togglePsdField)
       .trigger("change");
@@ -173,20 +99,7 @@ function applyNodePermissions(nodeId) {
       .on("change", toggleDicReason)
       .trigger("change");
 
-  } else if (nodeId === "node_cco") {
-    // CCO Compliance Node -> Unlock Compliance fields
-    $(
-      'input[name="f_dd_process"], input[name="f_anti_bribery"], input[name="f_audit_rights"]',
-    )
-      .prop("disabled", false)
-      .off("click.lock");
-
   } else if (nodeId === "node_legal") {
-    // Legal Officer Node -> Unlock Legal fields & initialize calendar
-    $("#f_legal_agreement_number, #f_legal_agreement_date")
-      .prop("disabled", false)
-      .prop("readonly", false);
-
     $("#f_legal_agreement_date")
       .removeClass("hasDatepicker")
       .imuiCalendar({
@@ -449,7 +362,6 @@ function refreshSequenceNumbers() {
     $(this)
       .find("label[for^='f_recurring_no_']")
       .attr("for", "f_recurring_no_" + newSerial);
-
     $(this)
       .find("input[name^='f_paid_by_']")
       .attr("name", "f_paid_by_" + newSerial);
@@ -556,3 +468,23 @@ function resetPaymentTable() {
 
   $("#f_total_payment_amount").val("");
 }
+
+function formatNumberText() {
+	$("#f_total_amount, #f_total_payment_amount, .payment-amount").each(
+    function () {
+      var val = $(this).text();
+      if (val) {
+        var num = parseFloat(val.replace(/[^0-9.]/g, "")) || 0;
+        if (num) {
+          $(this).text(
+            num.toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }),
+          );
+        }
+      }
+    },
+  );	
+}
+

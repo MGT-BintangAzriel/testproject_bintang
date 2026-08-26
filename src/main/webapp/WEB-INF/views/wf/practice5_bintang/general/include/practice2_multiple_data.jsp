@@ -25,7 +25,7 @@
 				<label style="display: block; margin-bottom: 4px;">
 					<input type="checkbox" name="f_multidata" value="pl" ${f:h(savedFormData.f_multidata_pl)} class="f_multidata"> PL Impact
 				</label>
-				<label style="display: block;">
+				<label style="display: block;margin-bottom: 4px;">
 					<input type="checkbox" name="f_multidata" value="asset" ${f:h(savedFormData.f_multidata_asset)} class="f_multidata"> Asset
 				</label>
 				<label style="display: block;">

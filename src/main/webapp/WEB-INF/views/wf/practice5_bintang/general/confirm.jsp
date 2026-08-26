@@ -21,16 +21,9 @@
 
 	<script type="text/javascript">
     $(function() {
-      // Lock form fields as read-only
-      initReadOnlyAgreementForm();
-      toggleDepreciation();
-      setupMultiDataToggle();
-      $('.select2').select2();
-
-      // Apply Node-based field permissions for Practice 8
-      var nodeId = '${f:h(workflowRequestForm.imwNodeId)}';
-      applyNodePermissions(nodeId);
       
+      formatNumberText();
+     
       $('#openPage').on('mousedown',
           function() {
             isApplyClicked = true;
@@ -80,24 +73,24 @@
 				<c:set var="thColspan" value="2" scope="request" />
 				
 				<%-- Practice 0 Section --%>
-				<jsp:include page="include/practice0_header.jsp" />
+				<jsp:include page="include/practice0_header_display.jsp" />
 
 				<%-- Practice 1 Section --%>
-				<jsp:include page="include/practice1_basic.jsp" />
+				<jsp:include page="include/practice1_basic_display.jsp" />
 
 				<%-- Practice 2 Section --%>
-				<jsp:include page="include/practice2_multiple_data.jsp" />
+				<jsp:include page="include/practice2_multiple_data_display.jsp" />
 
 				<%-- Practice 7 Section --%>
-				<jsp:include page="include/practice7_multiple_branch.jsp" />
+				<jsp:include page="include/practice7_multiple_branch_display.jsp" />
 
 				<%-- Practice 8 Section --%>
-				<jsp:include page="include/practice8_multiple_user.jsp" />
+				<jsp:include page="include/practice8_multiple_user_display.jsp" />
 
 			</workflow:workflowOpenPage>
 
 			<%-- Practice 3 Section --%>
-			<jsp:include page="include/practice3_attachment.jsp" />
+			<jsp:include page="include/practice3_attachment_display.jsp" />
 
 		</div>
 	</imui:tabItem>
@@ -105,7 +98,7 @@
 
 <!-- Operation Buttons -->
 <div class="imui-operation-parts">
-	<input type="button" value="Confirm" id="openPage" name="openPage" class="imui-large-button" escapeXml="true" escapeJs="false" />
+	<input type="button" value="Confirm" id="openPage" name="openPage" class="imui-large-button" />
 </div>
 
 <form name="backForm" id="backForm" method="POST" action="${f:h(workflowRequestForm.imwCallOriginalPagePath)}">

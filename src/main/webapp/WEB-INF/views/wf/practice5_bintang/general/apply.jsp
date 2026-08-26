@@ -21,9 +21,6 @@
 
 	<script type="text/javascript">
     $(function() {
-      // Disable practice8 fields
-      disablePractice8Fields();
-
       // Initialize calendar inputs and select2
       $(".imuiCalendar").imuiCalendar({
         changeMonth : true,
@@ -52,7 +49,6 @@
 
       // Dynamic payment table setup
       setupDynamicPaymentTable();
-
 
       // Delete file attachment handler
       $(".file_attachment_list").on("click", "#delete_file", function() {
@@ -173,10 +169,10 @@
 <!-- Operation Buttons -->
 <div class="imui-operation-parts">
 	<imart:decision case="0" value="${f:h(workflowRequestForm.imwPageType)}">
-		<input type="button" value="Apply" id="openPage" name="openPage" class="imui-large-button" escapeXml="true" escapeJs="false" />
+		<input type="button" value="Apply" id="openPage" name="openPage" class="imui-large-button" />
 	</imart:decision>
 	<imart:decision case="3" value="${f:h(workflowRequestForm.imwPageType)}">
-		<input type="button" value="Reapply" id="openPage" name="openPage" class="imui-large-button" escapeXml="true" escapeJs="false" />
+		<input type="button" value="Reapply" id="openPage" name="openPage" class="imui-large-button" />
 	</imart:decision>
 </div>
 

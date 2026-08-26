@@ -121,3 +121,24 @@ label.error:empty {
         width: 140px !important;
     }
 }
+
+.pointer-locked {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+.font-imart, 
+.imui-form td label,
+.imui-form td label.pointer-locked {
+    font-family: Arial, "メイリオ", "Meiryo", sans-serif !important;
+    font-size: 1.25rem !important;
+    color: #050505 !important;
+    font-weight: normal !important;
+    line-height: 1.5 !important;
+}
+
+.imui-form td input[type="radio"] {
+    vertical-align: middle !important;
+    margin-top: -2px !important;
+    margin-right: 4px !important;
+}
