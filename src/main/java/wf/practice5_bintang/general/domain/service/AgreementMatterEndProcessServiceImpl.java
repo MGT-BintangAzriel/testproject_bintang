@@ -72,11 +72,21 @@ public class AgreementMatterEndProcessServiceImpl implements AgreementMatterEndP
 			String matterId = parameter.getSystemMatterId();
 			List<String> matterData = this.getMatterData(matterId);
 			
-			AgreementGeneratePDFService generatePDFService = new AgreementGeneratePDFService();
-			String pdfFileName = generatePDFService.createPDF(matterId);
+			String pdfFileName = "";
+			try {
+				AgreementGeneratePDFService generatePDFService = new AgreementGeneratePDFService();
+				pdfFileName = generatePDFService.createPDF(matterId);
+			} catch (Exception e) {
+				System.out.println("Error on PDF generation, please generate from Details page");
+				e.printStackTrace();
+			}
 			
-			AgreementEmailService mailService = new AgreementEmailService();
-			mailService.sendApprovalNotificationEmail(matterId, matterData.get(0), matterData.get(1), matterData.get(2), matterData.get(3), pdfFileName, attachmentTempModel);
+			try {
+				AgreementEmailService mailService = new AgreementEmailService();
+				mailService.sendApprovalNotificationEmail(matterId, matterData.get(0), matterData.get(1), matterData.get(2), matterData.get(3), pdfFileName, attachmentTempModel);
+			} catch (Exception e) {
+				System.out.println("Error on mail notification, please send again using Jobnet");
+			}
 
 		} else if (MatterEndStatus.DENY.getStatus().equals(parameter.getLastResultStatus())) {
 			headerModel.setStatus(WorkflowStatus.DENIED.getCode());

@@ -15,7 +15,9 @@ import jp.co.intra_mart.foundation.database.SQLManager;
 import jp.co.intra_mart.foundation.database.SearchCondition;
 import jp.co.intra_mart.foundation.exception.BizApiException;
 import jp.co.intra_mart.foundation.security.exception.AccessSecurityException;
+import wf.common.constant.MailStatus;
 import wf.common.constant.WorkflowCommonConstants;
+import wf.common.constant.WorkflowStatus;
 import wf.practice5_bintang.general.constant.AgreementDbConstants;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
 
@@ -23,7 +25,10 @@ public class AgreementHeaderRepository {
 
 	private String selectDataAll = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER;
 	private String selectDataByMatterId = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER + " WHERE system_matter_id = ?";
-	private String selectDataMail = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER + " WHERE status = '2' and mail_status = '1'";
+	private String selectDataMail = "SELECT * FROM " + AgreementDbConstants.TABLE_HEADER 
+		+ " WHERE status = '" + WorkflowStatus.COMPLETED.getCode() + "'"
+		+ " AND mail_status IN ('" + MailStatus.UNSENT.getCode() + "', '" + MailStatus.FAILED.getCode() + "')";
+
 
 	public void insertHeader(AgreementHeaderModel model) throws Exception {
 		try {
