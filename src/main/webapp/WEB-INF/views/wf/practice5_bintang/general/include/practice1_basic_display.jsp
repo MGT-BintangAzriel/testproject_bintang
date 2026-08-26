@@ -53,30 +53,21 @@
 				<label class="imui-required">Agreement Status</label>
 			</th>
 			<td>
-				<label class="pointer-locked">
-					<input type="radio" disabled tabindex="-1"
-						${savedFormData.f_agreement_status == 'one_time' ? 'checked' : ''} /> 
-					One Time/New
+				<label class="pointer-locked"> <input type="radio" disabled tabindex="-1"
+					${savedFormData.f_agreement_status == 'one_time' ? 'checked' : ''} /> One Time/New
 				</label>
 				<div class="mt-4">
-					<label class="pointer-locked">
-						<input type="radio" disabled tabindex="-1"
-							${savedFormData.f_agreement_status == 'amendment' ? 'checked' : ''} /> 
-							Amendment/Extension/Renewal
+					<label class="pointer-locked"> <input type="radio" disabled tabindex="-1"
+						${savedFormData.f_agreement_status == 'amendment' ? 'checked' : ''} /> Amendment/Extension/Renewal
 					</label>
-					
+
 					<%-- Sub-options --%>
 					<div class="sub-options">
 						<div>Total Duration from first cooperation until now</div>
-						<label class="radio-item-sub-gap pointer-locked">
-							<input type="radio" disabled tabindex="-1"
-								${savedFormData.f_total_duration == 'more_than_1_year' ? 'checked' : ''} /> 
-							More than 1 year
-						</label>
-						<label class="pointer-locked">
-							<input type="radio" disabled tabindex="-1"
-								${savedFormData.f_total_duration == 'up_to_1_year' ? 'checked' : ''} /> 
-							Up to 1 Year
+						<label class="radio-item-sub-gap pointer-locked"> <input type="radio" disabled tabindex="-1"
+							${savedFormData.f_total_duration == 'more_than_1_year' ? 'checked' : ''} /> More than 1 year
+						</label> <label class="pointer-locked"> <input type="radio" disabled tabindex="-1"
+							${savedFormData.f_total_duration == 'up_to_1_year' ? 'checked' : ''} /> Up to 1 Year
 						</label>
 					</div>
 				</div>
@@ -89,11 +80,9 @@
 				<label class="imui-required">Include auto extension condition</label>
 			</th>
 			<td>
-				<label class="radio-item-gap pointer-locked">
-					<input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_auto_extension_yes)} /> Yes
-				</label>
-				<label class="pointer-locked">
-					<input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_auto_extension_no)} /> No
+				<label class="radio-item-gap pointer-locked"> <input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_auto_extension_yes)} />
+					Yes
+				</label> <label class="pointer-locked"> <input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_auto_extension_no)} /> No
 				</label>
 			</td>
 		</tr>
@@ -104,11 +93,8 @@
 				<label class="imui-required">Purchase Order Required</label>
 			</th>
 			<td>
-				<label class="radio-item-gap pointer-locked">
-					<input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_po_required_yes)} /> Yes
-				</label>
-				<label class="pointer-locked">
-					<input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_po_required_no)} /> No
+				<label class="radio-item-gap pointer-locked"> <input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_po_required_yes)} /> Yes
+				</label> <label class="pointer-locked"> <input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_po_required_no)} /> No
 				</label>
 			</td>
 		</tr>
@@ -152,14 +138,14 @@
 			</th>
 			<td>
 				<div>
-					<label class="pointer-locked">
-						<input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_company_relation_related_parties)}>
-						Related Parties [Shareholders (KY, MFTBC, MC, MCAH, Daimler), Subsidiary (i.e. KRM, MKM, BAS, BBD, BMC, etc.), Affiliates (i.e. DSF, BSI, MMKSI, MMKI, etc.)]
+					<label class="pointer-locked"> <input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_company_relation_related_parties)}>
+						Related Parties [Shareholders (KY, MFTBC, MC, MCAH, Daimler), Subsidiary (i.e. KRM, MKM, BAS, BBD, BMC, etc.), Affiliates (i.e. DSF, BSI, MMKSI,
+						MMKI, etc.)]
 					</label>
 				</div>
 				<div class="mt-6">
-					<label class="pointer-locked">
-						<input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_company_relation_non_related_parties)}> Non Related Parties
+					<label class="pointer-locked"> <input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_company_relation_non_related_parties)}>
+						Non Related Parties
 					</label>
 					<div>
 						<span class="legal-consult-note">Consult with Legal. SHR may be required</span>
@@ -221,39 +207,36 @@
 				<label class="imui-required">Purchase Category</label>
 			</th>
 			<td>
-				<label class="radio-item-gap pointer-locked">
-					<input type="radio" disabled tabindex="-1"
-						${f:h(savedFormData.f_purchase_category_tangible_asset)} /> Tangible Asset
-				</label>
-				<label class="radio-item-gap pointer-locked">
-					<input type="radio" disabled tabindex="-1"
-						${f:h(savedFormData.f_purchase_category_intangible_asset)} /> Intangible Asset
-				</label>
-				<label class="pointer-locked">
-					<input type="radio" disabled tabindex="-1"
-						${f:h(savedFormData.f_purchase_category_non_asset)} /> Non-Asset
+				<label class="radio-item-gap pointer-locked"> <input type="radio" disabled tabindex="-1"
+					${f:h(savedFormData.f_purchase_category_tangible_asset)} /> Tangible Asset
+				</label> <label class="radio-item-gap pointer-locked"> <input type="radio" disabled tabindex="-1"
+					${f:h(savedFormData.f_purchase_category_intangible_asset)} /> Intangible Asset
+				</label> <label class="pointer-locked"> <input type="radio" disabled tabindex="-1" ${f:h(savedFormData.f_purchase_category_non_asset)} />
+					Non-Asset
 				</label>
 			</td>
 		</tr>
 
 		<!-- Starting Using Date -->
-		<tr>
-			<th colspan="${thColspan}">
-				<label class="imui-required">Starting Using Date (Required if Asset)</label>
-			</th>
-			<td>
-				<label class="font-imart">${f:h(savedFormData.f_start_using_date)}</label>
-			</td>
-		</tr>
+		<c:if test="${savedFormData.f_purchase_category_non_asset != 'checked' }">
+			<tr>
+				<th colspan="${thColspan}">
+					<label class="imui-required">Starting Using Date (Required if Asset)</label>
+				</th>
+				<td>
+					<label class="font-imart">${f:h(savedFormData.f_start_using_date)}</label>
+				</td>
+			</tr>
 
-		<!-- Deprec Amount/Month -->
-		<tr>
-			<th colspan="${thColspan}">
-				<label class="imui-required"> Deprec Amount/Month (Required if Asset)</label>
-			</th>
-			<td>
-				<label class="font-imart">${f:h(savedFormData.f_deprec_month)}</label>
-			</td>
-		</tr>
+			<!-- Deprec Amount/Month -->
+			<tr>
+				<th colspan="${thColspan}">
+					<label class="imui-required"> Deprec Amount/Month (Required if Asset)</label>
+				</th>
+				<td>
+					<label class="font-imart">${f:h(savedFormData.f_deprec_month)}</label>
+				</td>
+			</tr>
+		</c:if>
 	</tbody>
 </table>
