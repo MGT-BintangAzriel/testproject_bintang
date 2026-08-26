@@ -100,43 +100,43 @@ public class AgreementWorkflowService {
 
 		form.setF_agreement_status(headerInfoModel.getAgreement_status());
 		if (headerInfoModel.getAgreement_status() != null) {
-			if (headerInfoModel.getAgreement_status().contains("one_time")) {
+			if ("one_time".equals(headerInfoModel.getAgreement_status())) {
 				form.setF_agreement_status_one_time("checked");
 			}
-			if (headerInfoModel.getAgreement_status().contains("amendment")) {
+			if ("amendment".equals(headerInfoModel.getAgreement_status())) {
 				form.setF_agreement_status_amendment("checked");
 			}
-			if (headerInfoModel.getAgreement_status().contains("umbrella")) {
+			if ("umbrella".equals(headerInfoModel.getAgreement_status())) {
 				form.setF_agreement_status_umbrella("checked");
 			}
 		}
 
 		form.setF_total_duration(headerInfoModel.getTotal_duration());
 		if (headerInfoModel.getTotal_duration() != null) {
-			if (headerInfoModel.getTotal_duration().contains("more_than_1_year")) {
+			if ("more_than_1_year".equals(headerInfoModel.getTotal_duration())) {
 				form.setF_total_duration_more_than_1_year("checked");
 			}
-			if (headerInfoModel.getTotal_duration().contains("up_to_1_year")) {
+			if ("up_to_1_year".equals(headerInfoModel.getTotal_duration())) {
 				form.setF_total_duration_up_to_1_year("checked");
 			}
 		}
 
 		form.setF_auto_extension(headerInfoModel.getAuto_extension());
 		if (headerInfoModel.getAuto_extension() != null) {
-			if (headerInfoModel.getAuto_extension().contains("yes")) {
+			if ("yes".equals(headerInfoModel.getAuto_extension())) {
 				form.setF_auto_extension_yes("checked");
 			}
-			if (headerInfoModel.getAuto_extension().contains("no")) {
+			if ("no".equals(headerInfoModel.getAuto_extension())) {
 				form.setF_auto_extension_no("checked");
 			}
 		}
 
 		form.setF_po_required(headerInfoModel.getPo_required());
 		if (headerInfoModel.getPo_required() != null) {
-			if (headerInfoModel.getPo_required().contains("yes")) {
+			if ("yes".equals(headerInfoModel.getPo_required())) {
 				form.setF_po_required_yes("checked");
 			}
-			if (headerInfoModel.getPo_required().contains("no")) {
+			if ("no".equals(headerInfoModel.getPo_required())) {
 				form.setF_po_required_no("checked");
 			}
 		}
@@ -147,10 +147,10 @@ public class AgreementWorkflowService {
 
 		form.setF_company_relation(headerInfoModel.getCompany_relation());
 		if (headerInfoModel.getCompany_relation() != null) {
-			if (headerInfoModel.getCompany_relation().contains("related_parties")) {
+			if ("related_parties".equals(headerInfoModel.getCompany_relation())) {
 				form.setF_company_relation_related_parties("checked");
 			}
-			if (headerInfoModel.getCompany_relation().contains("non_related_parties")) {
+			if ("non_related_parties".equals(headerInfoModel.getCompany_relation())) {
 				form.setF_company_relation_non_related_parties("checked");
 			}
 		}
@@ -161,13 +161,13 @@ public class AgreementWorkflowService {
 
 		form.setF_purchase_category(headerInfoModel.getPurchase_category());
 		if (headerInfoModel.getPurchase_category() != null) {
-			if (headerInfoModel.getPurchase_category().contains("tangible_asset")) {
+			if ("tangible_asset".equals(headerInfoModel.getPurchase_category())) {
 				form.setF_purchase_category_tangible_asset("checked");
 			}
-			if (headerInfoModel.getPurchase_category().contains("intangible_asset")) {
+			if ("intangible_asset".equals(headerInfoModel.getPurchase_category())) {
 				form.setF_purchase_category_intangible_asset("checked");
 			}
-			if (headerInfoModel.getPurchase_category().contains("non_asset")) {
+			if ("non_asset".equals(headerInfoModel.getPurchase_category())) {
 				form.setF_purchase_category_non_asset("checked");
 			}
 		}
@@ -206,22 +206,22 @@ public class AgreementWorkflowService {
 
 		form.setF_pd_sub_condition(headerInfoModel.getPd_sub_condition());
 		if (headerInfoModel.getPd_sub_condition() != null) {
-			if (headerInfoModel.getPd_sub_condition().contains("more_than_1_billion")) {
+			if ("pd_more_than_1_billion".equals(headerInfoModel.getPd_sub_condition())) {
 				form.setF_agreement_classification_pd_more_than_1_billion("checked");
 			}
-			if (headerInfoModel.getPd_sub_condition().contains("more_than_12_months")) {
+			if ("pd_more_than_12_months".equals(headerInfoModel.getPd_sub_condition())) {
 				form.setF_agreement_classification_pd_more_than_12_months("checked");
 			}
-			if (headerInfoModel.getPd_sub_condition().contains("specific_party")) {
+			if ("pd_specific_party".equals(headerInfoModel.getPd_sub_condition())) {
 				form.setF_agreement_classification_pd_specific_party("checked");
 			}
-			if (headerInfoModel.getPd_sub_condition().contains("special_issue")) {
+			if ("pd_special_issue".equals(headerInfoModel.getPd_sub_condition())) {
 				form.setF_agreement_classification_pd_special_issue("checked");
 			}
-			if (headerInfoModel.getPd_sub_condition().contains("direct_procurement")) {
+			if ("pd_direct_procurement".equals(headerInfoModel.getPd_sub_condition())) {
 				form.setF_agreement_classification_pd_direct_procurement("checked");
 			}
-			if (headerInfoModel.getPd_sub_condition().contains("agreement_not_more_than_12_months")) {
+			if ("pd_agreement_not_more_than_12_months".equals(headerInfoModel.getPd_sub_condition())) {
 				form.setF_agreement_classification_pd_agreement_not_more_than_12_months("checked");
 			}
 		}
@@ -236,33 +236,33 @@ public class AgreementWorkflowService {
 
 		form.setF_ec_sub_condition(headerInfoModel.getEc_sub_condition());
 		if (headerInfoModel.getEc_sub_condition() != null) {
-			if (headerInfoModel.getEc_sub_condition().contains("amount_equal_more_than_1_billion")) {
+			if ("ec_amount_equal_more_than_1_billion".equals(headerInfoModel.getEc_sub_condition())) {
 				form.setF_agreement_classification_ec_amount_equal_more_than_1_billion("checked");
 			}
-			if (headerInfoModel.getEc_sub_condition().contains("period_equal_more_than_12_months")) {
+			if ("ec_period_equal_more_than_12_months".equals(headerInfoModel.getEc_sub_condition())) {
 				form.setF_agreement_classification_ec_period_equal_more_than_12_months("checked");
 			}
-			if (headerInfoModel.getEc_sub_condition().contains("escalate_issue_to_ec")) {
+			if ("ec_escalate_issue_to_ec".equals(headerInfoModel.getEc_sub_condition())) {
 				form.setF_agreement_classification_ec_escalate_issue_to_ec("checked");
 			}
 		}
 
 		form.setF_psd_area(headerInfoModel.getPsd_area());
 		if (headerInfoModel.getPsd_area() != null) {
-			if (headerInfoModel.getPsd_area().contains("psd")) {
+			if ("psd".equals(headerInfoModel.getPsd_area())) {
 				form.setF_psd_area_psd("checked");
 			}
-			if (headerInfoModel.getPsd_area().contains("non_psd")) {
+			if ("non_psd".equals(headerInfoModel.getPsd_area())) {
 				form.setF_psd_area_non_psd("checked");
 			}
 		}
 
 		form.setF_psd_process(headerInfoModel.getPsd_process());
 		if (headerInfoModel.getPsd_process() != null) {
-			if (headerInfoModel.getPsd_process().contains("psd")) {
+			if ("psd".equals(headerInfoModel.getPsd_process())) {
 				form.setF_psd_process_psd("checked");
 			}
-			if (headerInfoModel.getPsd_process().contains("dic")) {
+			if ("dic".equals(headerInfoModel.getPsd_process())) {
 				form.setF_psd_process_dic("checked");
 			}
 		}
@@ -270,30 +270,30 @@ public class AgreementWorkflowService {
 
 		form.setF_dd_process(headerInfoModel.getDd_process());
 		if (headerInfoModel.getDd_process() != null) {
-			if (headerInfoModel.getDd_process().contains("yes")) {
+			if ("yes".equals(headerInfoModel.getDd_process())) {
 				form.setF_dd_process_yes("checked");
 			}
-			if (headerInfoModel.getDd_process().contains("no")) {
+			if ("no".equals(headerInfoModel.getDd_process())) {
 				form.setF_dd_process_no("checked");
 			}
 		}
 
 		form.setF_anti_bribery(headerInfoModel.getAnti_bribery());
 		if (headerInfoModel.getAnti_bribery() != null) {
-			if (headerInfoModel.getAnti_bribery().contains("yes")) {
+			if ("yes".equals(headerInfoModel.getAnti_bribery())) {
 				form.setF_anti_bribery_yes("checked");
 			}
-			if (headerInfoModel.getAnti_bribery().contains("no")) {
+			if ("no".equals(headerInfoModel.getAnti_bribery())) {
 				form.setF_anti_bribery_no("checked");
 			}
 		}
 
 		form.setF_audit_rights(headerInfoModel.getAudit_rights());
 		if (headerInfoModel.getAudit_rights() != null) {
-			if (headerInfoModel.getAudit_rights().contains("yes")) {
+			if ("yes".equals(headerInfoModel.getAudit_rights())) {
 				form.setF_audit_rights_yes("checked");
 			}
-			if (headerInfoModel.getAudit_rights().contains("no")) {
+			if ("no".equals(headerInfoModel.getAudit_rights())) {
 				form.setF_audit_rights_no("checked");
 			}
 		}
@@ -328,10 +328,10 @@ public class AgreementWorkflowService {
 			}
 
 			if (row.getPaid_by() != null) {
-				if (row.getPaid_by().contains("cash")) {
+				if ("cash".equals(row.getPaid_by())) {
 					row.setPaid_by_cash("checked");
 				}
-				if (row.getPaid_by().contains("card")) {
+				if ("card".equals(row.getPaid_by())) {
 					row.setPaid_by_card("checked");
 				}
 			}
