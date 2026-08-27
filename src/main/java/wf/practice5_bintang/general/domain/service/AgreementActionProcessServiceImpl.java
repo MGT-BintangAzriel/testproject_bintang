@@ -281,15 +281,15 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 				String nodeId = parameter.getNodeId();
 
 				if ("node_psd".equals(nodeId)) {
-					String psdArea = getUserParameterValue(userParameter, "f_psd_area");
+					String psdArea = getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PSD_AREA);
 					model.setPsd_area(psdArea);
 
 					if ("psd".equals(psdArea)) {
-						String psdProcess = getUserParameterValue(userParameter, "f_psd_process");
+						String psdProcess = getUserParameterValue(userParameter, AgreementFormConstants.FIELD_PSD_PROCESS);
 						model.setPsd_process(psdProcess);
 
 						if ("dic".equals(psdProcess)) {
-							model.setDic_reason(getUserParameterValue(userParameter, "f_dic_reason"));
+							model.setDic_reason(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DIC_REASON));
 						} else {
 							model.setDic_reason("");
 						}
@@ -299,13 +299,13 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 					}
 
 				} else if ("node_cco".equals(nodeId)) {
-					model.setDd_process(getUserParameterValue(userParameter, "f_dd_process"));
-					model.setAnti_bribery(getUserParameterValue(userParameter, "f_anti_bribery"));
-					model.setAudit_rights(getUserParameterValue(userParameter, "f_audit_rights"));
+					model.setDd_process(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_DD_PROCESS));
+					model.setAnti_bribery(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_ANTI_BRIBERY));
+					model.setAudit_rights(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_AUDIT_RIGHTS));
 
 				} else if ("node_legal".equals(nodeId)) {
-					model.setLegal_agreement_number(getUserParameterValue(userParameter, "f_legal_agreement_number"));
-					model.setLegal_agreement_date(getUserParameterValue(userParameter, "f_legal_agreement_date"));
+					model.setLegal_agreement_number(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_LEGAL_AGREEMENT_NUMBER));
+					model.setLegal_agreement_date(getUserParameterValue(userParameter, AgreementFormConstants.FIELD_LEGAL_AGREEMENT_DATE));
 				}
 
 				headerInfoTempDb.updateHeaderInfoTemp(model);
