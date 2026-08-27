@@ -1,5 +1,6 @@
 package wf.practice5_bintang.general.domain.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import jp.co.intra_mart.foundation.mail.MailSenderException;
@@ -68,20 +69,29 @@ public class AgreementEmailService {
 		try {
 			JavaMailSender sender = new JavaMailSender(createMail);
 			sender.send();
-
-			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
-			AgreementHeaderModel rowsHeader = agreementHeaderDb.selectHeader(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
-			rowsHeader.setMail_status(MailStatus.SENT.getCode());
-			agreementHeaderDb.updateHeader(rowsHeader);
+			updateMailStatus(matterId, MailStatus.SENT.getCode());
 
 		} catch (MailSenderException e) {
-			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
-			AgreementHeaderModel rowsHeader = agreementHeaderDb.selectHeader(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID).iterator().next();
-			rowsHeader.setMail_status(MailStatus.FAILED.getCode());
-			agreementHeaderDb.updateHeader(rowsHeader);
-
+			updateMailStatus(matterId, MailStatus.FAILED.getCode());
 			e.printStackTrace();
 			throw new MailSenderException("Error in sendApprovalNotificationEmail()", e);
+		}
+	}
+
+	private void updateMailStatus(String matterId, String mailStatusCode) {
+		try {
+			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
+			Collection<AgreementHeaderModel> models = agreementHeaderDb.selectHeader(matterId, WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID);
+		
+			if(models != null && !models.isEmpty()) {
+				AgreementHeaderModel model = models.iterator().next();
+				model.setMail_status(mailStatusCode);
+				agreementHeaderDb.updateHeader(model);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error in updateMailStatus()", e);
 		}
 	}
 
