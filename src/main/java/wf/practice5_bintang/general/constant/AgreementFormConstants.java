@@ -57,6 +57,10 @@ public final class AgreementFormConstants {
     // Download & Storage Constants
     public static final String SESSION_KEY_DOWNLOAD_TOKEN = "agreement_download_token";
     public static final String PARAM_TOKEN = "token";
+    
     public static final String STORAGE_DIR_GENERATE_PDF = "generate_pdf";
     public static final String STORAGE_PATH_GENERATE_PDF = "generate_pdf/";
+
+    public static final String STORAGE_DIR_PRACTICE5 = "practice5_bintang";
+    public static final String STORAGE_DIR_FILE_ATTACHMENT = "file_attachment";
 }

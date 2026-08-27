@@ -358,9 +358,11 @@ public class AgreementWorkflowService {
 	}
 
 	public final Boolean transferAttachmentFile(String systemMatterId, String fileRealName) {
-		PublicStorage targetDir = new PublicStorage("practice5_bintang/" + systemMatterId + "/file_attachment");
-		PublicStorage targetFile = new PublicStorage("practice5_bintang/" + systemMatterId + "/file_attachment/" + fileRealName);
-		SessionScopeStorage sessionStorageFile = new SessionScopeStorage("file_attachment/" + fileRealName);
+		String dirPath = AgreementFormConstants.STORAGE_DIR_PRACTICE5 + "/" + systemMatterId + "/" + AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT;
+
+		PublicStorage targetDir = new PublicStorage(dirPath);
+		PublicStorage targetFile = new PublicStorage(dirPath + "/" + fileRealName);
+		SessionScopeStorage sessionStorageFile = new SessionScopeStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
 		try {
 			targetDir.makeDirectories();
 

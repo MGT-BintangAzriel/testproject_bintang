@@ -193,7 +193,7 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 				attachmentModel.setFile_size(getListElementSafely(attachmentFileSize, i));
 				attachmentModel.setFile_extension(getListElementSafely(attachmentFileExtension, i));
 
-				String file_path = "practice5_bintang/" + parameter.getSystemMatterId() + "/file_attachment/" + attachmentModel.getFile_real_name();
+				String file_path = AgreementFormConstants.STORAGE_DIR_PRACTICE5 + "/" + parameter.getSystemMatterId() + "/" + AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + attachmentModel.getFile_real_name();
 				attachmentModel.setFile_path(file_path);
 
 				if (isValidFileEntity(attachmentModel)) {

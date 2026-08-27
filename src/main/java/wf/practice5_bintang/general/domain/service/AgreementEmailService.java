@@ -53,7 +53,7 @@ public class AgreementEmailService {
 				try {
 					String fileRealName = attachment.getFile_real_name();
 					String originalFileName = attachment.getFile_name();
-					PublicStorage attachedFileStorage = new PublicStorage("practice5_bintang/" + matterId + "/file_attachment/" + fileRealName);
+					PublicStorage attachedFileStorage = new PublicStorage(AgreementFormConstants.STORAGE_DIR_PRACTICE5 + "/" + matterId + "/" + AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
 					
 					if(attachedFileStorage.isFile()) {
 						createMail.addAttachmentStorage(originalFileName, attachedFileStorage);
