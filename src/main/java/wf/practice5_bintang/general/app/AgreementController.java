@@ -1,7 +1,11 @@
 package wf.practice5_bintang.general.app;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -219,6 +224,56 @@ public class AgreementController {
 
 		final String path = VIEW_PATH_DOWNLOAD;
 		return path;
+	}
+
+	@GetMapping(value = "getPostData")
+	@ResponseBody
+	public String getPostData(final HttpServletRequest request) {
+		AccountContext accountContext = Contexts.get(AccountContext.class);
+
+		String userId = accountContext != null ? accountContext.getUserCd() : null;
+		if (userId == null || userId.isEmpty() || "anonymous".equals(userId)) {
+			return "{\"status\": 401, \"message\": \"Unauthorized\"}";
+		}
+
+		String postCode = request.getParameter("postCode");
+		if (postCode == null || postCode.trim().isEmpty()) {
+			return "{\"status\": 400, \"message\": \"Postal code is required\"}";
+		}
+
+		String cleanPostCode = postCode.replace("-", "").trim();
+
+		HttpURLConnection con = null;
+		try {
+			String apiUrl = "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + cleanPostCode;
+
+			URL url = new URL(apiUrl);
+			con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+			con.setConnectTimeout(5000);
+			con.setReadTimeout(5000);
+
+			int responseCode = con.getResponseCode();
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					responseCode == HttpURLConnection.HTTP_OK ? con.getInputStream() : con.getErrorStream()
+			));
+			
+			String inputLine;
+			StringBuilder response = new StringBuilder();
+			
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			
+			in.close();
+			con.disconnect();
+			
+			return response.toString();
+
+		} catch (Exception e) {
+			return "{\"status\": 500, \"message\": \"Error fetching postal code: " + e.getMessage() + "\"}";
+		}
 	}
 
 	private String validateDownload(final Model model, HttpServletRequest request) {

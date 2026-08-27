@@ -24,6 +24,12 @@
 			<td>
 				<input type="text" id="f_counter_party" name="f_counter_party" value="${f:h(savedFormData.f_counter_party)}" class="form-input-text">
 				<div class="error_message"></div>
+				<div style="margin-top: 6px; display: flex; align-items: center; gap: 8px;">
+					<span>Postal Code Search (API):</span>
+					<input type="text" id="f_postal_code_search" placeholder="e.g. 4310211" style="width: 110px; padding: 2px 6px; font-size: 11px;" maxlength="7">
+					<input type="button" id="btn_search_postcode" value="Search Address" class="imui-button" style="padding: 2px 8px; font-size: 11px;">
+					<span id="postcode_search_msg"></span>
+				</div>
 			</td>
 		</tr>
 

@@ -488,3 +488,72 @@ function formatNumberText() {
   );	
 }
 
+// Postal Code Search API Handler
+function setupPostcodeSearch() {
+  $("#btn_search_postcode").on("click", function () {
+	  
+    var rawPostalCode = $("#f_postal_code_search").val();
+    
+    if (!rawPostalCode) {
+      $("#postcode_search_msg").css("color", "#dc3545").text("Please enter a postal code.");
+      setTimeout(function () {
+        $("#postcode_search_msg").text("");
+      }, 3000);
+      return;
+    }
+
+    $("#postcode_search_msg").css("color", "#0066cc").text("Searching...");
+
+    $.ajax({
+      url: "practice5_bintang/getPostData",
+      type: "GET",
+      data: { 
+        postCode: rawPostalCode 
+      },
+      success: function (response) {
+        if (typeof response === "string") {
+          response = JSON.parse(response);
+        }
+
+        if (response && response.results && response.results.length > 0) {
+          var addr = response.results[0];
+          var fullAddress = (addr.address1 || "") + (addr.address2 || "") + (addr.address3 || "");
+
+          var currentVal = $("#f_counter_party").val();
+          if (currentVal && currentVal.trim() !== "") {
+            $("#f_counter_party").val(currentVal + " (" + fullAddress + ")");
+          } else {
+            $("#f_counter_party").val(fullAddress);
+          }
+          
+          $("#f_counter_party").removeClass("imui-validation-error").valid();
+          $("#f_counter_party").closest("td").find(".error_message").empty();
+
+          $("#postcode_search_msg").css("color", "#28a745").text("✓ Address populated!");
+          setTimeout(function () {
+            $("#postcode_search_msg").text("");
+          }, 3000);
+
+        } else {
+          $("#postcode_search_msg").css("color", "#dc3545").text("Address not found.");
+          setTimeout(function () {
+              $("#postcode_search_msg").text("");
+            }, 3000);
+          alert(response && response.message ? response.message : "No address found for postal code: " + rawPostalCode);
+        }
+      },
+      error: function () {
+        alert("Failed to connect to postal code search API.");
+      }
+    });
+  });
+
+  // Trigger search on pressing Enter in the postal code search input
+  $("#f_postal_code_search").on("keydown", function (e) {
+    if (e.which === 13 || e.keyCode === 13) {
+      e.preventDefault();
+      $("#btn_search_postcode").trigger("click");
+    }
+  });
+}
+

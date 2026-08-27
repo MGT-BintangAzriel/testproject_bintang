@@ -57,6 +57,9 @@
         $("." + fileName).remove();
       });
 
+      // Postal code API search
+      setupPostcodeSearch();
+
       // Format numeric field
       $("#f_total_amount, #f_total_payment_amount").on("change", function() {
         var input = $(this);
