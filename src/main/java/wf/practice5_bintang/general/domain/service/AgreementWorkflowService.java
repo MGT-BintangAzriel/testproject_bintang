@@ -106,94 +106,46 @@ public class AgreementWorkflowService {
 		form.setF_total_amount(headerInfoModel.getTotal_amount());
 
 		form.setF_agreement_status(headerInfoModel.getAgreement_status());
-		if (headerInfoModel.getAgreement_status() != null) {
-			if ("one_time".equals(headerInfoModel.getAgreement_status())) {
-				form.setF_agreement_status_one_time("checked");
-			}
-			if ("amendment".equals(headerInfoModel.getAgreement_status())) {
-				form.setF_agreement_status_amendment("checked");
-			}
-			if ("umbrella".equals(headerInfoModel.getAgreement_status())) {
-				form.setF_agreement_status_umbrella("checked");
-			}
-		}
+		form.setF_agreement_status_one_time(isChecked(headerInfoModel.getAgreement_status(), "one_time"));
+		form.setF_agreement_status_amendment(isChecked(headerInfoModel.getAgreement_status(), "amendment"));
+		form.setF_agreement_status_umbrella(isChecked(headerInfoModel.getAgreement_status(), "umbrella"));
 
 		form.setF_total_duration(headerInfoModel.getTotal_duration());
-		if (headerInfoModel.getTotal_duration() != null) {
-			if ("more_than_1_year".equals(headerInfoModel.getTotal_duration())) {
-				form.setF_total_duration_more_than_1_year("checked");
-			}
-			if ("up_to_1_year".equals(headerInfoModel.getTotal_duration())) {
-				form.setF_total_duration_up_to_1_year("checked");
-			}
-		}
+		form.setF_total_duration_more_than_1_year(isChecked(headerInfoModel.getTotal_duration(), "more_than_1_year"));
+		form.setF_total_duration_up_to_1_year(isChecked(headerInfoModel.getTotal_duration(), "up_to_1_year"));
 
 		form.setF_auto_extension(headerInfoModel.getAuto_extension());
-		if (headerInfoModel.getAuto_extension() != null) {
-			if ("yes".equals(headerInfoModel.getAuto_extension())) {
-				form.setF_auto_extension_yes("checked");
-			}
-			if ("no".equals(headerInfoModel.getAuto_extension())) {
-				form.setF_auto_extension_no("checked");
-			}
-		}
+		form.setF_auto_extension_yes(isChecked(headerInfoModel.getAuto_extension(), "yes"));
+		form.setF_auto_extension_no(isChecked(headerInfoModel.getAuto_extension(), "no"));
 
 		form.setF_po_required(headerInfoModel.getPo_required());
-		if (headerInfoModel.getPo_required() != null) {
-			if ("yes".equals(headerInfoModel.getPo_required())) {
-				form.setF_po_required_yes("checked");
-			}
-			if ("no".equals(headerInfoModel.getPo_required())) {
-				form.setF_po_required_no("checked");
-			}
-		}
+		form.setF_po_required_yes(isChecked(headerInfoModel.getPo_required(), "yes"));
+		form.setF_po_required_no(isChecked(headerInfoModel.getPo_required(), "no"));
 
 		form.setF_agreement_title(headerInfoModel.getAgreement_title());
 		form.setF_effective_from(getDateFormat(headerInfoModel.getEffective_from(), "yyyy/MM/dd"));
 		form.setF_effective_to(getDateFormat(headerInfoModel.getEffective_to(), "yyyy/MM/dd"));
 
 		form.setF_company_relation(headerInfoModel.getCompany_relation());
-		if (headerInfoModel.getCompany_relation() != null) {
-			if ("related_parties".equals(headerInfoModel.getCompany_relation())) {
-				form.setF_company_relation_related_parties("checked");
-			}
-			if ("non_related_parties".equals(headerInfoModel.getCompany_relation())) {
-				form.setF_company_relation_non_related_parties("checked");
-			}
-		}
+		form.setF_company_relation_related_parties(isChecked(headerInfoModel.getCompany_relation(), "related_parties"));
+		form.setF_company_relation_non_related_parties(isChecked(headerInfoModel.getCompany_relation(), "non_related_parties"));
 
 		form.setF_estimated_delivery_from(getDateFormat(headerInfoModel.getEstimated_delivery_from(), "yyyy/MM/dd"));
 		form.setF_estimated_delivery_to(getDateFormat(headerInfoModel.getEstimated_delivery_to(), "yyyy/MM/dd"));
 		form.setF_agreement_summary(headerInfoModel.getAgreement_summary());
 
 		form.setF_purchase_category(headerInfoModel.getPurchase_category());
-		if (headerInfoModel.getPurchase_category() != null) {
-			if ("tangible_asset".equals(headerInfoModel.getPurchase_category())) {
-				form.setF_purchase_category_tangible_asset("checked");
-			}
-			if ("intangible_asset".equals(headerInfoModel.getPurchase_category())) {
-				form.setF_purchase_category_intangible_asset("checked");
-			}
-			if ("non_asset".equals(headerInfoModel.getPurchase_category())) {
-				form.setF_purchase_category_non_asset("checked");
-			}
-		}
+		form.setF_purchase_category_tangible_asset(isChecked(headerInfoModel.getPurchase_category(), "tangible_asset"));
+		form.setF_purchase_category_intangible_asset(isChecked(headerInfoModel.getPurchase_category(), "intangible_asset"));
+		form.setF_purchase_category_non_asset(isChecked(headerInfoModel.getPurchase_category(), "non_asset"));
 
 		form.setF_start_using_date(getDateFormat(headerInfoModel.getStart_using_date(), "yyyy/MM/dd"));
 		form.setF_deprec_month(headerInfoModel.getDeprec_month());
 
 		form.setF_multidata(headerInfoModel.getMultidata());
-		if (headerInfoModel.getMultidata() != null) {
-			if (headerInfoModel.getMultidata().contains("pl")) {
-				form.setF_multidata_pl("checked");
-			}
-			if (headerInfoModel.getMultidata().contains("asset")) {
-				form.setF_multidata_asset("checked");
-			}
-			if (headerInfoModel.getMultidata().contains("estimated")) {
-				form.setF_multidata_estimated("checked");
-			}
-		}
+		form.setF_multidata_pl(isMultiChecked(headerInfoModel.getMultidata(), "pl"));
+		form.setF_multidata_asset(isMultiChecked(headerInfoModel.getMultidata(), "asset"));
+		form.setF_multidata_estimated(isMultiChecked(headerInfoModel.getMultidata(), "estimated"));
 
 		form.setF_budget_pl_impact(headerInfoModel.getBudget_pl_impact());
 		form.setF_budget_pl_month(headerInfoModel.getBudget_pl_month());
@@ -204,106 +156,46 @@ public class AgreementWorkflowService {
 		form.setF_total_payment_amount(headerInfoModel.getTotal_payment_amount());
 
 		form.setF_agreement_classification(headerInfoModel.getAgreement_classification());
-		if ("pd".equals(headerInfoModel.getAgreement_classification())) {
-			form.setF_agreement_classification_pd("checked");
-		}
-		if ("dic_director_approval".equals(headerInfoModel.getAgreement_classification())) {
-			form.setF_agreement_classification_dic_director_approval("checked");
-		}
+		form.setF_agreement_classification_pd(isChecked(headerInfoModel.getAgreement_classification(), "pd"));
+		form.setF_agreement_classification_dic_director_approval(isChecked(headerInfoModel.getAgreement_classification(), "dic_director_approval"));
 
 		form.setF_pd_sub_condition(headerInfoModel.getPd_sub_condition());
-		if (headerInfoModel.getPd_sub_condition() != null) {
-			if ("pd_more_than_1_billion".equals(headerInfoModel.getPd_sub_condition())) {
-				form.setF_agreement_classification_pd_more_than_1_billion("checked");
-			}
-			if ("pd_more_than_12_months".equals(headerInfoModel.getPd_sub_condition())) {
-				form.setF_agreement_classification_pd_more_than_12_months("checked");
-			}
-			if ("pd_specific_party".equals(headerInfoModel.getPd_sub_condition())) {
-				form.setF_agreement_classification_pd_specific_party("checked");
-			}
-			if ("pd_special_issue".equals(headerInfoModel.getPd_sub_condition())) {
-				form.setF_agreement_classification_pd_special_issue("checked");
-			}
-			if ("pd_direct_procurement".equals(headerInfoModel.getPd_sub_condition())) {
-				form.setF_agreement_classification_pd_direct_procurement("checked");
-			}
-			if ("pd_agreement_not_more_than_12_months".equals(headerInfoModel.getPd_sub_condition())) {
-				form.setF_agreement_classification_pd_agreement_not_more_than_12_months("checked");
-			}
-		}
+		form.setF_agreement_classification_pd_more_than_1_billion(isChecked(headerInfoModel.getPd_sub_condition(), "pd_more_than_1_billion"));
+		form.setF_agreement_classification_pd_more_than_12_months(isChecked(headerInfoModel.getPd_sub_condition(), "pd_more_than_12_months"));
+		form.setF_agreement_classification_pd_specific_party(isChecked(headerInfoModel.getPd_sub_condition(), "pd_specific_party"));
+		form.setF_agreement_classification_pd_special_issue(isChecked(headerInfoModel.getPd_sub_condition(), "pd_special_issue"));
+		form.setF_agreement_classification_pd_direct_procurement(isChecked(headerInfoModel.getPd_sub_condition(), "pd_direct_procurement"));
+		form.setF_agreement_classification_pd_agreement_not_more_than_12_months(isChecked(headerInfoModel.getPd_sub_condition(), "pd_agreement_not_more_than_12_months"));
 
 		form.setF_ec_approval(headerInfoModel.getEc_approval());
-		if ("yes".equals(headerInfoModel.getEc_approval())) {
-			form.setF_agreement_classification_ec_approval_yes("checked");
-		}
-		if ("no".equals(headerInfoModel.getEc_approval())) {
-			form.setF_agreement_classification_ec_approval_no("checked");
-		}
+		form.setF_agreement_classification_ec_approval_yes(isChecked(headerInfoModel.getEc_approval(), "yes"));
+		form.setF_agreement_classification_ec_approval_no(isChecked(headerInfoModel.getEc_approval(), "no"));
 
 		form.setF_ec_sub_condition(headerInfoModel.getEc_sub_condition());
-		if (headerInfoModel.getEc_sub_condition() != null) {
-			if ("ec_amount_equal_more_than_1_billion".equals(headerInfoModel.getEc_sub_condition())) {
-				form.setF_agreement_classification_ec_amount_equal_more_than_1_billion("checked");
-			}
-			if ("ec_period_equal_more_than_12_months".equals(headerInfoModel.getEc_sub_condition())) {
-				form.setF_agreement_classification_ec_period_equal_more_than_12_months("checked");
-			}
-			if ("ec_escalate_issue_to_ec".equals(headerInfoModel.getEc_sub_condition())) {
-				form.setF_agreement_classification_ec_escalate_issue_to_ec("checked");
-			}
-		}
+		form.setF_agreement_classification_ec_amount_equal_more_than_1_billion(isChecked(headerInfoModel.getEc_sub_condition(), "ec_amount_equal_more_than_1_billion"));
+		form.setF_agreement_classification_ec_period_equal_more_than_12_months(isChecked(headerInfoModel.getEc_sub_condition(), "ec_period_equal_more_than_12_months"));
+		form.setF_agreement_classification_ec_escalate_issue_to_ec(isChecked(headerInfoModel.getEc_sub_condition(), "ec_escalate_issue_to_ec"));
 
 		form.setF_psd_area(headerInfoModel.getPsd_area());
-		if (headerInfoModel.getPsd_area() != null) {
-			if ("psd".equals(headerInfoModel.getPsd_area())) {
-				form.setF_psd_area_psd("checked");
-			}
-			if ("non_psd".equals(headerInfoModel.getPsd_area())) {
-				form.setF_psd_area_non_psd("checked");
-			}
-		}
+		form.setF_psd_area_psd(isChecked(headerInfoModel.getPsd_area(), "psd"));
+		form.setF_psd_area_non_psd(isChecked(headerInfoModel.getPsd_area(), "non_psd"));
 
 		form.setF_psd_process(headerInfoModel.getPsd_process());
-		if (headerInfoModel.getPsd_process() != null) {
-			if ("psd".equals(headerInfoModel.getPsd_process())) {
-				form.setF_psd_process_psd("checked");
-			}
-			if ("dic".equals(headerInfoModel.getPsd_process())) {
-				form.setF_psd_process_dic("checked");
-			}
-		}
+		form.setF_psd_process_psd(isChecked(headerInfoModel.getPsd_process(), "psd"));
+		form.setF_psd_process_dic(isChecked(headerInfoModel.getPsd_process(), "dic"));
 		form.setF_dic_reason(headerInfoModel.getDic_reason());
 
 		form.setF_dd_process(headerInfoModel.getDd_process());
-		if (headerInfoModel.getDd_process() != null) {
-			if ("yes".equals(headerInfoModel.getDd_process())) {
-				form.setF_dd_process_yes("checked");
-			}
-			if ("no".equals(headerInfoModel.getDd_process())) {
-				form.setF_dd_process_no("checked");
-			}
-		}
+		form.setF_dd_process_yes(isChecked(headerInfoModel.getDd_process(), "yes"));
+		form.setF_dd_process_no(isChecked(headerInfoModel.getDd_process(), "no"));
 
 		form.setF_anti_bribery(headerInfoModel.getAnti_bribery());
-		if (headerInfoModel.getAnti_bribery() != null) {
-			if ("yes".equals(headerInfoModel.getAnti_bribery())) {
-				form.setF_anti_bribery_yes("checked");
-			}
-			if ("no".equals(headerInfoModel.getAnti_bribery())) {
-				form.setF_anti_bribery_no("checked");
-			}
-		}
+		form.setF_anti_bribery_yes(isChecked(headerInfoModel.getAnti_bribery(), "yes"));
+		form.setF_anti_bribery_no(isChecked(headerInfoModel.getAnti_bribery(), "no"));
 
 		form.setF_audit_rights(headerInfoModel.getAudit_rights());
-		if (headerInfoModel.getAudit_rights() != null) {
-			if ("yes".equals(headerInfoModel.getAudit_rights())) {
-				form.setF_audit_rights_yes("checked");
-			}
-			if ("no".equals(headerInfoModel.getAudit_rights())) {
-				form.setF_audit_rights_no("checked");
-			}
-		}
+		form.setF_audit_rights_yes(isChecked(headerInfoModel.getAudit_rights(), "yes"));
+		form.setF_audit_rights_no(isChecked(headerInfoModel.getAudit_rights(), "no"));
 
 		form.setF_legal_agreement_number(headerInfoModel.getLegal_agreement_number());
 		form.setF_legal_agreement_date(getDateFormat(headerInfoModel.getLegal_agreement_date(), "yyyy/MM/dd"));
@@ -327,25 +219,28 @@ public class AgreementWorkflowService {
 
 		for (AgreementPaymentDetailModel row : paymentDetailModels) {
 			row.setPayment_date(getDateFormat(row.getPayment_date(), "yyyy/MM/dd"));
-
-			if ("yes".equals(row.getRecurring())) {
-				row.setRecurring_yes("checked");
-			} else if ("no".equals(row.getRecurring())) {
-				row.setRecurring_no("checked");
-			}
-
-			if (row.getPaid_by() != null) {
-				if (row.getPaid_by().contains("cash")) {
-					row.setPaid_by_cash("checked");
-				}
-				if (row.getPaid_by().contains("card")) {
-					row.setPaid_by_card("checked");
-				}
-			}
+			row.setRecurring_yes(isChecked(row.getRecurring(), "yes"));
+			row.setRecurring_no(isChecked(row.getRecurring(), "no"));
+			row.setPaid_by_cash(isMultiChecked(row.getPaid_by(), "cash"));
+			row.setPaid_by_card(isMultiChecked(row.getPaid_by(), "card"));
 
 			converted.add(row);
 		}
 		return converted;
+	}
+
+	private String isChecked(String actualValue, String expectedValue) {
+		if (expectedValue.equals(actualValue)) {
+			return "checked";
+		}
+		return "";
+	}
+
+	private String isMultiChecked(String actualValue, String expectedValue) {
+		if (actualValue != null && actualValue.contains(expectedValue)) {
+			return "checked";
+		}
+		return "";
 	}
 
 	public String getDateFormat(String date, String date_format) {
