@@ -1,18 +1,13 @@
 package wf.practice5_bintang.general.domain.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import jp.co.intra_mart.foundation.exception.BizApiException;
-import jp.co.intra_mart.foundation.master.user.UserManager;
-import jp.co.intra_mart.foundation.master.user.model.User;
-import jp.co.intra_mart.foundation.master.user.model.UserBizKey;
-import jp.co.intra_mart.foundation.workflow.application.general.ActvMatter;
 import jp.co.intra_mart.foundation.workflow.plugin.process.matter_end.MatterEndProcessParameter;
 import wf.common.constant.MailStatus;
 import wf.common.constant.MatterEndStatus;
@@ -69,9 +64,10 @@ public class AgreementMatterEndProcessServiceImpl implements AgreementMatterEndP
 			}
 
 			// Get information related to the matter
+			AgreementWorkflowService workflowService = new AgreementWorkflowService();
 			String matterId = parameter.getSystemMatterId();
-			List<String> matterData = this.getMatterData(matterId);
-			
+			Map<String, String> matterData = workflowService.getMatterData(matterId);
+
 			String pdfFileName = "";
 			try {
 				AgreementGeneratePDFService generatePDFService = new AgreementGeneratePDFService();
@@ -80,10 +76,10 @@ public class AgreementMatterEndProcessServiceImpl implements AgreementMatterEndP
 				System.out.println("Error on PDF generation, please generate from Details page");
 				e.printStackTrace();
 			}
-			
+
 			try {
 				AgreementEmailService mailService = new AgreementEmailService();
-				mailService.sendApprovalNotificationEmail(matterId, matterData.get(0), matterData.get(1), matterData.get(2), matterData.get(3), pdfFileName, attachmentTempModel);
+				mailService.sendApprovalNotificationEmail(matterId, matterData.get("recipientEmail"), matterData.get("matterNumber"), matterData.get("matterName"), matterData.get("matterDate"), pdfFileName, attachmentTempModel);
 			} catch (Exception e) {
 				System.out.println("Error on mail notification, please send again using Jobnet");
 			}
@@ -94,57 +90,5 @@ public class AgreementMatterEndProcessServiceImpl implements AgreementMatterEndP
 		}
 
 		return true;
-	}
-
-	private List<String> getMatterData(String matterId) {
-		List<String> matterData = new ArrayList<String>();
-		
-		String matterNumber = "";
-		String matterName = "";
-		String matterDatetime = "";
-		String matterDate = "";
-		String matterApplicantCode = "";
-		String recipientEmail = "emailnotfound@gmail.com";
-
-		try {
-			ActvMatter actvMatter = new ActvMatter(matterId);
-			matterNumber = actvMatter.getMatter().getMatterNumber();
-			matterName = actvMatter.getMatter().getMatterName();
-			matterDatetime = actvMatter.getMatter().getApplyDate();
-			matterApplicantCode = actvMatter.getMatter().getApplyAuthUserCode();
-		} catch (Exception e2) {
-			System.out.println("Error on matter data retrieval");
-		}
-		System.out.println("Mail sent using Active Matter data");
-		
-		if (matterDatetime != null && matterDatetime.contains(" ")) {
-			matterDate = matterDatetime.split(" ")[0];
-		} else {
-			matterDate = matterDatetime != null ? matterDatetime : "";
-		}
-		
-		try {
-			UserManager userManager;
-			User user;
-
-			userManager = new UserManager();
-			UserBizKey userBizKey = new UserBizKey();
-			userBizKey.setUserCd(matterApplicantCode);
-			
-			user = userManager.getUser(userBizKey, new Date());
-			
-			if (user != null) {
-				recipientEmail = user.getEmailAddress1();
-			}
-		} catch (BizApiException e1) {
-			e1.printStackTrace();
-		}
-			
-		matterData.add(recipientEmail);
-		matterData.add(matterNumber);
-		matterData.add(matterName);
-		matterData.add(matterDate);
-
-		return matterData;
 	}
 }

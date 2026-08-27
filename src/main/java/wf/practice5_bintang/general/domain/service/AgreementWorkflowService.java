@@ -10,14 +10,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import jp.co.intra_mart.foundation.context.Contexts;
+import jp.co.intra_mart.foundation.exception.BizApiException;
+import jp.co.intra_mart.foundation.master.user.UserManager;
+import jp.co.intra_mart.foundation.master.user.model.User;
+import jp.co.intra_mart.foundation.master.user.model.UserBizKey;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.SessionScopeStorage;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
+import jp.co.intra_mart.foundation.workflow.application.general.ActvMatter;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
 import wf.common.constant.MatterEndStatus;
 import wf.practice5_bintang.general.app.AgreementForm;
@@ -523,5 +530,75 @@ public class AgreementWorkflowService {
 		} catch (Exception cplEx) {
 		}
 		return "";
+	}
+
+	public Map<String, String> getMatterData(String matterId) {
+		Map<String, String> matterData = new HashMap<String, String>();
+
+		String matterNumber = "";
+		String matterName = "";
+		String matterDatetime = "";
+		String matterDate = "";
+		String matterApplicantCode = "";
+		String recipientEmail = "emailnotfound@gmail.com";
+
+		try {
+			try {
+				CplMatter cplMatter = new CplMatter(matterId);
+				if (cplMatter.getMatter() != null) {
+					matterNumber = cplMatter.getMatter().getMatterNumber();
+					matterName = cplMatter.getMatter().getMatterName();
+					matterDatetime = cplMatter.getMatter().getApplyDate();
+					matterApplicantCode = cplMatter.getMatter().getApplyAuthUserCode();
+				} else {
+					throw new Exception("CplMatter.getMatter() is null");
+				}
+			} catch (Exception e) {
+				System.out.println("Matter data is generated using active matter object");
+				try {
+					ActvMatter actvMatter = new ActvMatter(matterId);
+					if (actvMatter.getMatter() != null) {
+						matterNumber = actvMatter.getMatter().getMatterNumber();
+						matterName = actvMatter.getMatter().getMatterName();
+						matterDatetime = actvMatter.getMatter().getApplyDate();
+						matterApplicantCode = actvMatter.getMatter().getApplyAuthUserCode();
+					} else {
+						throw new Exception("ActvMatter.getMatter() is null");
+					}
+				} catch (Exception e1) {
+					System.out.println("Error on matter object retrieval: " + e.getMessage());
+				}
+			}
+
+			if (matterDatetime != null && matterDatetime.contains(" ")) {
+				matterDate = matterDatetime.split(" ")[0];
+			} else {
+				matterDate = matterDatetime != null ? matterDatetime : "";
+			}
+
+			try {
+				UserManager userManager = new UserManager();
+				UserBizKey userBizKey = new UserBizKey();
+				userBizKey.setUserCd(matterApplicantCode);
+
+				User user = userManager.getUser(userBizKey, new Date());
+
+				if (user != null && user.getEmailAddress1() != null && !user.getEmailAddress1().isEmpty()) {
+					recipientEmail = user.getEmailAddress1();
+				}
+			} catch (BizApiException e) {
+				System.out.println("Error on email address retrieval: " + e.getMessage());
+			}
+		} catch (Exception e) {
+			System.out.println("Error on matter data retrieval: " + e.getMessage());
+		}
+
+		matterData.put("matterNumber", matterNumber);
+		matterData.put("matterName", matterName);
+		matterData.put("matterDate", matterDate);
+		matterData.put("applicantCode", matterApplicantCode);
+		matterData.put("recipientEmail", recipientEmail);
+
+		return matterData;
 	}
 }
