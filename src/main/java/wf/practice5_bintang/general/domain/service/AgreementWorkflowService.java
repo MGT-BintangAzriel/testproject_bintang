@@ -328,10 +328,10 @@ public class AgreementWorkflowService {
 			}
 
 			if (row.getPaid_by() != null) {
-				if ("cash".equals(row.getPaid_by())) {
+				if (row.getPaid_by().contains("cash")) {
 					row.setPaid_by_cash("checked");
 				}
-				if ("card".equals(row.getPaid_by())) {
+				if (row.getPaid_by().contains("card")) {
 					row.setPaid_by_card("checked");
 				}
 			}
