@@ -81,9 +81,6 @@ public class AgreementHeaderRepository {
 				selectQuery = this.selectDataByMatterId;
 				parameters.add(selectValue);
 
-			} else if (selectWhere.equals("mail")) {
-				selectQuery = this.selectDataMail;
-
 			} else {
 				selectQuery = this.selectDataAll;
 			}
@@ -130,6 +127,20 @@ public class AgreementHeaderRepository {
 		} catch (SQLException | AccessSecurityException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException | NamingException e) {
 			e.printStackTrace();
 			throw new Exception("DB error in selectPersonalInfoChangeHeader_MaxId()", e);
+		}
+	}
+
+	public Collection<AgreementHeaderModel> selectPendingMailHeader() throws Exception {
+		try {
+			SQLManager sqlManager = new SQLManager();
+			Collection<Object> parameters = new ArrayList<Object>();
+
+			Collection<AgreementHeaderModel> result = sqlManager.select(AgreementHeaderModel.class, selectDataMail, parameters);
+			return result;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error in selectPendingMailHeader", e);
 		}
 	}
 

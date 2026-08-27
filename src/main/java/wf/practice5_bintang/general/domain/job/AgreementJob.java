@@ -12,7 +12,6 @@ import jp.co.intra_mart.foundation.master.user.UserManager;
 import jp.co.intra_mart.foundation.master.user.model.User;
 import jp.co.intra_mart.foundation.master.user.model.UserBizKey;
 import jp.co.intra_mart.foundation.workflow.application.general.CplMatter;
-import wf.common.constant.MailStatus;
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderModel;
@@ -36,8 +35,7 @@ public class AgreementJob implements Job {
 			AgreementHeaderRepository agreementHeaderDb = new AgreementHeaderRepository();
 			AgreementAttachFileRepository agreementAttachFileDb = new AgreementAttachFileRepository();
 
-			String mailStatus = MailStatus.UNSENT.getCode();
-			Collection<AgreementHeaderModel> models = agreementHeaderDb.selectHeader(mailStatus, "mail");
+			Collection<AgreementHeaderModel> models = agreementHeaderDb.selectPendingMailHeader();
 
 			for (AgreementHeaderModel model : models) {
 				String matterId = model.getSystem_matter_id();
