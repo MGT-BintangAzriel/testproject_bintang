@@ -23,11 +23,11 @@
 			</th>
 			<td>
 				<div class="mt-4">
-					<label class="pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_psd)}> PSD (go to #2)
+					<label class="pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_psd)}> PSD (go to #2)
 					</label>
 				</div>
 				<div class="mt-4">
-					<label class="pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD (end)
+					<label class="pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD (end)
 					</label>
 				</div>
 			</td>
@@ -40,12 +40,12 @@
 				</th>
 				<td>
 					<div class="mt-4">
-						<label class="pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_psd)}> PSD (Pitching
+						<label class="pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_psd)}> PSD (Pitching
 							result attached)
 						</label>
 					</div>
 					<div class="mt-4">
-						<label class="pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_dic)}> DIC (Please
+						<label class="pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_dic)}> DIC (Please
 							describe the reason in the box below)
 						</label>
 					</div>
@@ -76,9 +76,9 @@
 				<label class="imui-required">D / D Process Required</label>
 			</th>
 			<td>
-				<label class="radio-item-gap pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_dd_process_yes)}>
+				<label class="radio-item-gap pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_dd_process_yes)}>
 					Yes
-				</label> <label class="pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_dd_process_no)}> No
+				</label> <label class="pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_dd_process_no)}> No
 				</label>
 				<div class="error_message"></div>
 			</td>
@@ -90,9 +90,9 @@
 				<label class="imui-required">Anti Bribery Clause Included</label>
 			</th>
 			<td>
-				<label class="radio-item-gap pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_anti_bribery_yes)}>
+				<label class="radio-item-gap pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_anti_bribery_yes)}>
 					Yes
-				</label> <label class="pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_anti_bribery_no)}> No
+				</label> <label class="pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_anti_bribery_no)}> No
 				</label>
 				<div class="error_message"></div>
 			</td>
@@ -104,9 +104,9 @@
 				<label class="imui-required">Audit Rights Included</label>
 			</th>
 			<td>
-				<label class="radio-item-gap pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_audit_rights_yes)}>
+				<label class="radio-item-gap pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_audit_rights_yes)}>
 					Yes
-				</label> <label class="pointer-locked"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_audit_rights_no)}> No
+				</label> <label class="pointer-locked"> <input tabindex="-1" type="radio" ${f:h(savedFormData.f_audit_rights_no)}> No
 				</label>
 				<div class="error_message"></div>
 			</td>

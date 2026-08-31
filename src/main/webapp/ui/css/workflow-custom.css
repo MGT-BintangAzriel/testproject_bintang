@@ -132,7 +132,6 @@ label.error:empty {
 
 .pointer-locked {
     pointer-events: none !important;
-    cursor: default !important;
 }
 
 .font-imart, 

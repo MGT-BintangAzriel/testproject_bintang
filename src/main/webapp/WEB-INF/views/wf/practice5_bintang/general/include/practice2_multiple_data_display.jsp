@@ -23,13 +23,13 @@
 			</th>
 			<td>
 				<label class="pointer-locked" style="display: block; margin-bottom: 4px;">
-					<input type="checkbox" disabled tabindex="-1" ${f:h(savedFormData.f_multidata_pl)} /> PL Impact
+					<input type="checkbox" tabindex="-1" ${f:h(savedFormData.f_multidata_pl)} /> PL Impact
 				</label>
 				<label class="pointer-locked" style="display: block; margin-bottom: 4px;">
-					<input type="checkbox" disabled tabindex="-1" ${f:h(savedFormData.f_multidata_asset)} /> Asset
+					<input type="checkbox" tabindex="-1" ${f:h(savedFormData.f_multidata_asset)} /> Asset
 				</label>
 				<label class="pointer-locked" style="display: block;">
-					<input type="checkbox" disabled tabindex="-1" ${f:h(savedFormData.f_multidata_estimated)} /> Estimated Schedule
+					<input type="checkbox" tabindex="-1" ${f:h(savedFormData.f_multidata_estimated)} /> Estimated Schedule
 				</label>
 			</td>
 		</tr>
@@ -215,7 +215,7 @@
 							<table style="margin: 0px;">
 								<tr>
 									<td style="border: none; padding: 0px;">
-										<input class="pointer-locked" disabled tabindex="-1" type="radio" ${f:h(item.recurring_yes)}>
+										<input class="pointer-locked" tabindex="-1" type="radio" ${f:h(item.recurring_yes)}>
 									</td>
 									<td style="border: none; padding: 0px;">
 										<label>Yes</label>
@@ -223,7 +223,7 @@
 								</tr>
 								<tr>
 									<td style="border: none; padding: 0px;">
-										<input class="pointer-locked" disabled tabindex="-1" type="radio" ${f:h(item.recurring_no)}>
+										<input class="pointer-locked" tabindex="-1" type="radio" ${f:h(item.recurring_no)}>
 									</td>
 									<td style="border: none; padding: 0px;">
 										<label>No</label>
@@ -233,10 +233,10 @@
 						</td>
 						<td>
 							<label class="pointer-locked" style="display: block; margin-bottom: 2px;">
-								<input type="checkbox" disabled tabindex="-1" ${f:h(item.paid_by_card)} /> Card
+								<input type="checkbox" tabindex="-1" ${f:h(item.paid_by_card)} /> Card
 							</label>
 							<label class="pointer-locked" style="display: block;">
-								<input type="checkbox" disabled tabindex="-1" ${f:h(item.paid_by_cash)} /> Cash
+								<input type="checkbox" tabindex="-1" ${f:h(item.paid_by_cash)} /> Cash
 							</label>
 						</td>
 					</tr>
