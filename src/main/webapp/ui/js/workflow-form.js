@@ -164,6 +164,9 @@ function setupDynamicPaymentTable() {
     var rowIdx = $("#payment_detail_table tbody tr.payment-row").length + 1;
     var rowTemplate =
       '<tr class="payment-row">' +
+      '<td style="text-align: center;" class="table-action-col">' +
+      '<button type="button" class="imui-button btn-delete-row">Delete</button>' +
+      "</td>" +
       '<td style="text-align: center;" class="row-seq-no">' +
       rowIdx +
       "</td>" +
@@ -238,9 +241,6 @@ function setupDynamicPaymentTable() {
       rowIdx +
       '" class="f_paid_by" value="cash"> Cash</label>' +
       '<div class="error_message"></div>' +
-      "</td>" +
-      '<td style="text-align: center;" class="table-action-col">' +
-      '<button type="button" class="imui-button btn-delete-row">Delete</button>' +
       "</td>" +
       "</tr>";
 

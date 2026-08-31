@@ -140,6 +140,8 @@
 	<div style="overflow-x: auto; width: 100%; margin-bottom: 15px;">
 		<table id="payment_detail_table" class="imui-form tab_header" style="min-width: 1020px; table-layout: fixed;">
 			<colgroup>
+				<col style="width: 80px;" class="table-action-col" />
+				<!-- Action (Delete) -->
 				<col style="width: 40px;" />
 				<!-- No. -->
 				<col style="width: 220px;" />
@@ -154,8 +156,6 @@
 				<!-- Recurring -->
 				<col style="width: 150px;" />
 				<!-- Paid By -->
-				<col style="width: 80px;" class="table-action-col" />
-				<!-- Action (Delete) -->
 			</colgroup>
 			<thead>
 				<tr>
@@ -164,6 +164,9 @@
 					</th>
 				</tr>
 				<tr>
+					<th style="text-align: center;" class="table-action-col">
+						<label>Action</label>
+					</th>
 					<th style="text-align: center;">
 						<label>No</label>
 					</th>
@@ -185,15 +188,15 @@
 					<th style="text-align: center;">
 						<label class="imui-required">Paid By</label>
 					</th>
-					<th style="text-align: center;" class="table-action-col">
-						<label>Action</label>
-					</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- Dynamic Rows from Database -->
 				<c:forEach items="${savedFormData.d_list_payment_detail}" var="item">
 					<tr class="payment-row">
+						<td style="text-align: center;" class="table-action-col">
+							<button type="button" class="imui-button btn-delete-row">Delete</button>
+						</td>
 						<td style="text-align: center;" class="row-seq-no">${f:h(item.row_no)}</td>
 						<td style="text-align: center;">
 							<div style="display: flex; align-items: center; gap: 6px; justify-content: center; white-space: nowrap;">
@@ -253,15 +256,15 @@
 							</label>
 							<div class="error_message"></div>
 						</td>
-						<td style="text-align: center;" class="table-action-col">
-							<button type="button" class="imui-button btn-delete-row">Delete</button>
-						</td>
 					</tr>
 				</c:forEach>
 
 				<!-- Initial Blank Row for New Form -->
 				<c:if test="${empty savedFormData.d_list_payment_detail and (workflowRequestForm.imwPageType == '0' || workflowRequestForm.imwPageType == '3')}">
 					<tr class="payment-row">
+						<td style="text-align: center;" class="table-action-col">
+							<button type="button" class="imui-button btn-delete-row">Delete</button>
+						</td>
 						<td style="text-align: center;" class="row-seq-no">1</td>
 						<td style="text-align: center;">
 							<div style="display: flex; align-items: center; gap: 6px; justify-content: center; white-space: nowrap;">
@@ -290,8 +293,6 @@
 							<div class="error_message"></div>
 						</td>
 						<td>
-							<!-- <label style="margin-right: 6px;"><input type="radio" name="f_recurring_1" class="f_recurring" value="1"> Yes</label> <label><input
-							type="radio" name="f_recurring_1" class="f_recurring" value="0"> No</label> -->
 							<table style="margin: 0px;">
 								<tr>
 									<td style="border: none; padding: 0px;">
@@ -320,9 +321,6 @@
 								<input type="checkbox" name="f_paid_by_1" class="f_paid_by" value="cash"> Cash
 							</label>
 							<div class="error_message"></div>
-						</td>
-						<td style="text-align: center;" class="table-action-col">
-							<button type="button" class="imui-button btn-delete-row">Delete</button>
 						</td>
 					</tr>
 				</c:if>
