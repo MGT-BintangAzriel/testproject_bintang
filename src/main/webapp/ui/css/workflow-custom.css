@@ -150,3 +150,51 @@ label.error:empty {
     margin-top: -2px !important;
     margin-right: 4px !important;
 }
+
+/* Beautiful Download Button */
+.download-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	background-color: #eff6ff !important; /* Soft light blue tint */
+	color: #2563eb !important;
+	border: 1px solid #bfdbfe !important; /* Matching light blue border */
+	padding: 8px 16px;
+	border-radius: 6px;
+	/*font-size: 0.9rem;
+	font-weight: 600;*/
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.15s ease-in-out;
+}
+
+.download-btn:hover {
+	background-color: #2563eb !important;
+	color: #ffffff !important;
+	border-color: #2563eb;
+	box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* Beautiful Delete Button */
+.delete-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	background-color: #fef2f2 !important; /* Soft light red/pink tint */
+	color: #ef4444 !important;
+	border: 1px solid #fecaca !important; /* Matching light red border */
+	padding: 8px 16px;
+	border-radius: 6px;
+	/*font-size: 0.9rem;
+	font-weight: 600;*/
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.15s ease-in-out;
+}
+
+.delete-btn:hover {
+	background-color: #dc2626 !important;
+	color: #ffffff !important;
+	border-color: #dc2626;
+	box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); /* Matching red glow */
+}

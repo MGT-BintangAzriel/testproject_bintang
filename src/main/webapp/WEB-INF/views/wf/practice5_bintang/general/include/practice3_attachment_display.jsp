@@ -37,11 +37,17 @@
 			<tbody>
 				<c:forEach items="${savedFormData.d_list_attachment}" var="file">
 					<tr>
-						<td>
-							<a href="practice5_bintang/download/${file.id}?token=${f:h(savedFormData.f_download_token)}&system_matter_id=${f:h(workflowRequestForm.imwSystemMatterId)}">
-								${f:h(file.file_name)}
-							</a>
-							<span style="color: #666; margin-left: 8px;">(${f:h(file.file_size_convert)})</span>
+						<td style="vertical-align: middle;">
+							<label class="">${f:h(file.file_name)}</label>
+						</td>
+						<td style="vertical-align: middle;">
+							<label class="">${f:h(file.file_size_convert)}</label>
+						</td>
+						<td style="text-align:center; vertical-align: middle; white-space: nowrap;">
+							<button type="button" class="download-btn" name="${file.file_real_name}" 
+								onclick="window.location.href='practice5_bintang/download/${f:h(file.id)}?token=${f:h(savedFormData.f_download_token)}&system_matter_id=${f:h(workflowRequestForm.imwSystemMatterId)}';">
+								<i class="fa-solid fa-file-arrow-down"></i> Download
+							</button>
 						</td>
 					</tr>
 				</c:forEach>

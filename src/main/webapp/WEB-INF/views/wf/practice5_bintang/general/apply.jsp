@@ -54,10 +54,11 @@
       setupDynamicPaymentTable();
 
       // Delete file attachment handler
-      $(".file_attachment_list").on("click", "#delete_file", function() {
+      $(".file_attachment_list").on("click", ".f_delete_file", function() {
         $(this).closest("tr").remove();
         var fileName = $(this).attr("name");
         $("." + fileName).remove();
+        validateWorkflowForm();
       });
 
       // Postal code API search
