@@ -557,3 +557,13 @@ function setupPostcodeSearch() {
   });
 }
 
+function setupDateCrossValidation() {
+  $("#f_effective_from, #f_effective_to").on("change", function () {
+    $("#f_effective_from, #f_effective_to").valid();
+  });
+
+  $("#f_estimated_delivery_from, #f_estimated_delivery_to").on("change", function () {
+    $("#f_estimated_delivery_from, #f_estimated_delivery_to").valid();
+  });
+}
+

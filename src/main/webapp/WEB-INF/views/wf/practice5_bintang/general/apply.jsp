@@ -29,11 +29,14 @@
           $(this).trigger('change');
         }
       });
+      
+      // Cross-field date validation setup
+      setupDateCrossValidation();
 
       $('.select2').select2();
       $('.select2').select2().on('change', function() {
         $(this).valid();
-    });;
+    });
 
       // Setup sub option on radio button
       setupSubOptionToggle('f_agreement_status', 'amendment', 'f_total_duration', 'f_total_duration_1');
