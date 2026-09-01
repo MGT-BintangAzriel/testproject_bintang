@@ -191,6 +191,7 @@ public class AgreementGeneratePDFService {
 			    .append("h2, h3 { page-break-after: avoid; }")
 			    .append("thead { display: table-header-group; }")
 			    .append("tr { page-break-inside: avoid; }")
+			    .append(".section-block { page-break-inside: avoid; margin-bottom: 8px; }")
 			    .append("</style>")
 			    .append("</head>")
 			    .append("<body>")
@@ -251,23 +252,28 @@ public class AgreementGeneratePDFService {
 
 			if (!multidata.isEmpty()) {
 				if (multidata.contains("pl")) {
-					html.append("<h2>PL Impact</h2>")
+					html.append("<div class='section-block'>")
+						.append("<h2>PL Impact</h2>")
 					    .append("<table>");
 					addRow(html, "Budget PL Impact to current FY", model.getBudget_pl_impact());
 					addRow(html, "Budget PL Month", model.getBudget_pl_month());
 					addRow(html, "PL Impact to current FY", model.getPl_impact());
 					addRow(html, "PL Month", model.getPl_month());
-					html.append("</table>");
+					html.append("</table>")
+					    .append("</div>");
 				}
 				if (multidata.contains("asset")) {
-					html.append("<h2>Asset</h2>")
+					html.append("<div class='section-block'>")
+					    .append("<h2>Asset</h2>")
 					    .append("<table>");
 					addRow(html, "Asset Number", model.getAsset_number());
 					addRow(html, "Book Value", model.getBook_value());
-					html.append("</table>");
+					html.append("</table>")
+					    .append("</div>");
 				}
 				if (multidata.contains("estimated")) {
-					html.append("<h2>Estimated Schedule</h2>")
+					html.append("<div class='section-block'>")
+					    .append("<h2>Estimated Schedule</h2>")
 					    .append("<table>");
 					addRow(html, "Total Payment Amount", formatAmount(model.getTotal_payment_amount()));
 					html.append("</table>");
@@ -285,7 +291,8 @@ public class AgreementGeneratePDFService {
 					}
 
 					if (paymentList != null && !paymentList.isEmpty()) {
-						html.append("<h3>Payment (Total Cash Flow Impact)</h3>")
+						html.append("<div class='section-block'>")
+							.append("<h3>Payment (Total Cash Flow Impact)</h3>")
 						    .append("<table>")
 						    .append("<thead><tr>")
 						    .append("<th style='width: 6%; text-align: center;'>No</th>")
@@ -313,12 +320,13 @@ public class AgreementGeneratePDFService {
 							    .append("</tr>");
 						}
 
-						html.append("</tbody></table>");
+						html.append("</tbody></table>").append("</div></div>");
 					}
 				}
 			}
 
-			html.append("<h2>Agreement Classification</h2>")
+			html.append("<div class='section-block'>")
+			    .append("<h2>Agreement Classification</h2>")
 			    .append("<table>");
 			addRow(html, "Agreement Classification", convertAgreementClassification(model.getAgreement_classification()));
 			if ("pd".equals(model.getAgreement_classification()) && model.getPd_sub_condition() != null && !model.getPd_sub_condition().isEmpty()) {
@@ -328,31 +336,39 @@ public class AgreementGeneratePDFService {
 			if ("yes".equalsIgnoreCase(model.getEc_approval()) && model.getEc_sub_condition() != null && !model.getEc_sub_condition().isEmpty()) {
 				addRow(html, "EC Approval Sub Condition", convertEcSubCondition(model.getEc_sub_condition()));
 			}
-			html.append("</table>");
+			html.append("</table>")
+			    .append("</div>");
 
-			html.append("<h2>PSD Check (by UH or DH, PSD)</h2>")
+			html.append("<div class='section-block'>")
+			    .append("<h2>PSD Check (by UH or DH, PSD)</h2>")
 			    .append("<table>");
 			addRow(html, "PSD Area or Non-PSD Area", convertPsdArea(model.getPsd_area()));
 			addRow(html, "In PSD Area, PSD Process, or DIC Process", convertPsdProcess(model.getPsd_process()));
 			if ("dic".equals(model.getPsd_process())) {
 				addRow(html, "DIC Reason", model.getDic_reason());
 			}
-			html.append("</table>");
+			html.append("</table>")
+			    .append("</div>");
 
-			html.append("<h2>Compliance Check By CCO</h2>")
+			html.append("<div class='section-block'>")
+			    .append("<h2>Compliance Check By CCO</h2>")
 			    .append("<table>");
 			addRow(html, "D / D Process Required", convertYesNo(model.getDd_process()));
 			addRow(html, "Anti Bribery Clause Included", convertYesNo(model.getAnti_bribery()));
 			addRow(html, "Audit Rights Included", convertYesNo(model.getAudit_rights()));
-			html.append("</table>");
+			html.append("</table>")
+			    .append("</div>");
 
-			html.append("<h2>Filled by Legal</h2>")
+			html.append("<div class='section-block'>")
+			    .append("<h2>Filled by Legal</h2>")
 			    .append("<table>");
 			addRow(html, "Agreement Number", model.getLegal_agreement_number());
 			addRow(html, "Agreement Date", model.getLegal_agreement_date());
-			html.append("</table>");
+			html.append("</table>")
+			    .append("</div>");
 
-			html.append("<h2>Approval History</h2>")
+			html.append("<div class='section-block'>")
+			    .append("<h2>Approval History</h2>")
 			    .append("<table>")
 			    .append("<tr><th style='width: 40%;'>Approver</th><th style='width: 30%;'>Status</th><th style='width: 30%;'>Process Date</th></tr>");
 
@@ -378,6 +394,7 @@ public class AgreementGeneratePDFService {
 			}
 
 			html.append("</table>")
+			    .append("</div>")
 			    .append("</body></html>");
 
 			InputStream successPdf = HtmlToPdf.create().object(HtmlToPdfObject.forHtml(html.toString())).convert();
