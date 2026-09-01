@@ -33,7 +33,7 @@
 			</td>
 		</tr>
 		<!-- PSD Process or DIC Process & Reason Textarea -->
-		<c:if test="${savedFormData.f_psd_area_psd == 'checked'}">
+		<c:if test="${savedFormData.f_psd_area_psd == 'checked' || (empty savedFormData.f_psd_area_psd && empty savedFormData.f_psd_area_non_psd)}">
 			<tr>
 				<th colspan="${thColspan}">
 					<label class="imui-required">In PSD Area, PSD Process, or DIC Process</label>
@@ -50,7 +50,7 @@
 						</label>
 					</div>
 					<div class="mt-4">
-						<textarea rows="4" class="form-input-textarea pointer-locked" disabled tabindex=-1>${f:h(savedFormData.f_dic_reason)}</textarea>
+						<textarea rows="4" class="form-input-textarea pointer-locked" tabindex=-1>${f:h(savedFormData.f_dic_reason)}</textarea>
 					</div>
 				</td>
 			</tr>
