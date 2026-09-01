@@ -67,6 +67,9 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 			createMatterProperty(parameter.getUserDataId(), "practice5_bintang_po", headerInfoTempModel.getPo_required());
 			createMatterProperty(parameter.getUserDataId(), "practice5_bintang_ac", headerInfoTempModel.getAgreement_classification());
 			createMatterProperty(parameter.getUserDataId(), "practice5_bintang_ec", headerInfoTempModel.getEc_approval());
+			
+			createMatterProperty(parameter.getUserDataId(), "practice5_app_dept", headerInfoTempModel.getApplicant_department());
+			createMatterProperty(parameter.getUserDataId(), "practice5_app_num", headerInfoTempModel.getApplication_number());
 
 			number = WorkflowNumberingManager.getNumber();
 
