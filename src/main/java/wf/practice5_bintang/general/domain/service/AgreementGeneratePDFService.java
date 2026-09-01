@@ -273,10 +273,7 @@ public class AgreementGeneratePDFService {
 				}
 				if (multidata.contains("estimated")) {
 					html.append("<div class='section-block'>")
-					    .append("<h2>Estimated Schedule</h2>")
-					    .append("<table>");
-					addRow(html, "Total Payment Amount", formatAmount(model.getTotal_payment_amount()));
-					html.append("</table>");
+					    .append("<h2>Estimated Schedule</h2>");
 
 					List<AgreementPaymentDetailModel> paymentList = null;
 
@@ -291,17 +288,16 @@ public class AgreementGeneratePDFService {
 					}
 
 					if (paymentList != null && !paymentList.isEmpty()) {
-						html.append("<div class='section-block'>")
-							.append("<h3>Payment (Total Cash Flow Impact)</h3>")
+						html.append("<h3>Payment (Total Cash Flow Impact)</h3>")
 						    .append("<table>")
 						    .append("<thead><tr>")
-						    .append("<th style='width: 6%; text-align: center;'>No</th>")
-						    .append("<th style='width: 24%; text-align: center;'>Brand and Type</th>")
-						    .append("<th style='width: 16%; text-align: center;'>Amount</th>")
-						    .append("<th style='width: 14%; text-align: center;'>Date</th>")
-						    .append("<th style='width: 14%; text-align: center;'>Category</th>")
-						    .append("<th style='width: 12%; text-align: center;'>Recurring</th>")
-						    .append("<th style='width: 14%; text-align: center;'>Paid By</th>")
+						    .append("<th style='width: 6%;text-align: center'>No</th>")
+						    .append("<th style='width: 24%;text-align: center'>Brand and Type</th>")
+						    .append("<th style='width: 16%;'>Amount</th>")
+						    .append("<th style='width: 14%;'>Date</th>")
+						    .append("<th style='width: 14%;'>Category</th>")
+						    .append("<th style='width: 12%;'>Recurring</th>")
+						    .append("<th style='width: 14%;'>Paid By</th>")
 						    .append("</tr></thead><tbody>");
 
 						for (AgreementPaymentDetailModel pay : paymentList) {
@@ -312,15 +308,20 @@ public class AgreementGeneratePDFService {
 							html.append("<tr>")
 							    .append("<td style='text-align: center;'>").append(pay.getRow_no()).append("</td>")
 							    .append("<td style='text-align: center;'>").append(pay.getBrand()).append(" / ").append(pay.getType()).append("</td>")
-							    .append("<td style='text-align: center;'>").append(formatAmount(pay.getPayment_amount())).append("</td>")
-							    .append("<td style='text-align: center;'>").append(pay.getPayment_date()).append("</td>")
-							    .append("<td style='text-align: center;'>").append(catName).append("</td>")
-							    .append("<td style='text-align: center;'>").append(recName).append("</td>")
+							    .append("<td>").append(formatAmount(pay.getPayment_amount())).append("</td>")
+							    .append("<td>").append(pay.getPayment_date()).append("</td>")
+							    .append("<td>").append(catName).append("</td>")
+							    .append("<td>").append(recName).append("</td>")
 							    .append("<td>").append(paidByName).append("</td>")
 							    .append("</tr>");
 						}
 
-						html.append("</tbody></table>").append("</div></div>");
+						html.append("</tbody>");
+						html.append("<tfoot><tr>")
+						    .append("<th colspan='2' style='text-align: center;'>Total Payment Amount</th>")
+						    .append("<td colspan='5' style='font-weight: bold;'>").append(formatAmount(model.getTotal_payment_amount())).append("</td>")
+						    .append("</tr></tfoot>");
+						html.append("</table>").append("</div>");
 					}
 				}
 			}
