@@ -54,23 +54,26 @@
 			</th>
 			<td>
 				<label class="pointer-locked"> <input type="radio" tabindex="-1"
-					${savedFormData.f_agreement_status == 'one_time' ? 'checked' : ''} /> One Time/New
+					${f:h(savedFormData.f_agreement_status_one_time)} /> One Time/New
 				</label>
 				<div class="mt-4">
 					<label class="pointer-locked"> <input type="radio" tabindex="-1"
-						${savedFormData.f_agreement_status == 'amendment' ? 'checked' : ''} /> Amendment/Extension/Renewal
+						${f:h(savedFormData.f_agreement_status_amendment)} /> Amendment/Extension/Renewal
 					</label>
 
 					<%-- Sub-options --%>
 					<div class="sub-options">
 						<div>Total Duration from first cooperation until now</div>
 						<label class="radio-item-sub-gap pointer-locked"> <input type="radio" tabindex="-1"
-							${savedFormData.f_total_duration == 'more_than_1_year' ? 'checked' : ''} /> More than 1 year
+							${f:h(savedFormData.f_total_duration_more_than_1_year)} /> More than 1 year
 						</label> <label class="pointer-locked"> <input type="radio" tabindex="-1"
-							${savedFormData.f_total_duration == 'up_to_1_year' ? 'checked' : ''} /> Up to 1 Year
+							${f:h(savedFormData.f_total_duration_up_to_1_year)} /> Up to 1 Year
 						</label>
 					</div>
 				</div>
+				<label class="pointer-locked"> <input type="radio" tabindex="-1"
+					${f:h(savedFormData.f_agreement_status_umbrella)} /> Umbrella Agreement
+				</label>
 			</td>
 		</tr>
 
