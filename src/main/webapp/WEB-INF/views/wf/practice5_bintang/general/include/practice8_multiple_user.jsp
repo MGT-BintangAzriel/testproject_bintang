@@ -4,6 +4,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 <%@ taglib prefix="f" uri="http://terasoluna.org/functions"%>
 
+<!-- Hidden inputs to preserve multi-user approver data during Reapply -->
+<input type="hidden" name="f_psd_area" value="${f:h(savedFormData.f_psd_area)}" />
+<input type="hidden" name="f_psd_process" value="${f:h(savedFormData.f_psd_process)}" />
+<input type="hidden" name="f_dic_reason" value="${f:h(savedFormData.f_dic_reason)}" />
+<input type="hidden" name="f_dd_process" value="${f:h(savedFormData.f_dd_process)}" />
+<input type="hidden" name="f_anti_bribery" value="${f:h(savedFormData.f_anti_bribery)}" />
+<input type="hidden" name="f_audit_rights" value="${f:h(savedFormData.f_audit_rights)}" />
+<input type="hidden" name="f_legal_agreement_number" value="${f:h(savedFormData.f_legal_agreement_number)}" />
+<input type="hidden" name="f_legal_agreement_date" value="${f:h(savedFormData.f_legal_agreement_date)}" />
+
 <!-- PSD Check -->
 <header class="imui-chapter-title">
 	<h2>PSD Check (by UH or DH, PSD)</h2>
