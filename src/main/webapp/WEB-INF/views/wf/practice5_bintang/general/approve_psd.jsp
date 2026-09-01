@@ -21,6 +21,9 @@
 
 	<script type="text/javascript">
     $(function() {
+
+	  $('input[name="f_psd_area"]').on("change", togglePsdField).trigger("change");
+	  $('input[name="f_psd_process"]').on("change", toggleDicReason).trigger("change");
       
       formatNumberText();
       
@@ -85,7 +88,7 @@
 				<jsp:include page="include/practice7_multiple_branch_display.jsp" />
 
 				<%-- Practice 8 Section --%>
-				<jsp:include page="include/practice8_multiple_user_display.jsp" />
+				<jsp:include page="include/practice8_multiple_user_approve_psd.jsp" />  
 
 			</workflow:workflowOpenPage>
 

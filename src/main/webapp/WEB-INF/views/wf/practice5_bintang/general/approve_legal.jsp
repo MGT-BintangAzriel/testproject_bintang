@@ -21,6 +21,13 @@
 
 	<script type="text/javascript">
     $(function() {
+
+      $("#f_legal_agreement_date").imuiCalendar({
+        changeMonth: true,
+        changeYear: true,
+        onSelect: function() { $(this).trigger("change"); }
+      });
+      $(".ui-datepicker-trigger").hide();
       
       formatNumberText();
       
@@ -85,7 +92,7 @@
 				<jsp:include page="include/practice7_multiple_branch_display.jsp" />
 
 				<%-- Practice 8 Section --%>
-				<jsp:include page="include/practice8_multiple_user_display.jsp" />
+				<jsp:include page="include/practice8_multiple_user_approve_legal.jsp" />  
 
 			</workflow:workflowOpenPage>
 

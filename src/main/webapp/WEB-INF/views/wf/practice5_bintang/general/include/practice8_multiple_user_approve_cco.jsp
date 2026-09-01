@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 <%@ taglib prefix="f" uri="http://terasoluna.org/functions"%>
 
-<!-- PSD Check -->
+<!-- PSD Check (Display) -->
 <header class="imui-chapter-title">
 	<h2>PSD Check (by UH or DH, PSD)</h2>
 </header>
@@ -27,8 +27,7 @@
 					</label>
 				</div>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD
-						(end)
+					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD (end)
 					</label>
 				</div>
 			</td>
@@ -41,13 +40,12 @@
 			</th>
 			<td>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_psd)}> PSD
-						(Pitching result attached)
+					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_psd)}> PSD (Pitching result attached)
 					</label>
 				</div>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_dic)}> DIC (Please
-						describe the reason in the box below)
+					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_dic)}> DIC (Please describe the reason in
+						the box below)
 					</label>
 				</div>
 				<div class="mt-4">
@@ -58,7 +56,7 @@
 	</tbody>
 </table>
 
-<!-- Compliance Check -->
+<!-- Compliance Check (Editable) -->
 <header class="imui-chapter-title">
 	<h2>Compliance Check By CCO</h2>
 </header>
@@ -76,9 +74,11 @@
 				<label class="imui-required">D / D Process Required</label>
 			</th>
 			<td>
-				<label class="radio-item-gap"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_dd_process_yes)}> Yes
-				</label> <label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_dd_process_no)}> No
+				<label class="radio-item-gap"> <input type="radio" id="f_dd_process_1" name="f_dd_process" value="yes"
+					${f:h(savedFormData.f_dd_process_yes)}> Yes
+				</label> <label> <input type="radio" id="f_dd_process_0" name="f_dd_process" value="no" ${f:h(savedFormData.f_dd_process_no)}> No
 				</label>
+				<div class="error_message"></div>
 			</td>
 		</tr>
 
@@ -88,9 +88,11 @@
 				<label class="imui-required">Anti Bribery Clause Included</label>
 			</th>
 			<td>
-				<label class="radio-item-gap"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_anti_bribery_yes)}> Yes
-				</label> <label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_anti_bribery_no)}> No
+				<label class="radio-item-gap"> <input type="radio" id="f_anti_bribery_1" name="f_anti_bribery" value="yes"
+					${f:h(savedFormData.f_anti_bribery_yes)}> Yes
+				</label> <label> <input type="radio" id="f_anti_bribery_0" name="f_anti_bribery" value="no" ${f:h(savedFormData.f_anti_bribery_no)}> No
 				</label>
+				<div class="error_message"></div>
 			</td>
 		</tr>
 
@@ -100,15 +102,17 @@
 				<label class="imui-required">Audit Rights Included</label>
 			</th>
 			<td>
-				<label class="radio-item-gap"> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_audit_rights_yes)}> Yes
-				</label> <label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_audit_rights_no)}> No
+				<label class="radio-item-gap"> <input type="radio" id="f_audit_rights_1" name="f_audit_rights" value="yes"
+					${f:h(savedFormData.f_audit_rights_yes)}> Yes
+				</label> <label> <input type="radio" id="f_audit_rights_0" name="f_audit_rights" value="no" ${f:h(savedFormData.f_audit_rights_no)}> No
 				</label>
+				<div class="error_message"></div>
 			</td>
 		</tr>
 	</tbody>
 </table>
 
-<!-- Filled by Legal -->
+<!-- Filled by Legal (Display) -->
 <header class="imui-chapter-title">
 	<h2>Filled by Legal</h2>
 </header>

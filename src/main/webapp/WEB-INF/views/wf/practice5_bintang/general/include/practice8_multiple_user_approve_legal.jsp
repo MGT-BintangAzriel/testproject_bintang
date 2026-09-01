@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 <%@ taglib prefix="f" uri="http://terasoluna.org/functions"%>
 
-<!-- PSD Check -->
+<!-- PSD Check (Display) -->
 <header class="imui-chapter-title">
 	<h2>PSD Check (by UH or DH, PSD)</h2>
 </header>
@@ -27,8 +27,7 @@
 					</label>
 				</div>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD
-						(end)
+					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD (end)
 					</label>
 				</div>
 			</td>
@@ -41,13 +40,12 @@
 			</th>
 			<td>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_psd)}> PSD
-						(Pitching result attached)
+					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_psd)}> PSD (Pitching result attached)
 					</label>
 				</div>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_dic)}> DIC (Please
-						describe the reason in the box below)
+					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_dic)}> DIC (Please describe the reason in
+						the box below)
 					</label>
 				</div>
 				<div class="mt-4">
@@ -58,7 +56,7 @@
 	</tbody>
 </table>
 
-<!-- Compliance Check -->
+<!-- Compliance Check (Display) -->
 <header class="imui-chapter-title">
 	<h2>Compliance Check By CCO</h2>
 </header>
@@ -108,7 +106,7 @@
 	</tbody>
 </table>
 
-<!-- Filled by Legal -->
+<!-- Filled by Legal (Editable) -->
 <header class="imui-chapter-title">
 	<h2>Filled by Legal</h2>
 </header>
@@ -126,7 +124,9 @@
 				<label class="imui-required">Agreement Number</label>
 			</th>
 			<td>
-				<input type="text" class="form-input-text" disabled tabindex="-1" value="${f:h(savedFormData.f_legal_agreement_number)}">
+				<input type="text" id="f_legal_agreement_number" name="f_legal_agreement_number" value="${f:h(savedFormData.f_legal_agreement_number)}"
+					class="form-input-text">
+				<div class="error_message"></div>
 			</td>
 		</tr>
 
@@ -136,7 +136,9 @@
 				<label class="imui-required">Agreement Date</label>
 			</th>
 			<td>
-				<input type="text" class="form-input-text" disabled tabindex="-1" value="${f:h(savedFormData.f_legal_agreement_date)}">
+				<input type="text" id="f_legal_agreement_date" name="f_legal_agreement_date" class="imuiCalendar form-input-text"
+					value="${f:h(savedFormData.f_legal_agreement_date)}">
+				<div class="error_message"></div>
 			</td>
 		</tr>
 	</tbody>

@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 <%@ taglib prefix="f" uri="http://terasoluna.org/functions"%>
 
-<!-- PSD Check -->
+<!-- PSD Check (Editable) -->
 <header class="imui-chapter-title">
 	<h2>PSD Check (by UH or DH, PSD)</h2>
 </header>
@@ -23,14 +23,15 @@
 			</th>
 			<td>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_psd)}> PSD (go to #2)
+					<label> <input type="radio" id="f_psd_area_1" name="f_psd_area" value="psd" ${f:h(savedFormData.f_psd_area_psd)}> PSD (go to #2)
 					</label>
 				</div>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD
+					<label> <input type="radio" id="f_psd_area_2" name="f_psd_area" value="non_psd" ${f:h(savedFormData.f_psd_area_non_psd)}> Non-PSD
 						(end)
 					</label>
 				</div>
+				<div class="error_message"></div>
 			</td>
 		</tr>
 
@@ -41,24 +42,25 @@
 			</th>
 			<td>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_psd)}> PSD
+					<label> <input type="radio" id="f_psd_process_1" name="f_psd_process" value="psd" ${f:h(savedFormData.f_psd_process_psd)}> PSD
 						(Pitching result attached)
 					</label>
 				</div>
 				<div class="mt-4">
-					<label> <input disabled tabindex="-1" type="radio" ${f:h(savedFormData.f_psd_process_dic)}> DIC (Please
-						describe the reason in the box below)
+					<label> <input type="radio" id="f_psd_process_2" name="f_psd_process" value="dic" ${f:h(savedFormData.f_psd_process_dic)}> DIC
+						(Please describe the reason in the box below)
 					</label>
 				</div>
 				<div class="mt-4">
-					<textarea rows="4" class="form-input-textarea" disabled tabindex="-1">${f:h(savedFormData.f_dic_reason)}</textarea>
+					<textarea rows="4" id="f_dic_reason" name="f_dic_reason" class="form-input-textarea">${f:h(savedFormData.f_dic_reason)}</textarea>
 				</div>
+				<div class="error_message"></div>
 			</td>
 		</tr>
 	</tbody>
 </table>
 
-<!-- Compliance Check -->
+<!-- Compliance Check (Display) -->
 <header class="imui-chapter-title">
 	<h2>Compliance Check By CCO</h2>
 </header>
@@ -108,7 +110,7 @@
 	</tbody>
 </table>
 
-<!-- Filled by Legal -->
+<!-- Filled by Legal (Display) -->
 <header class="imui-chapter-title">
 	<h2>Filled by Legal</h2>
 </header>

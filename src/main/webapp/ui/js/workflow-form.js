@@ -87,33 +87,6 @@ function toggleDepreciation() {
   }
 }
 
-// Setup multiple user input fields based on node id
-function setupMultiuserInput(nodeId) {
-
-  if (nodeId === "node_psd") {
-    $('input[name="f_psd_area"]')
-      .on("change", togglePsdField)
-      .trigger("change");
-
-    $('input[name="f_psd_process"]')
-      .on("change", toggleDicReason)
-      .trigger("change");
-
-  } else if (nodeId === "node_legal") {
-    $("#f_legal_agreement_date")
-      .removeClass("hasDatepicker")
-      .imuiCalendar({
-        changeMonth: true,
-        changeYear: true,
-        onSelect: function () {
-          $(this).trigger("change");
-        },
-      });
-
-    $(".ui-datepicker-trigger").hide();
-  }
-}
-
 // Setup dynamic payment table
 function setupDynamicPaymentTable() {
   function calculateTotalPaymentAmount() {

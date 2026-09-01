@@ -48,6 +48,9 @@ public class AgreementController {
 	private static final String BASE_VIEW_PATH = "wf/practice5_bintang/general/";
 	private static final String VIEW_PATH_APPLY = BASE_VIEW_PATH + "apply.jsp";
 	private static final String VIEW_PATH_APPROVE = BASE_VIEW_PATH + "approve.jsp";
+	private static final String VIEW_PATH_APPROVE_PSD = BASE_VIEW_PATH + "approve_psd.jsp";
+	private static final String VIEW_PATH_APPROVE_CCO = BASE_VIEW_PATH + "approve_cco.jsp";
+	private static final String VIEW_PATH_APPROVE_LEGAL = BASE_VIEW_PATH + "approve_legal.jsp";
 	private static final String VIEW_PATH_DETAIL = BASE_VIEW_PATH + "detail.jsp";
 	private static final String VIEW_PATH_CONFIRM = BASE_VIEW_PATH + "confirm.jsp";
 	private static final String VIEW_PATH_ERROR = BASE_VIEW_PATH + "error_screen.jsp";
@@ -91,6 +94,16 @@ public class AgreementController {
 
 			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+
+			String nodeId = workflowRequestForm.getImwNodeId();
+
+			if ("node_psd".equals(nodeId)) {
+				return VIEW_PATH_APPROVE_PSD;
+			} else if ("node_cco".equals(nodeId)) {
+				return VIEW_PATH_APPROVE_CCO;
+			} else if ("node_legal".equals(nodeId)) {
+				return VIEW_PATH_APPROVE_LEGAL;
+			}
 		} catch (Exception e) {
 			System.out.println("Error Approve Exception: " + e.getMessage());
 			e.printStackTrace();
