@@ -31,6 +31,7 @@ import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
+import wf.practice5_bintang.general.domain.service.AgreementAutoApplyTestService;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
 
@@ -288,6 +289,19 @@ public class AgreementController {
 			return "{\"status\": 500, \"message\": \"Error fetching postal code: " + e.getMessage() + "\"}";
 		}
 	}
+
+	@RequestMapping(value = "testAutoApply")
+	@ResponseBody
+	public String testAutoApply() {
+		try {
+			AgreementAutoApplyTestService testService = new AgreementAutoApplyTestService();
+			return testService.executeTestApply();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "ERROR: " + e.getMessage();
+		}
+	}
+
 
 	private String validateDownload(final Model model, HttpServletRequest request) {
 		try {

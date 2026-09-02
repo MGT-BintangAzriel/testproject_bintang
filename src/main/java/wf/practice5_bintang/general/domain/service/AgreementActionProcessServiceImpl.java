@@ -38,6 +38,33 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 
 	@Override
 	public String apply(ActionProcessParameter parameter, Map<String, Object> userParameter) throws Exception {
+		// ================= [DEBUG: ActionProcessParameter] =================
+		System.out.println("========== [ActionProcessParameter] ==========");
+		if (parameter != null) {
+			System.out.println("SystemMatterId       	: " + parameter.getSystemMatterId());
+			System.out.println("UserDataId               	: " + parameter.getUserDataId());
+			System.out.println("FlowId                     		: " + parameter.getFlowId());
+			System.out.println("NodeId                   		: " + parameter.getNodeId());
+			System.out.println("MatterName          		: " + parameter.getMatterName());
+			System.out.println("ApplyBaseDate       	: " + parameter.getApplyBaseDate());
+			System.out.println("ExecuteUserCode     	: " + parameter.getExecUserCd());
+			System.out.println("AuthUserCode        	: " + parameter.getAuthUserCd());
+			System.out.println("LoginGroupId        		: " + parameter.getLoginGroupId());
+			System.out.println("LocaleId            			: " + parameter.getLocaleId());
+		} else {
+			System.out.println("parameter is null!");
+		}
+		// ================= [DEBUG: userParameter Map] =================
+		System.out.println("========== [userParameter Map] ==========");
+		if (userParameter != null && !userParameter.isEmpty()) {
+			for (Map.Entry<String, Object> entry : userParameter.entrySet()) {
+				System.out.println(String.format("  %-30s : %s", entry.getKey(), entry.getValue()));
+			}
+		} else {
+			System.out.println("userParameter is empty or null!");
+		}
+		System.out.println("=========================================");
+
 		String number = null;
 		try {
 			AgreementWorkflowService workflowService = new AgreementWorkflowService();
@@ -346,6 +373,32 @@ public class AgreementActionProcessServiceImpl implements AgreementActionProcess
 
 	@Override
 	public String reapply(ActionProcessParameter parameter, Map<String, Object> userParameter) throws Exception {
+		// ================= [DEBUG: ActionProcessParameter] =================
+		System.out.println("========== [ActionProcessParameter] ==========");
+		if (parameter != null) {
+			System.out.println("SystemMatterId       	: " + parameter.getSystemMatterId());
+			System.out.println("UserDataId               	: " + parameter.getUserDataId());
+			System.out.println("FlowId                     		: " + parameter.getFlowId());
+			System.out.println("NodeId                   		: " + parameter.getNodeId());
+			System.out.println("MatterName          		: " + parameter.getMatterName());
+			System.out.println("ApplyBaseDate       	: " + parameter.getApplyBaseDate());
+			System.out.println("ExecuteUserCode     	: " + parameter.getExecUserCd());
+			System.out.println("AuthUserCode        	: " + parameter.getAuthUserCd());
+			System.out.println("LoginGroupId        		: " + parameter.getLoginGroupId());
+			System.out.println("LocaleId            			: " + parameter.getLocaleId());
+		} else {
+			System.out.println("parameter is null!");
+		}
+		// ================= [DEBUG: userParameter Map] =================
+		System.out.println("========== [userParameter Map] ==========");
+		if (userParameter != null && !userParameter.isEmpty()) {
+			for (Map.Entry<String, Object> entry : userParameter.entrySet()) {
+				System.out.println(String.format("  %-30s : %s", entry.getKey(), entry.getValue()));
+			}
+		} else {
+			System.out.println("userParameter is empty or null!");
+		}
+		System.out.println("=========================================");
 		try {
 			AgreementWorkflowService service = new AgreementWorkflowService();
 
