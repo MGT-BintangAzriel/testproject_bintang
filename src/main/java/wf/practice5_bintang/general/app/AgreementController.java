@@ -7,6 +7,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import jp.co.intra_mart.foundation.database.SQLManager;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.sql.Connection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,6 +36,7 @@ import wf.common.constant.MatterEndStatus;
 import wf.common.constant.WorkflowCommonConstants;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
+import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
 import wf.practice5_bintang.general.domain.service.AgreementAutoApplyTestService;
@@ -295,13 +303,52 @@ public class AgreementController {
 	public String testAutoApply() {
 		try {
 			AgreementAutoApplyTestService testService = new AgreementAutoApplyTestService();
-			return testService.executeTestApply();
+			return testService.syncPending();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "ERROR: " + e.getMessage();
 		}
 	}
 
+	@RequestMapping(value = "testExternalDb")
+	@ResponseBody
+	public AgreementHeaderInfoModel testExternalDb() {
+		try {
+	    	SQLManager sqlManager = new SQLManager();
+			String sql = "Select * FROM ext_agreement_header_info WHERE sync_status = 'PENDING'";
+			Collection<AgreementHeaderInfoModel> result = sqlManager.select(AgreementHeaderInfoModel.class, sql, new ArrayList<>());
+
+			return result.iterator().next();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@RequestMapping(value = "testJndi")
+	@ResponseBody
+	public String testJndi() {
+		String[] testNames = {
+			"java:comp/env/jdbc/db_external",
+			"jdbc/external_db",
+			"java:comp/env/jdbc/default"
+		};
+
+		StringBuilder sb = new StringBuilder();
+		for (String name : testNames) {
+			try {
+				InitialContext ctx = new InitialContext();
+				DataSource ds = (DataSource) ctx.lookup(name);
+				try (Connection conn = ds.getConnection()) {
+					sb.append("✅ SUCCESS: Found JNDI [" + name + "]! DB: " + conn.getCatalog() + "<br>");
+				}
+			} catch (Exception e) {
+				sb.append("❌ FAILED: [" + name + "] -> " + e.getMessage() + "<br>");
+			}
+		}
+		return sb.toString();
+	}
 
 	private String validateDownload(final Model model, HttpServletRequest request) {
 		try {
