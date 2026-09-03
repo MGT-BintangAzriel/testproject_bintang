@@ -21,17 +21,14 @@ import jp.co.intra_mart.foundation.workflow.application.process.ApplyManager;
 import java.io.File;
 import java.nio.file.Files;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.SessionScopeStorage;
-import wf.practice5_bintang.general.constant.AgreementDbConstants;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
+import wf.practice5_bintang.general.domain.repository.AgreementExternalRepository;
 
 public class AgreementAutoApplyService {
 	public String executeTestApply() throws Exception {
@@ -123,8 +120,8 @@ public class AgreementAutoApplyService {
 		ApplyParam applyParam = new ApplyParam();
 		applyParam.setFlowId("8i3yw26w0xzkrem");
 		applyParam.setApplyBaseDate(today);
-		applyParam.setApplyExecuteUserCode("tenant");
-		applyParam.setApplyAuthUserCode("tenant");
+		applyParam.setApplyExecuteUserCode("autoapplyservice");
+		applyParam.setApplyAuthUserCode("autoapplyservice");
 		applyParam.setUserDataId(userDataId);
 		String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 		applyParam.setMatterName("Auto Batch Application Test - " + timestamp);
@@ -362,14 +359,14 @@ public class AgreementAutoApplyService {
 	}
 
 	public String syncPendingFromMySql() {
-		String sql = "SELECT * FROM ext_agreement_header_info WHERE sync_status = 'PENDING'";
+		AgreementExternalRepository extRepo = new AgreementExternalRepository();
 
-		try (Connection conn = getMySqlConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+		try (Connection conn = extRepo.getConnection()) {
+			List<AgreementHeaderInfoModel> pendingList = extRepo.findPendingHeaders(conn);
 
-			while (rs.next()) {
+			for (AgreementHeaderInfoModel pending : pendingList) {
 				try {
-					AgreementHeaderInfoModel pending = mapMySqlToModel(rs);
-					Map<String, Object> userParameter = buildUserParameterFromMySql(pending, conn);
+					Map<String, Object> userParameter = buildUserParameterFromMySql(pending, extRepo, conn);
 					ApplyParam applyParam = buildApplyParam(pending);
 
 					if (userParameter == null || applyParam == null) {
@@ -380,7 +377,7 @@ public class AgreementAutoApplyService {
 					ApplyManager applyManager = new ApplyManager();
 					ApplyResultModel result = applyManager.apply(applyParam, userParameter);
 
-					updateSyncStatusMySql(conn, pending.getId(), "PROCESSED", result.getSystemMatterId());
+					extRepo.updateSyncStatus(pending.getId(), "PROCESSED", result.getSystemMatterId(), conn);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -393,75 +390,7 @@ public class AgreementAutoApplyService {
 		}
 	}
 
-	private Connection getMySqlConnection() throws Exception {
-		String mysqlUrl = "jdbc:mysql://localhost:3306/external_procurement_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-		String mysqlUser = "root";
-		String mysqlPass = "Zuleha210902";
-		return DriverManager.getConnection(mysqlUrl, mysqlUser, mysqlPass);
-	}
-
-	private AgreementHeaderInfoModel mapMySqlToModel(ResultSet rs) throws Exception {
-		AgreementHeaderInfoModel model = new AgreementHeaderInfoModel();
-		model.setId(rs.getInt("id"));
-		model.setCreated_at(rs.getString("created_at"));
-		model.setUpdated_at(rs.getString("updated_at"));
-
-		model.setApplication_number(rs.getString(AgreementDbConstants.COLUMN_APPLICATION_NUMBER));
-		model.setApplication_date(formatMySqlDate(rs.getString(AgreementDbConstants.COLUMN_APPLICATION_DATE)));
-		model.setApplicant_number(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_NUMBER));
-		model.setApplicant_department(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_DEPARTMENT));
-		model.setApplicant_name(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_NAME));
-		model.setApplicant_post(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_POST));
-
-		model.setCounter_party(rs.getString(AgreementDbConstants.COLUMN_COUNTER_PARTY));
-		model.setCurrency(rs.getString(AgreementDbConstants.COLUMN_CURRENCY));
-		model.setTotal_amount(rs.getString(AgreementDbConstants.COLUMN_TOTAL_AMOUNT));
-		model.setAgreement_status(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_STATUS));
-		model.setTotal_duration(rs.getString(AgreementDbConstants.COLUMN_TOTAL_DURATION));
-		model.setAuto_extension(rs.getString(AgreementDbConstants.COLUMN_AUTO_EXTENSION));
-		model.setPo_required(rs.getString(AgreementDbConstants.COLUMN_PO_REQUIRED));
-		model.setAgreement_title(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_TITLE));
-		model.setEffective_from(formatMySqlDate(rs.getString(AgreementDbConstants.COLUMN_EFFECTIVE_FROM)));
-		model.setEffective_to(formatMySqlDate(rs.getString(AgreementDbConstants.COLUMN_EFFECTIVE_TO)));
-		model.setCompany_relation(rs.getString(AgreementDbConstants.COLUMN_COMPANY_RELATION));
-		model.setEstimated_delivery_from(formatMySqlDate(rs.getString(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_FROM)));
-		model.setEstimated_delivery_to(formatMySqlDate(rs.getString(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_TO)));
-		model.setAgreement_summary(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_SUMMARY));
-
-		model.setPurchase_category(rs.getString(AgreementDbConstants.COLUMN_PURCHASE_CATEGORY));
-		model.setStart_using_date(formatMySqlDate(rs.getString(AgreementDbConstants.COLUMN_START_USING_DATE)));
-		model.setDeprec_month(rs.getString(AgreementDbConstants.COLUMN_DEPREC_MONTH));
-
-		model.setMultidata(rs.getString(AgreementDbConstants.COLUMN_MULTIDATA));
-
-		model.setBudget_pl_impact(rs.getString(AgreementDbConstants.COLUMN_BUDGET_PL_IMPACT));
-		model.setBudget_pl_month(rs.getString(AgreementDbConstants.COLUMN_BUDGET_PL_MONTH));
-		model.setPl_impact(rs.getString(AgreementDbConstants.COLUMN_PL_IMPACT));
-		model.setPl_month(rs.getString(AgreementDbConstants.COLUMN_PL_MONTH));
-		model.setAsset_number(rs.getString(AgreementDbConstants.COLUMN_ASSET_NUMBER));
-		model.setBook_value(rs.getString(AgreementDbConstants.COLUMN_BOOK_VALUE));
-		model.setTotal_payment_amount(rs.getString(AgreementDbConstants.COLUMN_TOTAL_PAYMENT_AMOUNT));
-
-		model.setAgreement_classification(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_CLASSIFICATION));
-		model.setPd_sub_condition(rs.getString(AgreementDbConstants.COLUMN_PD_SUB_CONDITION));
-		model.setEc_approval(rs.getString(AgreementDbConstants.COLUMN_EC_APPROVAL));
-		model.setEc_sub_condition(rs.getString(AgreementDbConstants.COLUMN_EC_SUB_CONDITION));
-
-		return model;
-	}
-
-	private String formatMySqlDate(String dateStr) {
-		if (dateStr == null || dateStr.trim().isEmpty()) {
-			return "";
-		}
-		dateStr = dateStr.trim();
-		if (dateStr.length() >= 10) {
-			dateStr = dateStr.substring(0, 10);
-		}
-		return dateStr.replace("-", "/");
-	}
-
-	private Map<String, Object> buildUserParameterFromMySql(AgreementHeaderInfoModel pending, Connection conn) {
+	private Map<String, Object> buildUserParameterFromMySql(AgreementHeaderInfoModel pending, AgreementExternalRepository extRepo, Connection conn) {
 		try {
 			Map<String, Object> userParameter = new HashMap<>();
 
@@ -508,8 +437,8 @@ public class AgreementAutoApplyService {
 			userParameter.put(AgreementFormConstants.FIELD_EC_SUB_CONDITION, pending.getEc_sub_condition());
 
 			int externalId = pending.getId();
-			userParameter = buildPaymentDetailFromMySql(externalId, userParameter, conn);
-			userParameter = buildAttachmentFromMySql(externalId, userParameter, conn);
+			userParameter = buildPaymentDetailFromMySql(externalId, userParameter, extRepo, conn);
+			userParameter = buildAttachmentFromMySql(externalId, userParameter, extRepo, conn);
 
 			return userParameter;
 
@@ -519,93 +448,80 @@ public class AgreementAutoApplyService {
 		}
 	}
 
-	private Map<String, Object> buildPaymentDetailFromMySql(int externalId, Map<String, Object> userParameter, Connection conn) {
-		String sql = "SELECT * FROM ext_agreement_payment_details WHERE ext_header_id = ? ORDER BY row_no ASC, id ASC";
+	private Map<String, Object> buildPaymentDetailFromMySql(int externalId, Map<String, Object> userParameter, AgreementExternalRepository extRepo, Connection conn) {
+		try {
+			List<AgreementPaymentDetailModel> paymentDetailList = extRepo.findPaymentDetails(externalId, conn);
 
-		try (PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, externalId);
-
-			try (ResultSet rs = ps.executeQuery()) {
-				int i = 1;
-				while (rs.next()) {
-					userParameter.put("f_brand_" + i, rs.getString("brand"));
-					userParameter.put("f_type_" + i, rs.getString("type"));
-					userParameter.put("f_payment_amount_" + i, rs.getString("payment_amount"));
-					userParameter.put("f_payment_date_" + i, formatMySqlDate(rs.getString("payment_date")));
-					userParameter.put("f_category_" + i, rs.getString("category"));
-					userParameter.put("f_recurring_" + i, rs.getString("recurring"));
-					userParameter.put("f_paid_by_" + i, rs.getString("paid_by"));
-					i++;
-				}
-				return userParameter;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return userParameter;
+			for (int i = 1; i <= paymentDetailList.size(); i++) {
+				AgreementPaymentDetailModel detail = paymentDetailList.get(i - 1);
+				userParameter.put("f_brand_" + i, detail.getBrand());
+				userParameter.put("f_type_" + i, detail.getType());
+				userParameter.put("f_payment_amount_" + i, detail.getPayment_amount());
+				userParameter.put("f_payment_date_" + i, detail.getPayment_date());
+				userParameter.put("f_category_" + i, detail.getCategory());
+				userParameter.put("f_recurring_" + i, detail.getRecurring());
+				userParameter.put("f_paid_by_" + i, detail.getPaid_by());
 			}
+			return userParameter;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return userParameter;
 		}
 	}
 
-	private Map<String, Object> buildAttachmentFromMySql(int externalId, Map<String, Object> userParameter, Connection conn) {
-		String sql = "SELECT * FROM ext_agreement_attach_file WHERE ext_header_id = ? ORDER BY id ASC";
+	private Map<String, Object> buildAttachmentFromMySql(int externalId, Map<String, Object> userParameter, AgreementExternalRepository extRepo, Connection conn) {
+		try {
+			List<AgreementAttachmentModel> attachmentList = extRepo.findAttachments(externalId, conn);
+			if (attachmentList == null || attachmentList.isEmpty()) {
+				return userParameter;
+			}
 
-		Identifier identifier = new Identifier();
+			Identifier identifier = new Identifier();
+			List<String> fileIds = new ArrayList<>();
+			List<String> fileNames = new ArrayList<>();
+			List<String> fileRealNames = new ArrayList<>();
+			List<String> fileTypes = new ArrayList<>();
+			List<String> fileSizes = new ArrayList<>();
+			List<String> fileExtensions = new ArrayList<>();
 
-		List<String> fileIds = new ArrayList<>();
-		List<String> fileNames = new ArrayList<>();
-		List<String> fileRealNames = new ArrayList<>();
-		List<String> fileTypes = new ArrayList<>();
-		List<String> fileSizes = new ArrayList<>();
-		List<String> fileExtensions = new ArrayList<>();
+			PublicStorage tempDir = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT);
+			tempDir.makeDirectories();
 
-		try (PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, externalId);
+			for (int i = 0; i < attachmentList.size(); i++) {
+				AgreementAttachmentModel attach = attachmentList.get(i);
+				String filePath = attach.getFile_path();
+				File realDiskFile = new File(filePath);
 
-			try (ResultSet rs = ps.executeQuery()) {
-				int i = 1;
+				if (realDiskFile.exists() && realDiskFile.isFile()) {
+					byte[] fileBytes = Files.readAllBytes(realDiskFile.toPath());
 
-				PublicStorage tempDir = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT);
-				tempDir.makeDirectories();
+					String fileRealName = identifier.get();
+					String originalFileName = realDiskFile.getName();
+					long fileSize = realDiskFile.length();
+					String fileExtension = "text/plain";
+					String fileType = "agreement";
 
-				while (rs.next()) {
-					String filePath = rs.getString("file_path");
-					File realDiskFile = new File(filePath);
+					PublicStorage tempFile = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
+					tempFile.save(fileBytes);
 
-					if (realDiskFile.exists() && realDiskFile.isFile()) {
-						byte[] fileBytes = Files.readAllBytes(realDiskFile.toPath());
-
-						String fileRealName = identifier.get();
-						String originalFileName = realDiskFile.getName();
-						long fileSize = realDiskFile.length();
-						String fileExtension = "text/plain";
-						String fileType = "agreement";
-
-						PublicStorage tempFile = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
-						tempFile.save(fileBytes);
-
-						fileIds.add(String.valueOf(i));
-						fileNames.add(originalFileName);
-						fileRealNames.add(fileRealName);
-						fileTypes.add(fileType);
-						fileSizes.add(String.valueOf(fileSize));
-						fileExtensions.add(fileExtension);
-						i++;
-
-					} else {
-						System.out.println("File not found: " + filePath);
-					}
+					fileIds.add(String.valueOf(i + 1));
+					fileNames.add(originalFileName);
+					fileRealNames.add(fileRealName);
+					fileTypes.add(fileType);
+					fileSizes.add(String.valueOf(fileSize));
+					fileExtensions.add(fileExtension);
+				} else {
+					System.out.println("File not found: " + filePath);
 				}
+			}
 
-				if (!fileIds.isEmpty()) {
-					userParameter.put("f_upload_file_id", fileIds);
-					userParameter.put("f_upload_file_name", fileNames);
-					userParameter.put("f_upload_file_real_name", fileRealNames);
-					userParameter.put("f_upload_file_type", fileTypes);
-					userParameter.put("f_upload_file_size", fileSizes);
-					userParameter.put("f_upload_file_extension", fileExtensions);
-				}
+			if (!fileIds.isEmpty()) {
+				userParameter.put("f_upload_file_id", fileIds);
+				userParameter.put("f_upload_file_name", fileNames);
+				userParameter.put("f_upload_file_real_name", fileRealNames);
+				userParameter.put("f_upload_file_type", fileTypes);
+				userParameter.put("f_upload_file_size", fileSizes);
+				userParameter.put("f_upload_file_extension", fileExtensions);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -613,16 +529,5 @@ public class AgreementAutoApplyService {
 		}
 		return userParameter;
 	}
-
-	private void updateSyncStatusMySql(Connection conn, int id, String status, String systemMatterId) {
-		String sql = "UPDATE ext_agreement_header_info SET sync_status = ?, system_matter_id = ?, updated_at = NOW() WHERE id = ?";
-		try (PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setString(1, status);
-			ps.setString(2, systemMatterId);
-			ps.setInt(3, id);
-			ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
+
