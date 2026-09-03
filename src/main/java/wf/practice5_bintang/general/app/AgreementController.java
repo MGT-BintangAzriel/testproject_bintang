@@ -7,16 +7,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import jp.co.intra_mart.foundation.database.SQLManager;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,13 +27,10 @@ import jp.co.intra_mart.foundation.service.client.information.Identifier;
 import jp.co.intra_mart.foundation.workflow.code.PageType;
 import wf.common.constant.MatterEndStatus;
 import wf.common.constant.WorkflowCommonConstants;
-import wf.practice5_bintang.general.constant.AgreementDbConstants;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
-import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
-import wf.practice5_bintang.general.domain.service.AgreementAutoApplyService;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
 
@@ -300,153 +287,6 @@ public class AgreementController {
 		} catch (Exception e) {
 			return "{\"status\": 500, \"message\": \"Error fetching postal code: " + e.getMessage() + "\"}";
 		}
-	}
-
-	@RequestMapping(value = "testAutoApply")
-	@ResponseBody
-	public String testAutoApply() {
-		try {
-			AgreementAutoApplyService testService = new AgreementAutoApplyService();
-			return testService.syncPending();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "ERROR: " + e.getMessage();
-		}
-	}
-
-	@RequestMapping(value = "testExternalDb")
-	@ResponseBody
-	public AgreementHeaderInfoModel testExternalDb() {
-		try {
-	    	SQLManager sqlManager = new SQLManager();
-			String sql = "Select * FROM ext_agreement_header_info WHERE sync_status = 'PENDING'";
-			Collection<AgreementHeaderInfoModel> result = sqlManager.select(AgreementHeaderInfoModel.class, sql, new ArrayList<>());
-
-			return result.iterator().next();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@RequestMapping(value = "testExternalDbPostgre")
-	@ResponseBody
-	public AgreementHeaderInfoModel testExternalDbPostgre() {
-		String sql = "SELECT * FROM ext_agreement_header_info";
-		try {
-			InitialContext ctx = new InitialContext();
-			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/db_external");
-			
-			try (Connection conn = ds.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql);
-				ResultSet rs = ps.executeQuery()) {
-				
-				if (rs.next()) {
-					return mapResultSetToModel(rs);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@RequestMapping(value = "testExternalDbMysql")
-	@ResponseBody
-	public AgreementHeaderInfoModel testExternalDbMysql() {
-		String sql = "SELECT * FROM ext_agreement_header_info";
-		String mysqlUrl = "jdbc:mysql://localhost:3306/external_procurement_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-		String mysqlUser = "root";
-		String mysqlPass = "Zuleha210902";
-
-		try {
-			try (Connection conn = DriverManager.getConnection(mysqlUrl, mysqlUser, mysqlPass);
-				PreparedStatement ps = conn.prepareStatement(sql);
-				ResultSet rs = ps.executeQuery()) {
-				
-				if (rs.next()) {
-					return mapResultSetToModel(rs);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private AgreementHeaderInfoModel mapResultSetToModel(ResultSet rs) throws Exception {
-		AgreementHeaderInfoModel model = new AgreementHeaderInfoModel();
-		model.setId(rs.getInt("id"));
-		model.setCreated_at(rs.getString("created_at"));
-		model.setUpdated_at(rs.getString("updated_at"));
-	
-		model.setApplication_number(rs.getString(AgreementDbConstants.COLUMN_APPLICATION_NUMBER));
-		model.setApplication_date(rs.getString(AgreementDbConstants.COLUMN_APPLICATION_DATE));
-		model.setApplicant_number(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_NUMBER));
-		model.setApplicant_department(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_DEPARTMENT));
-		model.setApplicant_name(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_NAME));
-		model.setApplicant_post(rs.getString(AgreementDbConstants.COLUMN_APPLICANT_POST));
-
-		model.setCounter_party(rs.getString(AgreementDbConstants.COLUMN_COUNTER_PARTY));
-		model.setCurrency(rs.getString(AgreementDbConstants.COLUMN_CURRENCY));
-		model.setTotal_amount(rs.getString(AgreementDbConstants.COLUMN_TOTAL_AMOUNT));
-		model.setAgreement_status(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_STATUS));
-		model.setTotal_duration(rs.getString(AgreementDbConstants.COLUMN_TOTAL_DURATION));
-		model.setAuto_extension(rs.getString(AgreementDbConstants.COLUMN_AUTO_EXTENSION));
-		model.setPo_required(rs.getString(AgreementDbConstants.COLUMN_PO_REQUIRED));
-		model.setAgreement_title(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_TITLE));
-		model.setEffective_from(rs.getString(AgreementDbConstants.COLUMN_EFFECTIVE_FROM));
-		model.setEffective_to(rs.getString(AgreementDbConstants.COLUMN_EFFECTIVE_TO));
-		model.setCompany_relation(rs.getString(AgreementDbConstants.COLUMN_COMPANY_RELATION));
-		model.setEstimated_delivery_from(rs.getString(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_FROM));
-		model.setEstimated_delivery_to(rs.getString(AgreementDbConstants.COLUMN_ESTIMATED_DELIVERY_TO));
-		model.setAgreement_summary(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_SUMMARY));
-
-		model.setPurchase_category(rs.getString(AgreementDbConstants.COLUMN_PURCHASE_CATEGORY));
-		model.setStart_using_date(rs.getString(AgreementDbConstants.COLUMN_START_USING_DATE));
-		model.setDeprec_month(rs.getString(AgreementDbConstants.COLUMN_DEPREC_MONTH));
-
-		model.setMultidata(rs.getString(AgreementDbConstants.COLUMN_MULTIDATA));
-
-		model.setBudget_pl_impact(rs.getString(AgreementDbConstants.COLUMN_BUDGET_PL_IMPACT));
-		model.setBudget_pl_month(rs.getString(AgreementDbConstants.COLUMN_BUDGET_PL_MONTH));
-		model.setPl_impact(rs.getString(AgreementDbConstants.COLUMN_PL_IMPACT));
-		model.setPl_month(rs.getString(AgreementDbConstants.COLUMN_PL_MONTH));
-		model.setAsset_number(rs.getString(AgreementDbConstants.COLUMN_ASSET_NUMBER));
-		model.setBook_value(rs.getString(AgreementDbConstants.COLUMN_BOOK_VALUE));
-		model.setTotal_payment_amount(rs.getString(AgreementDbConstants.COLUMN_TOTAL_PAYMENT_AMOUNT));
-
-		model.setAgreement_classification(rs.getString(AgreementDbConstants.COLUMN_AGREEMENT_CLASSIFICATION));
-		model.setPd_sub_condition(rs.getString(AgreementDbConstants.COLUMN_PD_SUB_CONDITION));
-		model.setEc_approval(rs.getString(AgreementDbConstants.COLUMN_EC_APPROVAL));
-		model.setEc_sub_condition(rs.getString(AgreementDbConstants.COLUMN_EC_SUB_CONDITION));
-
-		return model;
-	}
-
-	@RequestMapping(value = "testJndi")
-	@ResponseBody
-	public String testJndi() {
-		String[] testNames = {
-			"java:comp/env/jdbc/db_external",
-			"jdbc/external_db",
-			"java:comp/env/jdbc/default"
-		};
-
-		StringBuilder sb = new StringBuilder();
-		for (String name : testNames) {
-			try {
-				InitialContext ctx = new InitialContext();
-				DataSource ds = (DataSource) ctx.lookup(name);
-				try (Connection conn = ds.getConnection()) {
-					sb.append("✅ SUCCESS: Found JNDI [" + name + "]! DB: " + conn.getCatalog() + "<br>");
-				}
-			} catch (Exception e) {
-				sb.append("❌ FAILED: [" + name + "] -> " + e.getMessage() + "<br>");
-			}
-		}
-		return sb.toString();
 	}
 
 	private String validateDownload(final Model model, HttpServletRequest request) {
