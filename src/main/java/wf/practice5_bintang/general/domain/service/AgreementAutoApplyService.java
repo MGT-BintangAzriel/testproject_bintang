@@ -21,13 +21,14 @@ import jp.co.intra_mart.foundation.workflow.application.process.ApplyManager;
 import java.io.File;
 import java.nio.file.Files;
 
+import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.SessionScopeStorage;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
 import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
 
-public class AgreementAutoApplyTestService {
+public class AgreementAutoApplyService {
 	public String executeTestApply() throws Exception {
 		UserContext userContext = Contexts.get(UserContext.class);
 		Identifier identifier = new Identifier();
@@ -117,8 +118,8 @@ public class AgreementAutoApplyTestService {
 		ApplyParam applyParam = new ApplyParam();
 		applyParam.setFlowId("8i3yw26w0xzkrem");
 		applyParam.setApplyBaseDate(today);
-		applyParam.setApplyExecuteUserCode("Autoapply Service");
-		applyParam.setApplyAuthUserCode("Autoapply Service");
+		applyParam.setApplyExecuteUserCode("tenant");
+		applyParam.setApplyAuthUserCode("tenant");
 		applyParam.setUserDataId(userDataId);
 		String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 		applyParam.setMatterName("Auto Batch Application Test - " + timestamp);
@@ -222,7 +223,7 @@ public class AgreementAutoApplyTestService {
 	private Map<String, Object> buildPaymentDetail(int externalId, Map<String, Object> userParameter) {
 		try {
 			SQLManager sqlManager = new SQLManager();
-			String sql = "SELECT * FROM ext_agreement_payment_details WHERE ext_header_id = ?";
+			String sql = "SELECT * FROM ext_agreement_payment_details WHERE ext_header_id = ? ORDER BY row_no ASC, id ASC";
 			Collection<Object> parameters = new ArrayList<Object>();
 			parameters.add(externalId);
 
@@ -266,7 +267,7 @@ public class AgreementAutoApplyTestService {
 			List<String> fileSizes = new ArrayList<>();
 			List<String> fileExtensions = new ArrayList<>();
 
-			SessionScopeStorage tempDir = new SessionScopeStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT);
+			PublicStorage tempDir = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT);
 			tempDir.makeDirectories();
 
 			for (int i = 0; i < attachmentList.size(); i++) {
@@ -282,7 +283,7 @@ public class AgreementAutoApplyTestService {
 					String fileExtension = attachmentList.get(i).getFile_extension() != null ? attachmentList.get(i).getFile_extension() : "text/plain";
 					String fileType = attachmentList.get(i).getFile_type() != null ? attachmentList.get(i).getFile_type() : "agreement";
 
-					SessionScopeStorage tempFile = new SessionScopeStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
+					PublicStorage tempFile = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
 					tempFile.save(fileBytes);
 
 					fileIds.add(String.valueOf(i + 1));
@@ -341,8 +342,8 @@ public class AgreementAutoApplyTestService {
 
 			applyParam.setFlowId("8i3yw26w0xzkrem");
 			applyParam.setApplyBaseDate(today);
-			applyParam.setApplyExecuteUserCode("Autoapply Service");
-			applyParam.setApplyAuthUserCode("Autoapply Service");
+			applyParam.setApplyExecuteUserCode("autoapplyservice");
+			applyParam.setApplyAuthUserCode("autoapplyservice");
 			applyParam.setUserDataId(userDataId);
 			String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 			applyParam.setMatterName("Auto Batch Application Test - " + timestamp);

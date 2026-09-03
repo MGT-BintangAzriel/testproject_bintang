@@ -39,7 +39,7 @@ import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
-import wf.practice5_bintang.general.domain.service.AgreementAutoApplyTestService;
+import wf.practice5_bintang.general.domain.service.AgreementAutoApplyService;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
 
@@ -302,7 +302,7 @@ public class AgreementController {
 	@ResponseBody
 	public String testAutoApply() {
 		try {
-			AgreementAutoApplyTestService testService = new AgreementAutoApplyTestService();
+			AgreementAutoApplyService testService = new AgreementAutoApplyService();
 			return testService.syncPending();
 		} catch (Exception e) {
 			e.printStackTrace();

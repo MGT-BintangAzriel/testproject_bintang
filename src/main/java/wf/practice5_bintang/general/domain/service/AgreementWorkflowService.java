@@ -16,6 +16,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
+
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.exception.BizApiException;
 import jp.co.intra_mart.foundation.master.user.UserManager;
@@ -264,12 +266,29 @@ public class AgreementWorkflowService {
 
 		PublicStorage targetDir = new PublicStorage(dirPath);
 		PublicStorage targetFile = new PublicStorage(dirPath + "/" + fileRealName);
-		SessionScopeStorage sessionStorageFile = new SessionScopeStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
 		try {
 			targetDir.makeDirectories();
 
 			if (!targetFile.isFile()) {
-				targetFile.save(org.apache.commons.io.IOUtils.toByteArray(sessionStorageFile.open()));
+				boolean copied = false;
+
+				try {
+					SessionScopeStorage sessionStorageFile = new SessionScopeStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
+					if (sessionStorageFile.isFile()) {
+						targetFile.save(IOUtils.toByteArray(sessionStorageFile.open()));
+						copied = true;
+					}
+				} catch (Exception e) {
+					System.out.println("File doesn't exists in the session storage");
+				}
+
+				if (!copied) {
+					PublicStorage publicStorageFile = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
+					if (publicStorageFile.isFile()) {
+						targetFile.save(IOUtils.toByteArray(publicStorageFile.open()));
+						publicStorageFile.remove();
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
