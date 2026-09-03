@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -285,8 +286,11 @@ public class AgreementWorkflowService {
 				if (!copied) {
 					PublicStorage publicStorageFile = new PublicStorage(AgreementFormConstants.STORAGE_DIR_FILE_ATTACHMENT + "/" + fileRealName);
 					if (publicStorageFile.isFile()) {
-						targetFile.save(IOUtils.toByteArray(publicStorageFile.open()));
-						publicStorageFile.remove();
+						try (InputStream in = publicStorageFile.open()) {
+							targetFile.save(IOUtils.toByteArray(in));
+						}
+						boolean deleted = publicStorageFile.remove();
+						System.out.println("Deleted temp public storage file: " + deleted);
 					}
 				}
 			}
