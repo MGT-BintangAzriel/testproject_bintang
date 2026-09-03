@@ -12,8 +12,9 @@ public class AgreementSyncJob implements Job {
         System.out.println("========== [JOB START: AgreementSyncJob] ==========");
         try {
             AgreementAutoApplyService syncService = new AgreementAutoApplyService();
-            String resultMessage = syncService.syncPending();
-            
+            String resultMessage = syncService.syncPendingFromMySql();
+            System.out.println("Job Result: " + resultMessage);
+            resultMessage = syncService.syncPending();
             System.out.println("Job Result: " + resultMessage);
             System.out.println("========== [JOB END: AgreementSyncJob SUCCESS] ==========");
             
