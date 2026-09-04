@@ -16,6 +16,7 @@ import jp.co.intra_mart.foundation.workflow.application.model.ApplyResultModel;
 import jp.co.intra_mart.foundation.workflow.application.model.param.ApplyParam;
 import jp.co.intra_mart.foundation.workflow.application.process.ApplyManager;
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.sql.Connection;
 
@@ -25,6 +26,7 @@ import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.model.AgreementPaymentDetailModel;
 import wf.practice5_bintang.general.domain.repository.AgreementExternalRepository;
+import wf.practice5_bintang.general.domain.util.DbValueUtils;
 
 public class AgreementAutoApplyService {
 
@@ -99,8 +101,6 @@ public class AgreementAutoApplyService {
 			userParameter.put(AgreementFormConstants.FIELD_ASSET_NUMBER, pending.getAsset_number());
 			userParameter.put(AgreementFormConstants.FIELD_BOOK_VALUE, pending.getBook_value());
 
-			userParameter.put(AgreementFormConstants.FIELD_TOTAL_PAYMENT_AMOUNT, pending.getTotal_payment_amount());
-
 			userParameter.put(AgreementFormConstants.FIELD_AGREEMENT_CLASSIFICATION, pending.getAgreement_classification());
 			userParameter.put(AgreementFormConstants.FIELD_PD_SUB_CONDITION, pending.getPd_sub_condition());
 			userParameter.put(AgreementFormConstants.FIELD_EC_APPROVAL, pending.getEc_approval());
@@ -126,8 +126,14 @@ public class AgreementAutoApplyService {
 			parameters.add(externalId);
 
 			ArrayList<AgreementPaymentDetailModel> paymentDetailList = (ArrayList<AgreementPaymentDetailModel>) sqlManager.select(AgreementPaymentDetailModel.class, sql, parameters);
+			BigDecimal calculatedPaymentAmount = BigDecimal.ZERO;
 			
 			for (int i = 1; i <= paymentDetailList.size(); i++) {
+				BigDecimal paymentAmount = DbValueUtils.parseBigDecimal((paymentDetailList.get(i-1).getPayment_amount()));
+				if (paymentAmount != null) {
+					calculatedPaymentAmount = calculatedPaymentAmount.add(paymentAmount);
+				}
+				
 				userParameter.put("f_brand_" + i, paymentDetailList.get(i-1).getBrand());
 				userParameter.put("f_type_" + i, paymentDetailList.get(i-1).getType());
 				userParameter.put("f_payment_amount_" + i, paymentDetailList.get(i-1).getPayment_amount());
@@ -137,6 +143,8 @@ public class AgreementAutoApplyService {
 				userParameter.put("f_paid_by_" + i, paymentDetailList.get(i-1).getPaid_by());
 			}
 
+			userParameter.put(AgreementFormConstants.FIELD_TOTAL_PAYMENT_AMOUNT, calculatedPaymentAmount.toPlainString());
+			
 			return userParameter;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -347,8 +355,14 @@ public class AgreementAutoApplyService {
 	private Map<String, Object> buildPaymentDetailFromMySql(int externalId, Map<String, Object> userParameter, AgreementExternalRepository extRepo, Connection conn) {
 		try {
 			List<AgreementPaymentDetailModel> paymentDetailList = extRepo.findPaymentDetails(externalId, conn);
-
+			BigDecimal calculatedPaymentAmount = BigDecimal.ZERO;
+			
 			for (int i = 1; i <= paymentDetailList.size(); i++) {
+				BigDecimal paymentAmount = DbValueUtils.parseBigDecimal((paymentDetailList.get(i-1).getPayment_amount()));
+				if (paymentAmount != null) {
+					calculatedPaymentAmount = calculatedPaymentAmount.add(paymentAmount);
+				}
+				
 				AgreementPaymentDetailModel detail = paymentDetailList.get(i - 1);
 				userParameter.put("f_brand_" + i, detail.getBrand());
 				userParameter.put("f_type_" + i, detail.getType());
@@ -358,6 +372,9 @@ public class AgreementAutoApplyService {
 				userParameter.put("f_recurring_" + i, detail.getRecurring());
 				userParameter.put("f_paid_by_" + i, detail.getPaid_by());
 			}
+			
+			userParameter.put(AgreementFormConstants.FIELD_TOTAL_PAYMENT_AMOUNT, calculatedPaymentAmount.toPlainString());
+
 			return userParameter;
 		} catch (Exception e) {
 			e.printStackTrace();
