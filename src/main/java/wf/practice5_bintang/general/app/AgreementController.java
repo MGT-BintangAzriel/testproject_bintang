@@ -113,6 +113,23 @@ public class AgreementController {
 		return path;
 	}
 
+	@RequestMapping(value = "approve_sp")
+	public final String approveSp(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws AccessSecurityException, IOException {
+		try {
+			AgreementWorkflowService workflowService = new AgreementWorkflowService();
+			AgreementForm savedFormData = workflowService.getAgreementFormData(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+
+			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
+			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+
+		} catch (Exception e) {
+			System.out.println("Error Approve SP Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return "wf/practice5_bintang/general_sp/approve_sp.jsp";
+	}
+
 	@RequestMapping(value = "detail")
 	public final String detail(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws AccessSecurityException, IOException {
 		try {
