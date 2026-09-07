@@ -582,7 +582,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="/imarttest/logout" data-ajax="false">
+					<a href="/imarttraining/logout" data-ajax="false">
 						<i class="fa-solid fa-right-from-bracket fa-lg"></i><br>
 						<i>Logout</i>
 					</a>
