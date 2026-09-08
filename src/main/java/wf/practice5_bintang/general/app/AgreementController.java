@@ -64,6 +64,12 @@ public class AgreementController {
 	private static final String VIEW_PATH_ERROR = BASE_VIEW_PATH + "error_screen.jsp";
 	private static final String VIEW_PATH_DOWNLOAD = "AgreementDownloadAttachmentService.Downloadview";
 
+	private static final String BASE_VIEW_PATH_SP = "wf/practice5_bintang/general_sp/";
+	private static final String VIEW_PATH_APPROVE_SP = BASE_VIEW_PATH_SP + "approve_sp.jsp";
+	private static final String VIEW_PATH_APPROVE_SP_PSD = BASE_VIEW_PATH_SP + "approve_sp_psd.jsp";
+	private static final String VIEW_PATH_APPROVE_SP_CCO = BASE_VIEW_PATH_SP + "approve_sp_cco.jsp";
+	private static final String VIEW_PATH_APPROVE_SP_LEGAL = BASE_VIEW_PATH_SP + "approve_sp_legal.jsp";
+
 	private static final String CHARSET_UTF8 = "UTF-8";
 	private static final String ERR_MSG_UNAUTHORIZED = "(Unauthorized access: User is not logged in.)";
 	private static final String ERR_MSG_SESSION_EXPIRED = "(Unauthorized access: Session has expired. Please log in again.)";
@@ -131,12 +137,22 @@ public class AgreementController {
 			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
 
+			String nodeId = workflowRequestForm.getImwNodeId();
+
+			if ("node_psd".equals(nodeId)) {
+				return VIEW_PATH_APPROVE_SP_PSD;
+			} else if ("node_cco".equals(nodeId)) {
+				return VIEW_PATH_APPROVE_SP_CCO;
+			} else if ("node_legal".equals(nodeId)) {
+				return VIEW_PATH_APPROVE_SP_LEGAL;
+			}
+
 		} catch (Exception e) {
 			System.out.println("Error Approve SP Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
 
-		return "wf/practice5_bintang/general_sp/approve_sp.jsp";
+		return VIEW_PATH_APPROVE_SP;
 	}
 
 	@RequestMapping(value = "detail")

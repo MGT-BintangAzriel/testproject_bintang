@@ -366,7 +366,12 @@ function validateWorkflowForm() {
       if ($element.hasClass("f_attachment_anchor")) {
         $(".error_message_upload").html(error_message);
       } else {
-        $element.parents("td").find(".error_message").html(error_message);
+        var $container = $element.closest("td, .ui-field-contain");
+        if ($container.length && $container.find(".error_message").length) {
+          $container.find(".error_message").first().html(error_message);
+        } else {
+          $element.parent().find(".error_message").html(error_message);
+        }
       }
     },
   });
