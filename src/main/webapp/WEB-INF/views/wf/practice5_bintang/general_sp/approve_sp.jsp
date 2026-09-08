@@ -128,6 +128,42 @@
 			border-radius: 6px !important;
 		}
 
+		/* Radio button styling for mobile */
+		.ui-radio.ui-disabled {
+			opacity: 1 !important;
+			filter: none !important;
+		}
+		.ui-radio {
+			margin: 4px 0 !important;
+		}
+		.ui-radio label.ui-btn {
+			background: #ffffff !important;
+			border: 1px solid #d1d5db !important;
+			border-radius: 6px !important;
+			box-shadow: none !important;
+			margin: 0 !important;
+		}
+		.ui-radio label.ui-btn .ui-btn-inner {
+			padding: 6px 10px 6px 36px !important;
+			font-size: 13px !important;
+			font-weight: 500 !important;
+			border: none !important;
+		}
+		.ui-radio label.ui-btn .ui-btn-text {
+			color: #1f2937 !important;
+			text-shadow: none !important;
+		}
+		.ui-radio label.ui-radio-on,
+		.ui-radio label.ui-btn-active {
+			background: #eff6ff !important;
+			border-color: #2563eb !important;
+		}
+		.ui-radio label.ui-radio-on .ui-btn-text,
+		.ui-radio label.ui-btn-active .ui-btn-text {
+			color: #1d4ed8 !important;
+			font-weight: 600 !important;
+		}
+
 		/* Table styling */
 		.imui-form {
 			width: 100%;
