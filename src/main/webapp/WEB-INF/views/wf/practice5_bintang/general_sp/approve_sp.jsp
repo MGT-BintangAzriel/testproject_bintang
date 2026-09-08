@@ -80,8 +80,9 @@
 		/* Custom spacing for each field row */
 		.ui-field-contain {
 			margin: 10px 0 !important;       /* Space between rows */
+			padding: 0.1em 0 !important;
 		}
-		
+
 		/* Remove border on the last field inside a card */
 		.ui-field-contain:last-child {
 			border-bottom: none !important;
@@ -128,38 +129,47 @@
 			border-radius: 6px !important;
 		}
 
-		/* Radio button styling for mobile */
-		.ui-radio.ui-disabled {
+		/* Radio & Checkbox button styling for mobile */
+		.ui-radio.ui-disabled,
+		.ui-checkbox.ui-disabled {
 			opacity: 1 !important;
 			filter: none !important;
 		}
-		.ui-radio {
+		.ui-radio,
+		.ui-checkbox {
 			margin: 4px 0 !important;
 		}
-		.ui-radio label.ui-btn {
+		.ui-radio label.ui-btn,
+		.ui-checkbox label.ui-btn {
 			background: #ffffff !important;
 			border: 1px solid #d1d5db !important;
 			border-radius: 6px !important;
 			box-shadow: none !important;
 			margin: 0 !important;
 		}
-		.ui-radio label.ui-btn .ui-btn-inner {
+		.ui-radio label.ui-btn .ui-btn-inner,
+		.ui-checkbox label.ui-btn .ui-btn-inner {
 			padding: 6px 10px 6px 36px !important;
 			font-size: 13px !important;
 			font-weight: 500 !important;
 			border: none !important;
 		}
-		.ui-radio label.ui-btn .ui-btn-text {
+		.ui-radio label.ui-btn .ui-btn-text,
+		.ui-checkbox label.ui-btn .ui-btn-text {
 			color: #1f2937 !important;
 			text-shadow: none !important;
 		}
 		.ui-radio label.ui-radio-on,
-		.ui-radio label.ui-btn-active {
+		.ui-radio label.ui-btn-active,
+		.ui-checkbox label.ui-checkbox-on,
+		.ui-checkbox label.ui-btn-active {
 			background: #eff6ff !important;
 			border-color: #2563eb !important;
 		}
 		.ui-radio label.ui-radio-on .ui-btn-text,
-		.ui-radio label.ui-btn-active .ui-btn-text {
+		.ui-radio label.ui-btn-active .ui-btn-text,
+		.ui-checkbox label.ui-checkbox-on .ui-btn-text,
+		.ui-checkbox label.ui-btn-active .ui-btn-text {
 			color: #1d4ed8 !important;
 			font-weight: 600 !important;
 		}
@@ -360,49 +370,56 @@
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Agreement Status:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_agreement_status_one_time == 'checked'}">
-									One Time / New
-								</c:when>
-								<c:when test="${savedFormData.f_agreement_status_amendment == 'checked'}">
-									<c:choose>
-										<c:when test="${savedFormData.f_total_duration_more_than_1_year == 'checked'}">
-											Amendment / Extension / Renewal (More than 1 year)
-										</c:when>
-										<c:when test="${savedFormData.f_total_duration_up_to_1_year == 'checked'}">
-											Amendment / Extension / Renewal (Up to 1 year)
-										</c:when>
-										<c:otherwise>
-											Amendment / Extension / Renewal
-										</c:otherwise>
-									</c:choose>
-								</c:when>
-								<c:when test="${savedFormData.f_agreement_status_umbrella == 'checked'}">
-									Umbrella Agreement
-								</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<!-- 1. One Time / New -->
+							<label for="f_agreement_status_one_time">
+								<input type="radio" name="f_agreement_status" id="f_agreement_status_one_time" ${f:h(savedFormData.f_agreement_status_one_time)} disabled>One Time / New
+							</label>
+
+							<!-- 2. Amendment / Extension / Renewal -->
+							<label for="f_agreement_status_amendment">
+								<input type="radio" name="f_agreement_status" id="f_agreement_status_amendment" ${f:h(savedFormData.f_agreement_status_amendment)} disabled>Amendment / Extension / Renewal
+							</label>
+
+							<!-- Sub-options under Amendment (Indented) -->
+							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_status_amendment == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
+								<div style="font-size: 12px; color: #4b5563; margin-bottom: 4px; font-weight: 600;">
+									Total Duration from first cooperation until now:
+								</div>
+								<label for="f_total_duration_more_than_1_year">
+									<input type="radio" name="f_total_duration" id="f_total_duration_more_than_1_year" ${f:h(savedFormData.f_total_duration_more_than_1_year)} disabled>More than 1 year
+								</label>
+								<label for="f_total_duration_up_to_1_year">
+									<input type="radio" name="f_total_duration" id="f_total_duration_up_to_1_year" ${f:h(savedFormData.f_total_duration_up_to_1_year)} disabled>Up to 1 year
+								</label>
+							</div>
+
+							<!-- 3. Umbrella Agreement -->
+							<label for="f_agreement_status_umbrella">
+								<input type="radio" name="f_agreement_status" id="f_agreement_status_umbrella" ${f:h(savedFormData.f_agreement_status_umbrella)} disabled>Umbrella Agreement
+							</label>
 						</div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Auto Extension Condition:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_auto_extension_yes == 'checked'}">Yes</c:when>
-								<c:when test="${savedFormData.f_auto_extension_no == 'checked'}">No</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<label for="f_auto_extension_yes">
+								<input type="radio" name="f_auto_extension" id="f_auto_extension_yes" ${f:h(savedFormData.f_auto_extension_yes)} disabled>Yes
+							</label>
+							<label for="f_auto_extension_no">
+								<input type="radio" name="f_auto_extension" id="f_auto_extension_no" ${f:h(savedFormData.f_auto_extension_no)} disabled>No
+							</label>
 						</div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Purchase Order Required:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_po_required_yes == 'checked'}">Yes</c:when>
-								<c:when test="${savedFormData.f_po_required_no == 'checked'}">No</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<label for="f_po_required_yes">
+								<input type="radio" name="f_po_required" id="f_po_required_yes" ${f:h(savedFormData.f_po_required_yes)} disabled>Yes
+							</label>
+							<label for="f_po_required_no">
+								<input type="radio" name="f_po_required" id="f_po_required_no" ${f:h(savedFormData.f_po_required_no)} disabled>No
+							</label>
 						</div>
 					</imsp:fieldContain>
 
@@ -419,12 +436,13 @@
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Company Relation:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_company_relation_related_parties == 'checked'}">Related Parties</c:when>
-								<c:when test="${savedFormData.f_company_relation_non_related_parties == 'checked'}">Non Related Parties</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<label for="f_company_relation_related_parties">
+								<input type="radio" name="f_company_relation" id="f_company_relation_related_parties" ${f:h(savedFormData.f_company_relation_related_parties)} disabled>Related Parties (Shareholders, Subsidiary, Affiliates)
+							</label>
+							<label for="f_company_relation_non_related_parties">
+								<input type="radio" name="f_company_relation" id="f_company_relation_non_related_parties" ${f:h(savedFormData.f_company_relation_non_related_parties)} disabled>Non Related Parties
+							</label>
 						</div>
 					</imsp:fieldContain>
 
@@ -449,13 +467,16 @@
 				</div>
 				<div class="ui-body ui-body-a">
 					<imsp:fieldContain label="Purchase Category:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_purchase_category_tangible_asset == 'checked'}">Tangible Asset</c:when>
-								<c:when test="${savedFormData.f_purchase_category_intangible_asset == 'checked'}">Intangible Asset</c:when>
-								<c:when test="${savedFormData.f_purchase_category_non_asset == 'checked'}">Non-Asset</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<label for="f_purchase_category_tangible_asset">
+								<input type="radio" name="f_purchase_category" id="f_purchase_category_tangible_asset" ${f:h(savedFormData.f_purchase_category_tangible_asset)} disabled>Tangible Asset
+							</label>
+							<label for="f_purchase_category_intangible_asset">
+								<input type="radio" name="f_purchase_category" id="f_purchase_category_intangible_asset" ${f:h(savedFormData.f_purchase_category_intangible_asset)} disabled>Intangible Asset
+							</label>
+							<label for="f_purchase_category_non_asset">
+								<input type="radio" name="f_purchase_category" id="f_purchase_category_non_asset" ${f:h(savedFormData.f_purchase_category_non_asset)} disabled>Non-Asset
+							</label>
 						</div>
 					</imsp:fieldContain>
 
@@ -481,19 +502,17 @@
 					<h3>Multiple Data Selection</h3>
 				</div>
 				<div class="ui-body ui-body-a">
-					<imsp:fieldContain label="Selected Options:">
-						<div class="ui-field-contain custom-readonly">
-							<c:set var="selectedOpts" value="" />
-							<c:if test="${savedFormData.f_multidata_pl == 'checked'}">
-								<c:set var="selectedOpts" value="${empty selectedOpts ? 'PL Impact' : selectedOpts.concat(', PL Impact')}" />
-							</c:if>
-							<c:if test="${savedFormData.f_multidata_asset == 'checked'}">
-								<c:set var="selectedOpts" value="${empty selectedOpts ? 'Asset' : selectedOpts.concat(', Asset')}" />
-							</c:if>
-							<c:if test="${savedFormData.f_multidata_estimated == 'checked'}">
-								<c:set var="selectedOpts" value="${empty selectedOpts ? 'Estimated Schedule' : selectedOpts.concat(', Estimated Schedule')}" />
-							</c:if>
-							${empty selectedOpts ? '-' : selectedOpts}
+					<imsp:fieldContain label="Multiple Data Selection:">
+						<div class="ui-field-contain">
+							<label for="f_multidata_pl">
+								<input type="checkbox" name="f_multidata_pl" id="f_multidata_pl" ${f:h(savedFormData.f_multidata_pl)} disabled>PL Impact
+							</label>
+							<label for="f_multidata_asset">
+								<input type="checkbox" name="f_multidata_asset" id="f_multidata_asset" ${f:h(savedFormData.f_multidata_asset)} disabled>Asset
+							</label>
+							<label for="f_multidata_estimated">
+								<input type="checkbox" name="f_multidata_estimated" id="f_multidata_estimated" ${f:h(savedFormData.f_multidata_estimated)} disabled>Estimated Schedule
+							</label>
 						</div>
 					</imsp:fieldContain>
 				</div>
@@ -624,65 +643,71 @@
 				</div>
 				<div class="ui-body ui-body-a">
 					<imsp:fieldContain label="Agreement Classification:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_agreement_classification_pd == 'checked'}">
-									PD Approval
-									<c:set var="pdSub" value="" />
-									<c:if test="${savedFormData.f_agreement_classification_pd_more_than_1_billion == 'checked'}">
-										<c:set var="pdSub" value="${empty pdSub ? 'Amount &gt;= 1 Billion' : pdSub.concat(', Amount &gt;= 1 Billion')}" />
-									</c:if>
-									<c:if test="${savedFormData.f_agreement_classification_pd_more_than_12_months == 'checked'}">
-										<c:set var="pdSub" value="${empty pdSub ? 'Period &gt;= 12 Months' : pdSub.concat(', Period &gt;= 12 Months')}" />
-									</c:if>
-									<c:if test="${savedFormData.f_agreement_classification_pd_specific_party == 'checked'}">
-										<c:set var="pdSub" value="${empty pdSub ? 'Related to Specific Party' : pdSub.concat(', Related to Specific Party')}" />
-									</c:if>
-									<c:if test="${savedFormData.f_agreement_classification_pd_special_issue == 'checked'}">
-										<c:set var="pdSub" value="${empty pdSub ? 'Special Issue' : pdSub.concat(', Special Issue')}" />
-									</c:if>
-									<c:if test="${savedFormData.f_agreement_classification_pd_direct_procurement == 'checked'}">
-										<c:set var="pdSub" value="${empty pdSub ? 'Direct Procurement' : pdSub.concat(', Direct Procurement')}" />
-									</c:if>
-									<c:if test="${savedFormData.f_agreement_classification_pd_agreement_not_more_than_12_months == 'checked'}">
-										<c:set var="pdSub" value="${empty pdSub ? 'Not more than 12 Months' : pdSub.concat(', Not more than 12 Months')}" />
-									</c:if>
-									<c:if test="${not empty pdSub}">
-										(${pdSub})
-									</c:if>
-								</c:when>
-								<c:when test="${savedFormData.f_agreement_classification_dic_director_approval == 'checked'}">
-									DIC Director Approval
-								</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<!-- PD Approval -->
+							<label for="f_agreement_classification_pd">
+								<input type="radio" name="f_agreement_classification" id="f_agreement_classification_pd" ${f:h(savedFormData.f_agreement_classification_pd)} disabled>PD Approval (either one of condition below)
+							</label>
+
+							<!-- PD Approval Sub-Options (Indented) -->
+							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_pd == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
+								<label for="f_agreement_classification_pd_more_than_1_billion">
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_1_billion" ${f:h(savedFormData.f_agreement_classification_pd_more_than_1_billion)} disabled>Agreement with amount is equal or more than 1 billion
+								</label>
+								<label for="f_agreement_classification_pd_more_than_12_months">
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_12_months" ${f:h(savedFormData.f_agreement_classification_pd_more_than_12_months)} disabled>Period is equal or more than 12 months
+								</label>
+								<label for="f_agreement_classification_pd_specific_party">
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_specific_party" ${f:h(savedFormData.f_agreement_classification_pd_specific_party)} disabled>Agreement related to specific party
+								</label>
+								<div style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 4px;">
+									<em>Bank, Related Parties, Dealer, Consultant/Lawyer/Appraise, Government, Production, Customer, Etc</em>
+								</div>
+								<label for="f_agreement_classification_pd_special_issue">
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_special_issue" ${f:h(savedFormData.f_agreement_classification_pd_special_issue)} disabled>Special issue
+								</label>
+								<div style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 4px;">
+									<em>New project/issue (more than 50 M), not included in budget plan</em>
+								</div>
+								<label for="f_agreement_classification_pd_direct_procurement">
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_direct_procurement" ${f:h(savedFormData.f_agreement_classification_pd_direct_procurement)} disabled>Direct Procurement (Emergency or Specific Goods/Items)
+								</label>
+								<label for="f_agreement_classification_pd_agreement_not_more_than_12_months">
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_agreement_not_more_than_12_months" ${f:h(savedFormData.f_agreement_classification_pd_agreement_not_more_than_12_months)} disabled>Agreement not more than 12 months
+								</label>
+							</div>
+
+							<!-- DIC Director Approval -->
+							<label for="f_agreement_classification_dic_director_approval">
+								<input type="radio" name="f_agreement_classification" id="f_agreement_classification_dic_director_approval" ${f:h(savedFormData.f_agreement_classification_dic_director_approval)} disabled>DIC Director Approval
+							</label>
 						</div>
 					</imsp:fieldContain>
 
-					<imsp:fieldContain label="EC Approval Required:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_agreement_classification_ec_approval_yes == 'checked'}">
-									Yes
-									<c:set var="ecSub" value="" />
-									<c:if test="${savedFormData.f_agreement_classification_ec_amount_equal_more_than_1_billion == 'checked'}">
-										<c:set var="ecSub" value="${empty ecSub ? 'Amount &gt;= 1 Billion' : ecSub.concat(', Amount &gt;= 1 Billion')}" />
-									</c:if>
-									<c:if test="${savedFormData.f_agreement_classification_ec_period_equal_more_than_12_months == 'checked'}">
-										<c:set var="ecSub" value="${empty ecSub ? 'Period &gt;= 12 Months' : ecSub.concat(', Period &gt;= 12 Months')}" />
-									</c:if>
-									<c:if test="${savedFormData.f_agreement_classification_ec_escalate_issue_to_ec == 'checked'}">
-										<c:set var="ecSub" value="${empty ecSub ? 'Escalate issue to EC' : ecSub.concat(', Escalate issue to EC')}" />
-									</c:if>
-									<c:if test="${not empty ecSub}">
-										(${ecSub})
-									</c:if>
-								</c:when>
-								<c:when test="${savedFormData.f_agreement_classification_ec_approval_no == 'checked'}">
-									No
-								</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
+					<imsp:fieldContain label="EC Approval is Required or Not:" required="true">
+						<div class="ui-field-contain">
+							<!-- Yes -->
+							<label for="f_agreement_classification_ec_approval_yes">
+								<input type="radio" name="f_agreement_classification_ec_approval" id="f_agreement_classification_ec_approval_yes" ${f:h(savedFormData.f_agreement_classification_ec_approval_yes)} disabled>Yes
+							</label>
+
+							<!-- EC Approval Sub-Options (Indented) -->
+							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
+								<label for="f_agreement_classification_ec_amount_equal_more_than_1_billion">
+									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_amount_equal_more_than_1_billion" ${f:h(savedFormData.f_agreement_classification_ec_amount_equal_more_than_1_billion)} disabled>Amount is equal or more than 1 billion
+								</label>
+								<label for="f_agreement_classification_ec_period_equal_more_than_12_months">
+									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_period_equal_more_than_12_months" ${f:h(savedFormData.f_agreement_classification_ec_period_equal_more_than_12_months)} disabled>Period is equal or more than 12 months
+								</label>
+								<label for="f_agreement_classification_ec_escalate_issue_to_ec">
+									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_escalate_issue_to_ec" ${f:h(savedFormData.f_agreement_classification_ec_escalate_issue_to_ec)} disabled>Director believes it is necessary to escalate the issue to EC
+								</label>
+							</div>
+
+							<!-- No -->
+							<label for="f_agreement_classification_ec_approval_no">
+								<input type="radio" name="f_agreement_classification_ec_approval" id="f_agreement_classification_ec_approval_no" ${f:h(savedFormData.f_agreement_classification_ec_approval_no)} disabled>No
+							</label>
 						</div>
 					</imsp:fieldContain>
 				</div>
@@ -695,40 +720,37 @@
 					<h3>PSD Check (by UH or DH, PSD)</h3>
 				</div>
 				<div class="ui-body ui-body-a">
-					<imsp:fieldContain label="PSD Area / Non-PSD Area:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_psd_area_psd == 'checked'}">
-									PSD Area
-								</c:when>
-								<c:when test="${savedFormData.f_psd_area_non_psd == 'checked'}">
-									Non-PSD Area
-								</c:when>
-								<c:otherwise>Not yet filled</c:otherwise>
-							</c:choose>
+					<imsp:fieldContain label="PSD Area or Non-PSD Area:" required="true">
+						<div class="ui-field-contain">
+							<label for="f_psd_area_psd">
+								<input type="radio" name="f_psd_area" id="f_psd_area_psd" ${f:h(savedFormData.f_psd_area_psd)} disabled>PSD (go to #2)
+							</label>
+							<label for="f_psd_area_non_psd">
+								<input type="radio" name="f_psd_area" id="f_psd_area_non_psd" ${f:h(savedFormData.f_psd_area_non_psd)} disabled>Non-PSD (end)
+							</label>
 						</div>
 					</imsp:fieldContain>
 
-					<c:if test="${savedFormData.f_psd_area_psd == 'checked'}">
-						<imsp:fieldContain label="PSD / DIC Process:" required="true">
-							<div class="ui-field-contain custom-readonly">
-								<c:choose>
-									<c:when test="${savedFormData.f_psd_process_psd == 'checked'}">
-										PSD (Pitching result attached)
-									</c:when>
-									<c:when test="${savedFormData.f_psd_process_dic == 'checked'}">
-										DIC (Direct Procurement)
-										<c:if test="${not empty savedFormData.f_dic_reason}">
-											<div style="font-size: 13px; color: #555; margin-top: 4px;">
-												<em>Reason: ${f:h(savedFormData.f_dic_reason)}</em>
-											</div>
-										</c:if>
-									</c:when>
-									<c:otherwise>Not yet filled</c:otherwise>
-								</c:choose>
+					<div style="${savedFormData.f_psd_area_psd == 'checked' ? 'border-left: 2px solid #3b82f6; margin-left: 10px; padding-left: 10px;' : ''}">
+						<imsp:fieldContain label="In PSD Area, PSD Process, or DIC Process:" required="true">
+							<div class="ui-field-contain">
+								<label for="f_psd_process_psd">
+									<input type="radio" name="f_psd_process" id="f_psd_process_psd" ${f:h(savedFormData.f_psd_process_psd)} disabled>PSD (Pitching result attached)
+								</label>
+								<label for="f_psd_process_dic">
+									<input type="radio" name="f_psd_process" id="f_psd_process_dic" ${f:h(savedFormData.f_psd_process_dic)} disabled>DIC (Please describe the reason below)
+								</label>
 							</div>
 						</imsp:fieldContain>
-					</c:if>
+
+						<c:if test="${not empty savedFormData.f_dic_reason}">
+							<imsp:fieldContain label="Reason for DIC:">
+								<div class="ui-field-contain custom-readonly">
+									${f:h(savedFormData.f_dic_reason)}
+								</div>
+							</imsp:fieldContain>
+						</c:if>
+					</div>
 				</div>
 			</div>
 
@@ -739,44 +761,35 @@
 				</div>
 				<div class="ui-body ui-body-a">
 					<imsp:fieldContain label="D / D Process Required:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_dd_process_yes == 'checked'}">
-									Yes
-								</c:when>
-								<c:when test="${savedFormData.f_dd_process_no == 'checked'}">
-									No
-								</c:when>
-								<c:otherwise>Not yet filled</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<label for="f_dd_process_yes">
+								<input type="radio" name="f_dd_process" id="f_dd_process_yes" ${f:h(savedFormData.f_dd_process_yes)} disabled>Yes
+							</label>
+							<label for="f_dd_process_no">
+								<input type="radio" name="f_dd_process" id="f_dd_process_no" ${f:h(savedFormData.f_dd_process_no)} disabled>No
+							</label>
 						</div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Anti Bribery Clause Included:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_anti_bribery_yes == 'checked'}">
-									Yes
-								</c:when>
-								<c:when test="${savedFormData.f_anti_bribery_no == 'checked'}">
-									No
-								</c:when>
-								<c:otherwise>Not yet filled</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<label for="f_anti_bribery_yes">
+								<input type="radio" name="f_anti_bribery" id="f_anti_bribery_yes" ${f:h(savedFormData.f_anti_bribery_yes)} disabled>Yes
+							</label>
+							<label for="f_anti_bribery_no">
+								<input type="radio" name="f_anti_bribery" id="f_anti_bribery_no" ${f:h(savedFormData.f_anti_bribery_no)} disabled>No
+							</label>
 						</div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Audit Rights Included:" required="true">
-						<div class="ui-field-contain custom-readonly">
-							<c:choose>
-								<c:when test="${savedFormData.f_audit_rights_yes == 'checked'}">
-									Yes
-								</c:when>
-								<c:when test="${savedFormData.f_audit_rights_no == 'checked'}">
-									No
-								</c:when>
-								<c:otherwise>Not yet filled</c:otherwise>
-							</c:choose>
+						<div class="ui-field-contain">
+							<label for="f_audit_rights_yes">
+								<input type="radio" name="f_audit_rights" id="f_audit_rights_yes" ${f:h(savedFormData.f_audit_rights_yes)} disabled>Yes
+							</label>
+							<label for="f_audit_rights_no">
+								<input type="radio" name="f_audit_rights" id="f_audit_rights_no" ${f:h(savedFormData.f_audit_rights_no)} disabled>No
+							</label>
 						</div>
 					</imsp:fieldContain>
 				</div>
