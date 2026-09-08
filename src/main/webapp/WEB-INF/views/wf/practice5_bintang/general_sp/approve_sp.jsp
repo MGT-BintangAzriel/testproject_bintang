@@ -387,10 +387,10 @@
 								Total Duration from first cooperation until now:
 							</div>
 							<label for="f_total_duration_more_than_1_year">
-								<input type="radio" name="f_total_duration" id="f_total_duration_more_than_1_year" ${f:h(savedFormData.f_total_duration_more_than_1_year)} disabled>More than 1 year
+								<input type="radio" name="f_total_duration" id="f_total_duration_more_than_1_year" ${savedFormData.f_agreement_status_amendment == 'checked' ? f:h(savedFormData.f_total_duration_more_than_1_year) : ''} disabled>More than 1 year
 							</label>
 							<label for="f_total_duration_up_to_1_year">
-								<input type="radio" name="f_total_duration" id="f_total_duration_up_to_1_year" ${f:h(savedFormData.f_total_duration_up_to_1_year)} disabled>Up to 1 year
+								<input type="radio" name="f_total_duration" id="f_total_duration_up_to_1_year" ${savedFormData.f_agreement_status_amendment == 'checked' ? f:h(savedFormData.f_total_duration_up_to_1_year) : ''} disabled>Up to 1 year
 							</label>
 						</div>
 
@@ -652,28 +652,28 @@
 							<!-- PD Approval Sub-Options (Indented) -->
 							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_pd == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
 								<label for="f_agreement_classification_pd_more_than_1_billion">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_1_billion" ${f:h(savedFormData.f_agreement_classification_pd_more_than_1_billion)} disabled>Agreement with amount is equal or more than 1 billion
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_1_billion" ${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_more_than_1_billion) : ''} disabled>Agreement with amount is equal or more than 1 billion
 								</label>
 								<label for="f_agreement_classification_pd_more_than_12_months">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_12_months" ${f:h(savedFormData.f_agreement_classification_pd_more_than_12_months)} disabled>Period is equal or more than 12 months
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_12_months" ${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_more_than_12_months) : ''} disabled>Period is equal or more than 12 months
 								</label>
 								<label for="f_agreement_classification_pd_specific_party">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_specific_party" ${f:h(savedFormData.f_agreement_classification_pd_specific_party)} disabled>Agreement related to specific party
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_specific_party" ${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_specific_party) : ''} disabled>Agreement related to specific party
 								</label>
 								<div style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 4px;">
 									<em>Bank, Related Parties, Dealer, Consultant/Lawyer/Appraise, Government, Production, Customer, Etc</em>
 								</div>
 								<label for="f_agreement_classification_pd_special_issue">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_special_issue" ${f:h(savedFormData.f_agreement_classification_pd_special_issue)} disabled>Special issue
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_special_issue" ${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_special_issue) : ''} disabled>Special issue
 								</label>
 								<div style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 4px;">
 									<em>New project/issue (more than 50 M), not included in budget plan</em>
 								</div>
 								<label for="f_agreement_classification_pd_direct_procurement">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_direct_procurement" ${f:h(savedFormData.f_agreement_classification_pd_direct_procurement)} disabled>Direct Procurement (Emergency or Specific Goods/Items)
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_direct_procurement" ${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_direct_procurement) : ''} disabled>Direct Procurement (Emergency or Specific Goods/Items)
 								</label>
 								<label for="f_agreement_classification_pd_agreement_not_more_than_12_months">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_agreement_not_more_than_12_months" ${f:h(savedFormData.f_agreement_classification_pd_agreement_not_more_than_12_months)} disabled>Agreement not more than 12 months
+									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_agreement_not_more_than_12_months" ${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_agreement_not_more_than_12_months) : ''} disabled>Agreement not more than 12 months
 								</label>
 							</div>
 
@@ -694,13 +694,13 @@
 							<!-- EC Approval Sub-Options (Indented) -->
 							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
 								<label for="f_agreement_classification_ec_amount_equal_more_than_1_billion">
-									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_amount_equal_more_than_1_billion" ${f:h(savedFormData.f_agreement_classification_ec_amount_equal_more_than_1_billion)} disabled>Amount is equal or more than 1 billion
+									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_amount_equal_more_than_1_billion" ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_amount_equal_more_than_1_billion) : ''} disabled>Amount is equal or more than 1 billion
 								</label>
 								<label for="f_agreement_classification_ec_period_equal_more_than_12_months">
-									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_period_equal_more_than_12_months" ${f:h(savedFormData.f_agreement_classification_ec_period_equal_more_than_12_months)} disabled>Period is equal or more than 12 months
+									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_period_equal_more_than_12_months" ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_period_equal_more_than_12_months) : ''} disabled>Period is equal or more than 12 months
 								</label>
 								<label for="f_agreement_classification_ec_escalate_issue_to_ec">
-									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_escalate_issue_to_ec" ${f:h(savedFormData.f_agreement_classification_ec_escalate_issue_to_ec)} disabled>Director believes it is necessary to escalate the issue to EC
+									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_escalate_issue_to_ec" ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_escalate_issue_to_ec) : ''} disabled>Director believes it is necessary to escalate the issue to EC
 								</label>
 							</div>
 
@@ -731,7 +731,7 @@
 						</div>
 					</imsp:fieldContain>
 
-					<div style="${savedFormData.f_psd_area_psd == 'checked' ? 'border-left: 2px solid #3b82f6; margin-left: 10px; padding-left: 10px;' : ''}">
+					<c:if test="${savedFormData.f_psd_area == 'psd'}">
 						<imsp:fieldContain label="In PSD Area, PSD Process, or DIC Process:" required="true">
 							<div class="custom-readonly">
 								<label for="f_psd_process_psd">
@@ -743,14 +743,16 @@
 							</div>
 						</imsp:fieldContain>
 
-						<c:if test="${not empty savedFormData.f_dic_reason}">
-							<imsp:fieldContain label="Reason for DIC:">
-								<div class="custom-readonly">
-									${f:h(savedFormData.f_dic_reason)}
-								</div>
-							</imsp:fieldContain>
+						<c:if test="${savedFormData.f_psd_process_dic == 'checked'}">
+							<div style="border-left: 2px solid #3b82f6; margin-left: 10px; padding-left: 10px;">
+								<imsp:fieldContain label="Reason for DIC:">
+									<div class="custom-readonly">
+										${not empty savedFormData.f_dic_reason ? f:h(savedFormData.f_dic_reason) : '-'}
+									</div>
+								</imsp:fieldContain>
+							</div>
 						</c:if>
-					</div>
+					</c:if>
 				</div>
 			</div>
 
