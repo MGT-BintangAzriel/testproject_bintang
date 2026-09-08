@@ -454,7 +454,7 @@
 
 					<imsp:fieldContain label="Agreement Summary:">
 						<div class="custom-readonly">
-							${f:h(savedFormData.f_agreement_summary)}
+							${not empty savedFormData.f_agreement_summary ? f:h(savedFormData.f_agreement_summary) : '-'}
 						</div>
 					</imsp:fieldContain>
 				</div>
