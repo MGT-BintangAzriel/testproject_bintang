@@ -123,6 +123,32 @@
 			padding: 6px 10px !important;
 		}
 
+		/* Enabled Textarea inside custom-readonly (Active white state) */
+		.custom-readonly textarea:not(:disabled),
+		.custom-readonly textarea.ui-input-text:not(:disabled),
+		.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled) {
+			background-color: #ffffff !important;
+			border: 1.5px solid #9ca3af !important;
+			color: #111827 !important;
+			cursor: text !important;
+		}
+		.custom-readonly textarea:not(:disabled):focus,
+		.custom-readonly textarea.ui-input-text:not(:disabled):focus,
+		.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled):focus {
+			border-color: #2563eb !important;
+			box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+		}
+
+		/* Disabled Textarea inside custom-readonly (Distinct neutral gray state) */
+		.custom-readonly textarea:disabled,
+		.custom-readonly textarea.ui-input-text:disabled,
+		.custom-readonly .ui-field-contain textarea.ui-input-text:disabled {
+			background-color: #e5e7eb !important;
+			border: 1px solid #d1d5db !important;
+			color: #475569 !important;
+			cursor: not-allowed !important;
+		}
+
 		/* Select2 styling */
 		.select2 {
 			width: 100% !important;
