@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.context.model.AccountContext;
+import jp.co.intra_mart.foundation.context.model.ClientContext;
+import jp.co.intra_mart.foundation.multi_device.client_type.ClientTypeSwitcher;
 import jp.co.intra_mart.foundation.security.exception.AccessSecurityException;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.information.Identifier;
@@ -69,6 +71,7 @@ public class AgreementController {
 	private static final String VIEW_PATH_APPROVE_SP_PSD = BASE_VIEW_PATH_SP + "approve_sp_psd.jsp";
 	private static final String VIEW_PATH_APPROVE_SP_CCO = BASE_VIEW_PATH_SP + "approve_sp_cco.jsp";
 	private static final String VIEW_PATH_APPROVE_SP_LEGAL = BASE_VIEW_PATH_SP + "approve_sp_legal.jsp";
+	private static final String VIEW_PATH_DETAIL_SP = BASE_VIEW_PATH_SP + "detail_sp.jsp";
 
 	private static final String CHARSET_UTF8 = "UTF-8";
 	private static final String ERR_MSG_UNAUTHORIZED = "(Unauthorized access: User is not logged in.)";
@@ -166,6 +169,13 @@ public class AgreementController {
 			model.addAttribute(MODEL_KEY_MATTER_COMPLETE, isMatterComplete);
 			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+
+			final ClientContext context = Contexts.get(ClientContext.class);
+			if ("sp".equals(context.getClientTypeId())) {
+				ClientTypeSwitcher.oneTimeSwitchTo("sp");
+				return VIEW_PATH_DETAIL_SP;
+			}
+			
 		} catch (Exception e) {
 			System.out.println("Error Detail Exception: " + e.getMessage());
 			e.printStackTrace();
