@@ -126,24 +126,33 @@ body {
 	font-size: 14px !important;
 	font-weight: 500 !important;
 	padding: 6px 10px !important;
+	box-shadow: none !important;
+	-webkit-box-shadow: none !important;
 }
 
-/* Enabled Textarea inside custom-readonly (e.g. Reason for DIC when editable) */
+/* Enabled Textarea (e.g. Agreement Summary on Apply, Reason for DIC when editable) */
 .custom-readonly textarea:not(:disabled),
 .custom-readonly textarea.ui-input-text:not(:disabled),
-.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled) {
+.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled),
+textarea.form-input-textarea,
+textarea.ui-input-text {
 	background-color: #ffffff !important; /* Crisp white when active */
-	border: 1.5px solid #9ca3af !important;
+	border: 1px solid #9ca3af !important;
 	color: #111827 !important;
 	cursor: text !important;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Active textarea blue focus glow on tap */
 .custom-readonly textarea:not(:disabled):focus,
 .custom-readonly textarea.ui-input-text:not(:disabled):focus,
-.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled):focus {
+.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled):focus,
+textarea.form-input-textarea:focus,
+textarea.ui-input-text:focus {
 	border-color: #2563eb !important;
-	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+	box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25) !important;
+	-webkit-box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25) !important;
 }
 
 /* Disabled Textarea inside custom-readonly (Neutral gray #e5e7eb) */
