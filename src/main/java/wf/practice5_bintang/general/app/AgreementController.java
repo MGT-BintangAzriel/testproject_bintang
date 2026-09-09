@@ -67,6 +67,7 @@ public class AgreementController {
 	private static final String VIEW_PATH_DOWNLOAD = "AgreementDownloadAttachmentService.Downloadview";
 
 	private static final String BASE_VIEW_PATH_SP = "wf/practice5_bintang/general_sp/";
+	private static final String VIEW_PATH_APPLY_SP = BASE_VIEW_PATH_SP + "apply_sp.jsp";
 	private static final String VIEW_PATH_APPROVE_SP = BASE_VIEW_PATH_SP + "approve_sp.jsp";
 	private static final String VIEW_PATH_APPROVE_SP_PSD = BASE_VIEW_PATH_SP + "approve_sp_psd.jsp";
 	private static final String VIEW_PATH_APPROVE_SP_CCO = BASE_VIEW_PATH_SP + "approve_sp_cco.jsp";
@@ -102,6 +103,30 @@ public class AgreementController {
 		model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
 		model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
 		final String path = VIEW_PATH_APPLY;
+		return path;
+	}
+
+	@RequestMapping(value = "apply_sp")
+	public final String applySp(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws Exception {
+		System.out.println(workflowRequestForm.getImwPageType());
+		AgreementForm savedFormData = new AgreementForm();
+		AgreementWorkflowService workflowService = new AgreementWorkflowService();
+
+		if (PageType.pageTyp_App_Sp.toString().equals(workflowRequestForm.getImwPageType())) {
+			String userDataId = "";
+			final Identifier identifier = new Identifier();
+			userDataId = identifier.get();
+			workflowRequestForm.setImwUserDataId(userDataId);
+
+			savedFormData = workflowService.getHeaderInfoTempFormApply();
+
+		} else {
+			savedFormData = workflowService.getAgreementFormData(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+		}
+
+		model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
+		model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+		final String path = VIEW_PATH_APPLY_SP;
 		return path;
 	}
 
