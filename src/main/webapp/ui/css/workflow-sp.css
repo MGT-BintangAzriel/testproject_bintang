@@ -1,0 +1,379 @@
+@charset "UTF-8";
+/**
+ * NTT DATA intra-mart Accel Platform (iAP)
+ * Smartphone Workflow Custom Stylesheet
+ * 
+ * Target views: wf/practice5_bintang/general_sp/*.jsp
+ */
+
+/* ==========================================================================
+   1. BASE LAYOUT & THEME (Body, Page, Containers)
+   ========================================================================== */
+body {
+	overscroll-behavior: none;
+	background-color: #f4f5f7 !important;
+	color: #333333 !important;
+}
+
+.ui-page,
+.ui-content {
+	background: #f4f5f7 !important;
+	color: #333333 !important;
+}
+
+/* Card Container */
+.custom-corners {
+	background: #ffffff !important;
+	border: 1px solid #d1d5db !important;
+	border-radius: 8px !important;
+	overflow: hidden !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+	margin-bottom: 15px;
+}
+
+/* Card Header Bar */
+.custom-corners .ui-bar,
+.custom-corners .ui-bar-a {
+	background: #2b3a4a !important;
+	color: #ffffff !important;
+	text-shadow: none !important;
+	border: none !important;
+	padding: 4px 12px !important;
+}
+.custom-corners .ui-bar h3 {
+	color: #ffffff !important;
+	margin: 6px 0 !important;
+	font-size: 15px !important;
+	font-weight: 600 !important;
+}
+
+/* Card Body */
+.custom-corners .ui-body,
+.custom-corners .ui-body-a {
+	background: #ffffff !important;
+	color: #333333 !important;
+	text-shadow: none !important;
+	border: none !important;
+	padding: 0 10px !important;
+}
+
+/* ==========================================================================
+   2. FORM FIELD ROWS & LABELS (imsp:fieldContain)
+   ========================================================================== */
+.ui-field-contain {
+	margin: 10px 0 !important;
+	padding: 0.1em 0 !important;
+}
+
+.ui-field-contain label,
+.ui-field-contain .ui-controlgroup-label {
+	color: #1f2937 !important;
+	font-weight: 600 !important;
+	text-shadow: none !important;
+	font-size: 13px !important;
+	margin-bottom: 4px !important;
+}
+
+.ui-field-contain .ui-input-text,
+.ui-field-contain .imsp-datepicker-wrapper {
+	width: 100% !important;
+	max-width: 100% !important;
+}
+
+.ui-field-contain:last-child {
+	border-bottom: none !important;
+}
+
+.required-symbol {
+	color: #dc2626 !important;
+	font-weight: bold;
+}
+
+/* ==========================================================================
+   3. READONLY FIELDS (custom-readonly)
+   Used for applicant data & previous approval node information
+   ========================================================================== */
+.custom-readonly {
+	color: #111827 !important;
+	font-size: 14px !important;
+	font-weight: 500 !important;
+	line-height: 1.5 !important;
+	text-shadow: none !important;
+	padding: 4px 0 !important;
+	word-break: break-word !important;
+}
+
+.custom-readonly input.ui-input-text,
+.custom-readonly textarea.ui-input-text,
+.custom-readonly div.ui-input-text,
+.custom-readonly .ui-field-contain input.ui-input-text,
+.custom-readonly .ui-field-contain textarea.ui-input-text,
+.custom-readonly .ui-field-contain div.ui-input-text {
+	background-color: #f3f4f6 !important;
+	color: #111827 !important;
+	text-shadow: none !important;
+	border: 1px solid #d1d5db !important;
+	border-radius: 6px !important;
+	font-size: 14px !important;
+	font-weight: 500 !important;
+	padding: 6px 10px !important;
+}
+
+/* Enabled Textarea inside custom-readonly (e.g. Reason for DIC when active) */
+.custom-readonly textarea:not(:disabled),
+.custom-readonly textarea.ui-input-text:not(:disabled),
+.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled) {
+	background-color: #ffffff !important;
+	border: 1.5px solid #9ca3af !important;
+	color: #111827 !important;
+	cursor: text !important;
+}
+.custom-readonly textarea:not(:disabled):focus,
+.custom-readonly textarea.ui-input-text:not(:disabled):focus,
+.custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled):focus {
+	border-color: #2563eb !important;
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+}
+
+/* Disabled Textarea inside custom-readonly (Distinct neutral gray) */
+.custom-readonly textarea:disabled,
+.custom-readonly textarea.ui-input-text:disabled,
+.custom-readonly .ui-field-contain textarea.ui-input-text:disabled {
+	background-color: #e5e7eb !important;
+	border: 1px solid #d1d5db !important;
+	color: #475569 !important;
+	cursor: not-allowed !important;
+}
+
+/* ==========================================================================
+   4. ACTIVE / EDITABLE INPUTS & TEXTAREA
+   ========================================================================== */
+div.ui-input-text,
+.ui-field-contain div.ui-input-text,
+.ui-body-a div.ui-input-text {
+	background: #ffffff !important;
+	border: 1.5px solid #9ca3af !important;
+	border-radius: 6px !important;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+	margin: 4px 0 !important;
+	padding: 0 !important;
+	width: 100% !important;
+	box-sizing: border-box !important;
+	outline: none !important;
+}
+
+div.ui-input-text input.ui-input-text,
+.ui-field-contain div.ui-input-text input,
+input.ui-input-text {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 8px 10px !important;
+	font-size: 13px !important;
+	color: #1f2937 !important;
+	font-weight: 500 !important;
+	line-height: 1.4 !important;
+	min-height: 20px !important;
+	width: 100% !important;
+	box-sizing: border-box !important;
+	outline: none !important;
+}
+
+div.ui-input-text.ui-focus,
+.ui-field-contain div.ui-input-text.ui-focus,
+.ui-body-a div.ui-input-text.ui-focus {
+	border-color: #2563eb !important;
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+}
+
+/* ==========================================================================
+   5. DATEPICKER STYLING
+   ========================================================================== */
+.imsp-datepicker-wrapper {
+	display: flex !important;
+	align-items: center !important;
+	width: 100% !important;
+	gap: 8px !important;
+}
+.imsp-datepicker-wrapper .imsp-textbox {
+	flex: 1 !important;
+	min-width: 0 !important;
+}
+.imsp-datepicker-wrapper .imsp-textbox div.ui-input-text {
+	width: 100% !important;
+	margin: 0 !important;
+}
+.imsp-datepicker-wrapper > span:not(.imsp-textbox) {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	flex-shrink: 0 !important;
+}
+.imsp-datepicker-wrapper > span:not(.imsp-textbox) a.ui-btn {
+	margin: 0 !important;
+}
+
+/* ==========================================================================
+   6. RADIO & CHECKBOX BUTTONS
+   ========================================================================== */
+.ui-radio,
+.ui-checkbox {
+	margin: 4px 0 !important;
+}
+
+/* Base button */
+.ui-radio label.ui-btn,
+.ui-checkbox label.ui-btn {
+	background: #ffffff !important;
+	border: 1px solid #d1d5db !important;
+	border-radius: 6px !important;
+	box-shadow: none !important;
+	margin: 0 !important;
+}
+.ui-radio label.ui-btn .ui-btn-inner,
+.ui-checkbox label.ui-btn .ui-btn-inner {
+	padding: 6px 10px 6px 36px !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	border: none !important;
+}
+.ui-radio label.ui-btn .ui-btn-text,
+.ui-checkbox label.ui-btn .ui-btn-text {
+	color: #1f2937 !important;
+	text-shadow: none !important;
+}
+
+/* Selected state (Soft blue) */
+.ui-radio label.ui-radio-on,
+.ui-radio label.ui-btn-active,
+.ui-checkbox label.ui-checkbox-on,
+.ui-checkbox label.ui-btn-active {
+	background: #eff6ff !important;
+	border-color: #2563eb !important;
+}
+.ui-radio label.ui-radio-on .ui-btn-text,
+.ui-radio label.ui-btn-active .ui-btn-text,
+.ui-checkbox label.ui-checkbox-on .ui-btn-text,
+.ui-checkbox label.ui-btn-active .ui-btn-text {
+	color: #1d4ed8 !important;
+	font-weight: 600 !important;
+}
+
+/* Disabled state (Neutral distinct gray) */
+.ui-radio.ui-disabled,
+.ui-checkbox.ui-disabled {
+	opacity: 0.9 !important;
+	filter: none !important;
+	cursor: not-allowed !important;
+}
+.ui-radio.ui-disabled label.ui-btn,
+.ui-checkbox.ui-disabled label.ui-btn {
+	background: #e5e7eb !important;
+	border: 1px solid #d1d5db !important;
+	color: #374151 !important;
+	cursor: not-allowed !important;
+}
+.ui-radio.ui-disabled label.ui-btn .ui-btn-text,
+.ui-checkbox.ui-disabled label.ui-btn .ui-btn-text {
+	color: #374151 !important;
+}
+
+/* ==========================================================================
+   7. SELECT2 DROPDOWN
+   ========================================================================== */
+.select2 {
+	width: 100% !important;
+}
+.select2-container .select2-selection--single .select2-selection__rendered {
+	font-size: 14px;
+	color: #111827 !important;
+}
+.custom-readonly .select2-container .select2-selection {
+	background-color: #f3f4f6 !important;
+	border: 1px solid #d1d5db !important;
+	border-radius: 6px !important;
+}
+
+/* ==========================================================================
+   8. TABLES (Responsive Details Table)
+   ========================================================================== */
+.imui-form {
+	width: 100%;
+	border-collapse: collapse;
+	background: #ffffff;
+}
+.header-cell,
+.last-cell {
+	background-color: #e5e7eb !important;
+	border: 1px solid #d1d5db !important;
+	text-align: left;
+	padding: 8px 10px;
+	color: #1f2937 !important;
+	font-size: 13px;
+	font-weight: 600;
+	text-shadow: none !important;
+}
+.imui-form tbody td {
+	border: 1px solid #e5e7eb;
+	padding: 8px 10px;
+	color: #1f2937;
+	font-size: 13px;
+	background: #ffffff;
+}
+.imui-form tfoot th {
+	background-color: #f9fafb !important;
+	border: 1px solid #d1d5db !important;
+	color: #111827 !important;
+	padding: 8px 10px;
+	font-size: 13px;
+	text-shadow: none !important;
+}
+
+/* ==========================================================================
+   9. VALIDATION ERROR MESSAGES
+   ========================================================================== */
+.error_message,
+.error_message label,
+.ui-field-contain label.error,
+label.error {
+	color: #dc2626 !important;
+	font-size: 12px !important;
+	margin-top: 4px !important;
+	font-weight: 500 !important;
+	text-shadow: none !important;
+}
+
+.ui-field-contain label.error:not(:empty),
+label.error:not(:empty) {
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+}
+
+.ui-field-contain label.error:not(:empty)::before,
+label.error:not(:empty)::before {
+	font-family: "Font Awesome 6 Free" !important;
+	font-weight: 900 !important;
+	content: "\f06a" !important; /* fa-circle-exclamation */
+	font-size: 13px !important;
+	color: #dc2626 !important;
+	flex-shrink: 0 !important;
+}
+
+label.error:empty {
+	display: none !important;
+}
+
+/* ==========================================================================
+   10. SCROLLBARS
+   ========================================================================== */
+::-webkit-scrollbar {
+	height: 6px;
+}
+::-webkit-scrollbar-thumb {
+	background-color: #9ca3af;
+	border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+	background-color: #f3f4f6;
+}
