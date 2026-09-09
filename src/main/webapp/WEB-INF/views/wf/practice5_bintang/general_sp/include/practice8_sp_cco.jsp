@@ -29,7 +29,7 @@
 			</div>
 		</imsp:fieldContain>
 
-		<c:if test="${savedFormData.f_psd_area == 'psd'}">
+		<c:if test="${savedFormData.f_psd_area == 'psd' or empty savedFormData.f_psd_area}">
 			<imsp:fieldContain label="In PSD Area, PSD Process, or DIC Process:" required="true">
 				<div class="custom-readonly">
 					<label for="f_psd_process_psd">
@@ -43,7 +43,7 @@
 				</div>
 			</imsp:fieldContain>
 
-			<c:if test="${savedFormData.f_psd_process_dic == 'checked'}">
+			<c:if test="${savedFormData.f_psd_process_dic == 'checked' or empty savedFormData.f_psd_process}">
 				<div style="border-left: 2px solid #3b82f6; margin-left: 10px; padding-left: 10px;">
 					<imsp:fieldContain label="Reason for DIC:">
 						<div class="custom-readonly">${not empty savedFormData.f_dic_reason ? f:h(savedFormData.f_dic_reason) : '-'}</div>
