@@ -1,45 +1,44 @@
 @charset "UTF-8";
-/**
- * NTT DATA intra-mart Accel Platform (iAP)
- * Smartphone Workflow Custom Stylesheet
- * 
- * Target views: wf/practice5_bintang/general_sp/*.jsp
- */
 
 /* ==========================================================================
    1. BASE LAYOUT & THEME (Body, Page, Containers)
    ========================================================================== */
+
+/* App-wide background & disable bounce scroll */
 body {
 	overscroll-behavior: none;
 	background-color: #f4f5f7 !important;
 	color: #333333 !important;
 }
 
+/* jQuery Mobile page & content area background */
 .ui-page,
 .ui-content {
 	background: #f4f5f7 !important;
 	color: #333333 !important;
 }
 
-/* Card Container */
+/* Outer white card container for each section/practice */
 .custom-corners {
 	background: #ffffff !important;
 	border: 1px solid #d1d5db !important;
 	border-radius: 8px !important;
 	overflow: hidden !important;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-	margin-bottom: 15px;
+	margin-bottom: 15px; /* Spacing between stacked cards */
 }
 
-/* Card Header Bar */
+/* Dark navy header bar at the top of each card */
 .custom-corners .ui-bar,
 .custom-corners .ui-bar-a {
-	background: #2b3a4a !important;
+	background: #2b3a4a !important; /* Dark corporate navy */
 	color: #ffffff !important;
 	text-shadow: none !important;
 	border: none !important;
 	padding: 4px 12px !important;
 }
+
+/* Title text inside the card header */
 .custom-corners .ui-bar h3 {
 	color: #ffffff !important;
 	margin: 6px 0 !important;
@@ -47,7 +46,7 @@ body {
 	font-weight: 600 !important;
 }
 
-/* Card Body */
+/* White body area inside the card */
 .custom-corners .ui-body,
 .custom-corners .ui-body-a {
 	background: #ffffff !important;
@@ -57,14 +56,18 @@ body {
 	padding: 0 10px !important;
 }
 
+
 /* ==========================================================================
    2. FORM FIELD ROWS & LABELS (imsp:fieldContain)
    ========================================================================== */
+
+/* Space between stacked form field rows */
 .ui-field-contain {
 	margin: 10px 0 !important;
 	padding: 0.1em 0 !important;
 }
 
+/* Field label styling (bold, dark charcoal) */
 .ui-field-contain label,
 .ui-field-contain .ui-controlgroup-label {
 	color: #1f2937 !important;
@@ -74,25 +77,30 @@ body {
 	margin-bottom: 4px !important;
 }
 
+/* Ensure mobile text inputs and datepicker wrappers span 100% full width */
 .ui-field-contain .ui-input-text,
 .ui-field-contain .imsp-datepicker-wrapper {
 	width: 100% !important;
 	max-width: 100% !important;
 }
 
+/* Remove bottom divider border on the last field of a card */
 .ui-field-contain:last-child {
 	border-bottom: none !important;
 }
 
+/* Red asterisk for required fields */
 .required-symbol {
 	color: #dc2626 !important;
 	font-weight: bold;
 }
 
+
 /* ==========================================================================
    3. READONLY FIELDS (custom-readonly)
-   Used for applicant data & previous approval node information
    ========================================================================== */
+
+/* Base container for readonly text */
 .custom-readonly {
 	color: #111827 !important;
 	font-size: 14px !important;
@@ -103,6 +111,7 @@ body {
 	word-break: break-word !important;
 }
 
+/* Readonly input/textarea/div display boxes (soft gray background #f3f4f6) */
 .custom-readonly input.ui-input-text,
 .custom-readonly textarea.ui-input-text,
 .custom-readonly div.ui-input-text,
@@ -119,15 +128,17 @@ body {
 	padding: 6px 10px !important;
 }
 
-/* Enabled Textarea inside custom-readonly (e.g. Reason for DIC when active) */
+/* Enabled Textarea inside custom-readonly (e.g. Reason for DIC when editable) */
 .custom-readonly textarea:not(:disabled),
 .custom-readonly textarea.ui-input-text:not(:disabled),
 .custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled) {
-	background-color: #ffffff !important;
+	background-color: #ffffff !important; /* Crisp white when active */
 	border: 1.5px solid #9ca3af !important;
 	color: #111827 !important;
 	cursor: text !important;
 }
+
+/* Active textarea blue focus glow on tap */
 .custom-readonly textarea:not(:disabled):focus,
 .custom-readonly textarea.ui-input-text:not(:disabled):focus,
 .custom-readonly .ui-field-contain textarea.ui-input-text:not(:disabled):focus {
@@ -135,24 +146,27 @@ body {
 	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
 }
 
-/* Disabled Textarea inside custom-readonly (Distinct neutral gray) */
+/* Disabled Textarea inside custom-readonly (Neutral gray #e5e7eb) */
 .custom-readonly textarea:disabled,
 .custom-readonly textarea.ui-input-text:disabled,
 .custom-readonly .ui-field-contain textarea.ui-input-text:disabled {
 	background-color: #e5e7eb !important;
 	border: 1px solid #d1d5db !important;
-	color: #475569 !important;
+	color: #475569 !important; /* Legible dark slate text */
 	cursor: not-allowed !important;
 }
+
 
 /* ==========================================================================
    4. ACTIVE / EDITABLE INPUTS & TEXTAREA
    ========================================================================== */
+
+/* Outer input wrapper border and white background */
 div.ui-input-text,
 .ui-field-contain div.ui-input-text,
 .ui-body-a div.ui-input-text {
 	background: #ffffff !important;
-	border: 1.5px solid #9ca3af !important;
+	border: 1.5px solid #9ca3af !important; /* Visible neutral border */
 	border-radius: 6px !important;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 	margin: 4px 0 !important;
@@ -162,6 +176,7 @@ div.ui-input-text,
 	outline: none !important;
 }
 
+/* Inner input element styling */
 div.ui-input-text input.ui-input-text,
 .ui-field-contain div.ui-input-text input,
 input.ui-input-text {
@@ -179,6 +194,7 @@ input.ui-input-text {
 	outline: none !important;
 }
 
+/* Blue halo border glow when typing/focused */
 div.ui-input-text.ui-focus,
 .ui-field-contain div.ui-input-text.ui-focus,
 .ui-body-a div.ui-input-text.ui-focus {
@@ -186,42 +202,54 @@ div.ui-input-text.ui-focus,
 	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
 }
 
+
 /* ==========================================================================
    5. DATEPICKER STYLING
    ========================================================================== */
+
+/* Flex container holding the date input + calendar icon */
 .imsp-datepicker-wrapper {
 	display: flex !important;
 	align-items: center !important;
 	width: 100% !important;
-	gap: 8px !important;
+	gap: 8px !important; /* Space between input box and calendar icon */
 }
+
+/* The date text field area stretches to fill available width */
 .imsp-datepicker-wrapper .imsp-textbox {
 	flex: 1 !important;
 	min-width: 0 !important;
 }
+
 .imsp-datepicker-wrapper .imsp-textbox div.ui-input-text {
 	width: 100% !important;
 	margin: 0 !important;
 }
+
+/* Center-align the calendar icon button */
 .imsp-datepicker-wrapper > span:not(.imsp-textbox) {
 	display: flex !important;
 	align-items: center !important;
 	justify-content: center !important;
 	flex-shrink: 0 !important;
 }
+
 .imsp-datepicker-wrapper > span:not(.imsp-textbox) a.ui-btn {
 	margin: 0 !important;
 }
 
+
 /* ==========================================================================
    6. RADIO & CHECKBOX BUTTONS
    ========================================================================== */
+
+/* Vertical spacing between radio/checkbox choices */
 .ui-radio,
 .ui-checkbox {
 	margin: 4px 0 !important;
 }
 
-/* Base button */
+/* 6A. Base / Unselected button (White background) */
 .ui-radio label.ui-btn,
 .ui-checkbox label.ui-btn {
 	background: #ffffff !important;
@@ -230,20 +258,22 @@ div.ui-input-text.ui-focus,
 	box-shadow: none !important;
 	margin: 0 !important;
 }
+
 .ui-radio label.ui-btn .ui-btn-inner,
 .ui-checkbox label.ui-btn .ui-btn-inner {
-	padding: 6px 10px 6px 36px !important;
+	padding: 6px 10px 6px 36px !important; /* Left space for circle/check icon */
 	font-size: 13px !important;
 	font-weight: 500 !important;
 	border: none !important;
 }
+
 .ui-radio label.ui-btn .ui-btn-text,
 .ui-checkbox label.ui-btn .ui-btn-text {
 	color: #1f2937 !important;
 	text-shadow: none !important;
 }
 
-/* Selected state (Soft blue) */
+/* 6B. Selected active state (Soft blue #eff6ff + Royal blue border #2563eb) */
 .ui-radio label.ui-radio-on,
 .ui-radio label.ui-btn-active,
 .ui-checkbox label.ui-checkbox-on,
@@ -251,32 +281,36 @@ div.ui-input-text.ui-focus,
 	background: #eff6ff !important;
 	border-color: #2563eb !important;
 }
+
 .ui-radio label.ui-radio-on .ui-btn-text,
 .ui-radio label.ui-btn-active .ui-btn-text,
 .ui-checkbox label.ui-checkbox-on .ui-btn-text,
 .ui-checkbox label.ui-btn-active .ui-btn-text {
-	color: #1d4ed8 !important;
+	color: #1d4ed8 !important; /* Bold blue text */
 	font-weight: 600 !important;
 }
 
-/* Disabled state (Neutral distinct gray) */
+/* 6C. Disabled state (Neutral gray #e5e7eb - distinct from blue selected) */
 .ui-radio.ui-disabled,
 .ui-checkbox.ui-disabled {
 	opacity: 0.9 !important;
 	filter: none !important;
 	cursor: not-allowed !important;
 }
+
 .ui-radio.ui-disabled label.ui-btn,
 .ui-checkbox.ui-disabled label.ui-btn {
-	background: #e5e7eb !important;
+	background: #e5e7eb !important; /* Solid distinct gray */
 	border: 1px solid #d1d5db !important;
 	color: #374151 !important;
 	cursor: not-allowed !important;
 }
+
 .ui-radio.ui-disabled label.ui-btn .ui-btn-text,
 .ui-checkbox.ui-disabled label.ui-btn .ui-btn-text {
-	color: #374151 !important;
+	color: #374151 !important; /* High contrast readable dark gray */
 }
+
 
 /* ==========================================================================
    7. SELECT2 DROPDOWN
@@ -284,24 +318,32 @@ div.ui-input-text.ui-focus,
 .select2 {
 	width: 100% !important;
 }
+
 .select2-container .select2-selection--single .select2-selection__rendered {
 	font-size: 14px;
 	color: #111827 !important;
 }
+
+/* Disabled/readonly select box */
 .custom-readonly .select2-container .select2-selection {
 	background-color: #f3f4f6 !important;
 	border: 1px solid #d1d5db !important;
 	border-radius: 6px !important;
 }
 
+
 /* ==========================================================================
    8. TABLES & ATTACHMENTS (Responsive Details & Attachment Cards)
    ========================================================================== */
+
+/* Base multi-column detail table */
 .imui-form {
 	width: 100%;
 	border-collapse: collapse;
 	background: #ffffff;
 }
+
+/* Table header cells */
 .header-cell,
 .last-cell {
 	background-color: #e5e7eb !important;
@@ -313,6 +355,8 @@ div.ui-input-text.ui-focus,
 	font-weight: 600;
 	text-shadow: none !important;
 }
+
+/* Table body data cells */
 .imui-form tbody td {
 	border: 1px solid #e5e7eb;
 	padding: 8px 10px;
@@ -320,6 +364,8 @@ div.ui-input-text.ui-focus,
 	font-size: 13px;
 	background: #ffffff;
 }
+
+/* Table footer totals row */
 .imui-form tfoot th {
 	background-color: #f9fafb !important;
 	border: 1px solid #d1d5db !important;
@@ -329,25 +375,33 @@ div.ui-input-text.ui-focus,
 	text-shadow: none !important;
 }
 
-/* Attached Documents Card Styling */
+/* --- Attached Documents Card Styling --- */
+
+/* Padding around the attachments inside the card */
 .attachment-card-body {
 	padding: 12px 14px !important;
 }
+
+/* Attachment table container: separate rows into distinct floating cards */
 .attachment-list {
 	width: 100%;
 	border-collapse: separate !important;
-	border-spacing: 0 8px !important; /* Space between each attachment row */
+	border-spacing: 0 8px !important; /* 8px vertical gap between each file row */
 	margin-top: 4px;
 	margin-bottom: 4px;
 }
+
+/* Each file is rendered as an independent soft-card row */
 .attachment-list tr td {
 	background-color: #f9fafb !important;
 	border: 1px solid #e5e7eb !important;
 	border-radius: 6px !important;
-	padding: 10px 14px !important; /* Generous left/right and vertical breathing room */
+	padding: 10px 14px !important; /* Comfortable left/right & vertical breathing room */
 	vertical-align: middle;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
+
+/* Download link & icon */
 .attachment-link {
 	text-decoration: none !important;
 	font-size: 13.5px !important;
@@ -355,15 +409,19 @@ div.ui-input-text.ui-focus,
 	color: #1d4ed8 !important;
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
+	gap: 8px; /* Gap between download icon and file name */
 	word-break: break-word;
 }
+
+/* File size badge */
 .attachment-size {
 	font-size: 12px;
 	color: #6b7280;
 	margin-left: 6px;
 	font-weight: normal;
 }
+
+/* Clean message when no attachments are present */
 .no-attachment-msg {
 	padding: 16px 10px !important;
 	color: #6b7280 !important;
@@ -371,9 +429,12 @@ div.ui-input-text.ui-focus,
 	font-size: 13px;
 }
 
+
 /* ==========================================================================
    9. VALIDATION ERROR MESSAGES
    ========================================================================== */
+
+/* Red error text */
 .error_message,
 .error_message label,
 .ui-field-contain label.error,
@@ -385,6 +446,7 @@ label.error {
 	text-shadow: none !important;
 }
 
+/* Flex layout when error is populated */
 .ui-field-contain label.error:not(:empty),
 label.error:not(:empty) {
 	display: inline-flex !important;
@@ -392,6 +454,7 @@ label.error:not(:empty) {
 	gap: 5px !important;
 }
 
+/* Warning circle icon prepended before error message */
 .ui-field-contain label.error:not(:empty)::before,
 label.error:not(:empty)::before {
 	font-family: "Font Awesome 6 Free" !important;
@@ -402,9 +465,11 @@ label.error:not(:empty)::before {
 	flex-shrink: 0 !important;
 }
 
+/* Hide error label when empty */
 label.error:empty {
 	display: none !important;
 }
+
 
 /* ==========================================================================
    10. SCROLLBARS
