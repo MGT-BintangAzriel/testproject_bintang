@@ -771,7 +771,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="javascript:void(0);" onclick="window.top.close();" data-ajax="false">
+					<a href="${pageContext.request.contextPath}/home" data-ajax="false" target="_top">
 						<i class="fa-solid fa-house fa-lg"></i><br>
 						<i>Home</i>
 					</a>
