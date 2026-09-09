@@ -254,26 +254,38 @@ function setupDynamicPaymentTable() {
 
 function togglePsdField() {
   var isPsdArea = $('input[name="f_psd_area"]:checked').val() === "psd";
+  var $psdProcess = $('input[name="f_psd_process"]');
 
   if (!isPsdArea) {
-    $('input[name="f_psd_process"]')
+    $psdProcess
       .prop("checked", false)
       .prop("disabled", true)
       .removeClass("imui-validation-error")
-      .closest("td")
+      .closest("td, .ui-field-contain")
       .find(".error_message")
       .empty();
+
+    if (typeof $psdProcess.checkboxradio === "function") {
+      try {
+        $psdProcess.checkboxradio("refresh");
+      } catch (e) {}
+    }
 
     $("#f_dic_reason")
       .prop("disabled", true)
       .val("")
       .removeClass("imui-validation-error")
-      .closest("td")
+      .closest("td, .ui-field-contain")
       .find(".error_message")
       .empty();
   } else {
-    $('input[name="f_psd_process"]').prop("disabled", false);
-    
+    $psdProcess.prop("disabled", false);
+    if (typeof $psdProcess.checkboxradio === "function") {
+      try {
+        $psdProcess.checkboxradio("refresh");
+      } catch (e) {}
+    }
+
     toggleDicReason();
   }
 }
@@ -291,7 +303,7 @@ function toggleDicReason() {
       .prop("disabled", true)
       .val("")
       .removeClass("imui-validation-error")
-      .closest("td")
+      .closest("td, .ui-field-contain")
       .find(".error_message")
       .empty();
   }
