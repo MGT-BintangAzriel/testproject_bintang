@@ -18,10 +18,13 @@
 	<div class="ui-body ui-body-a">
 		<imsp:fieldContain label="PSD Area or Non-PSD Area:" required="true">
 			<div class="custom-readonly">
-				<label for="f_psd_area_psd"> <input type="radio" name="f_psd_area" id="f_psd_area_psd" ${f:h(savedFormData.f_psd_area_psd)} disabled>PSD
-					(go to #2)
-				</label> <label for="f_psd_area_non_psd"> <input type="radio" name="f_psd_area" id="f_psd_area_non_psd" ${f:h(savedFormData.f_psd_area_non_psd)}
-					disabled>Non-PSD (end)
+				<label for="f_psd_area_psd">
+					<input type="radio" name="f_psd_area" id="f_psd_area_psd" ${f:h(savedFormData.f_psd_area_psd)} disabled>
+					PSD (go to #2)
+				</label>
+				<label for="f_psd_area_non_psd">
+					<input type="radio" name="f_psd_area" id="f_psd_area_non_psd" ${f:h(savedFormData.f_psd_area_non_psd)} disabled>
+					Non-PSD (end)
 				</label>
 			</div>
 		</imsp:fieldContain>
@@ -29,10 +32,13 @@
 		<c:if test="${savedFormData.f_psd_area == 'psd'}">
 			<imsp:fieldContain label="In PSD Area, PSD Process, or DIC Process:" required="true">
 				<div class="custom-readonly">
-					<label for="f_psd_process_psd"> <input type="radio" name="f_psd_process" id="f_psd_process_psd" ${f:h(savedFormData.f_psd_process_psd)}
-						disabled>PSD (Pitching result attached)
-					</label> <label for="f_psd_process_dic"> <input type="radio" name="f_psd_process" id="f_psd_process_dic" ${f:h(savedFormData.f_psd_process_dic)}
-						disabled>DIC (Please describe the reason below)
+					<label for="f_psd_process_psd">
+						<input type="radio" name="f_psd_process" id="f_psd_process_psd" ${f:h(savedFormData.f_psd_process_psd)} disabled>
+						PSD (Pitching result attached)
+					</label>
+					<label for="f_psd_process_dic">
+						<input type="radio" name="f_psd_process" id="f_psd_process_dic" ${f:h(savedFormData.f_psd_process_dic)} disabled>
+						DIC (Please describe the reason below)
 					</label>
 				</div>
 			</imsp:fieldContain>
@@ -56,29 +62,39 @@
 	<div class="ui-body ui-body-a">
 		<imsp:fieldContain label="D / D Process Required:" required="true">
 			<div class="custom-readonly">
-				<label for="f_dd_process_yes"> <input type="radio" name="f_dd_process" id="f_dd_process_yes" ${f:h(savedFormData.f_dd_process_yes)}
-					disabled>Yes
-				</label> <label for="f_dd_process_no"> <input type="radio" name="f_dd_process" id="f_dd_process_no" ${f:h(savedFormData.f_dd_process_no)} disabled>No
+				<label for="f_dd_process_yes">
+					<input type="radio" name="f_dd_process" id="f_dd_process_yes" ${f:h(savedFormData.f_dd_process_yes)} disabled>
+					Yes
+				</label>
+				<label for="f_dd_process_no">
+					<input type="radio" name="f_dd_process" id="f_dd_process_no" ${f:h(savedFormData.f_dd_process_no)} disabled>
+					No
 				</label>
 			</div>
 		</imsp:fieldContain>
 
 		<imsp:fieldContain label="Anti Bribery Clause Included:" required="true">
 			<div class="custom-readonly">
-				<label for="f_anti_bribery_yes"> <input type="radio" name="f_anti_bribery" id="f_anti_bribery_yes"
-					${f:h(savedFormData.f_anti_bribery_yes)} disabled>Yes
-				</label> <label for="f_anti_bribery_no"> <input type="radio" name="f_anti_bribery" id="f_anti_bribery_no" ${f:h(savedFormData.f_anti_bribery_no)}
-					disabled>No
+				<label for="f_anti_bribery_yes">
+					<input type="radio" name="f_anti_bribery" id="f_anti_bribery_yes" ${f:h(savedFormData.f_anti_bribery_yes)} disabled>
+					Yes
+				</label>
+				<label for="f_anti_bribery_no">
+					<input type="radio" name="f_anti_bribery" id="f_anti_bribery_no" ${f:h(savedFormData.f_anti_bribery_no)} disabled>
+					No
 				</label>
 			</div>
 		</imsp:fieldContain>
 
 		<imsp:fieldContain label="Audit Rights Included:" required="true">
 			<div class="custom-readonly">
-				<label for="f_audit_rights_yes"> <input type="radio" name="f_audit_rights" id="f_audit_rights_yes"
-					${f:h(savedFormData.f_audit_rights_yes)} disabled>Yes
-				</label> <label for="f_audit_rights_no"> <input type="radio" name="f_audit_rights" id="f_audit_rights_no" ${f:h(savedFormData.f_audit_rights_no)}
-					disabled>No
+				<label for="f_audit_rights_yes">
+					<input type="radio" name="f_audit_rights" id="f_audit_rights_yes" ${f:h(savedFormData.f_audit_rights_yes)} disabled>
+					Yes
+				</label>
+				<label for="f_audit_rights_no">
+					<input type="radio" name="f_audit_rights" id="f_audit_rights_no" ${f:h(savedFormData.f_audit_rights_no)} disabled>
+					No
 				</label>
 			</div>
 		</imsp:fieldContain>
