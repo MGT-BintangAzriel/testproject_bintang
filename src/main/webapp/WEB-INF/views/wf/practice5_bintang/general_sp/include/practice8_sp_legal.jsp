@@ -119,8 +119,9 @@
 			<div class="error_message"></div>
 		</imsp:fieldContain>
 	</div>
+</div>
 
-	<script type="text/javascript">
+<script type="text/javascript">
     function onClose() {
       setTimeout(function() {
         $('#f_legal_agreement_date').valid();
@@ -135,5 +136,4 @@
         }, 100);
       });
     });
-  </script>
-</div>
+ </script>
