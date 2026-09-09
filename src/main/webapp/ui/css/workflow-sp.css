@@ -295,7 +295,7 @@ div.ui-input-text.ui-focus,
 }
 
 /* ==========================================================================
-   8. TABLES (Responsive Details Table)
+   8. TABLES & ATTACHMENTS (Responsive Details & Attachment Cards)
    ========================================================================== */
 .imui-form {
 	width: 100%;
@@ -327,6 +327,48 @@ div.ui-input-text.ui-focus,
 	padding: 8px 10px;
 	font-size: 13px;
 	text-shadow: none !important;
+}
+
+/* Attached Documents Card Styling */
+.attachment-card-body {
+	padding: 12px 14px !important;
+}
+.attachment-list {
+	width: 100%;
+	border-collapse: separate !important;
+	border-spacing: 0 8px !important; /* Space between each attachment row */
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+.attachment-list tr td {
+	background-color: #f9fafb !important;
+	border: 1px solid #e5e7eb !important;
+	border-radius: 6px !important;
+	padding: 10px 14px !important; /* Generous left/right and vertical breathing room */
+	vertical-align: middle;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.attachment-link {
+	text-decoration: none !important;
+	font-size: 13.5px !important;
+	font-weight: 500 !important;
+	color: #1d4ed8 !important;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	word-break: break-word;
+}
+.attachment-size {
+	font-size: 12px;
+	color: #6b7280;
+	margin-left: 6px;
+	font-weight: normal;
+}
+.no-attachment-msg {
+	padding: 16px 10px !important;
+	color: #6b7280 !important;
+	text-align: center;
+	font-size: 13px;
 }
 
 /* ==========================================================================

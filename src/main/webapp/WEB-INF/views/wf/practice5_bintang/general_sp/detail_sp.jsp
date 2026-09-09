@@ -502,18 +502,21 @@
 				<div class="ui-bar ui-bar-a">
 					<h3>Attached Documents</h3>
 				</div>
-				<div class="ui-body ui-body-a">
+				<div class="ui-body ui-body-a attachment-card-body">
 					<c:choose>
 						<c:when test="${not empty savedFormData.d_list_attachment}">
-							<table class="imui-form">
+							<table class="attachment-list">
 								<tbody>
 									<c:forEach items="${savedFormData.d_list_attachment}" var="file">
 										<tr>
-											<td style="padding: 10px 5px; vertical-align: middle;">
+											<td>
 												<a target="_blank"
 													href="practice5_bintang/download/${f:h(file.id)}?token=${f:h(savedFormData.f_download_token)}&system_matter_id=${f:h(workflowRequestForm.imwSystemMatterId)}"
-													style="text-decoration: none; font-size: 14px;"> <i class="fa-solid fa-file-arrow-down fa-lg"></i> ${f:h(file.file_name)}
-												</a> <span style="font-size: 12px; color: #777; margin-left: 6px;">(${f:h(file.file_size_convert)})</span>
+													class="attachment-link">
+													<i class="fa-solid fa-file-arrow-down fa-lg"></i>
+													<span>${f:h(file.file_name)}</span>
+												</a>
+												<span class="attachment-size">(${f:h(file.file_size_convert)})</span>
 											</td>
 										</tr>
 									</c:forEach>
@@ -521,7 +524,7 @@
 							</table>
 						</c:when>
 						<c:otherwise>
-							<div style="padding: 10px; color: #777; text-align: center;">No documents attached</div>
+							<div class="no-attachment-msg">No documents attached</div>
 						</c:otherwise>
 					</c:choose>
 				</div>
