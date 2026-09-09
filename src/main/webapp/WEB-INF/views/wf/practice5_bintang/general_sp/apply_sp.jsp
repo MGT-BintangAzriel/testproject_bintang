@@ -132,6 +132,18 @@
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Currency:" required="true">
+						<div class="ui-field-contain">
+							<fieldset data-role="controlgroup">
+								<select name="f_currency" id="f_currency" data-native-menu="false" data-role="none" class="select2">
+									<option value="IDR" ${empty savedFormData.f_currency || savedFormData.f_currency == 'IDR' ? 'selected' : ''}>IDR - Indonesian Rupiah</option>
+									<option value="USD" ${savedFormData.f_currency == 'USD' ? 'selected' : ''}>USD - US Dollar</option>
+									<option value="JPY" ${savedFormData.f_currency == 'JPY' ? 'selected' : ''}>JPY - Japanese Yen</option>
+									<option value="EUR" ${savedFormData.f_currency == 'EUR' ? 'selected' : ''}>EUR - Euro</option>
+									<option value="SGD" ${savedFormData.f_currency == 'SGD' ? 'selected' : ''}>SGD - Singapore Dollar</option>
+								</select>
+							</fieldset>
+							<div class="error_message"></div>
+						</div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Total Amount (Without Tax):" required="true">
