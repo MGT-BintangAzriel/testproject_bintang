@@ -140,9 +140,36 @@
 		/* Radio & Checkbox button styling for mobile */
 		.ui-radio.ui-disabled,
 		.ui-checkbox.ui-disabled {
-			opacity: 1 !important;
+			opacity: 0.9 !important;
 			filter: none !important;
+			cursor: not-allowed !important;
 		}
+		.ui-radio.ui-disabled label.ui-btn,
+		.ui-checkbox.ui-disabled label.ui-btn {
+			background: #e5e7eb !important; /* Neutral distinct gray */
+			border: 1px solid #d1d5db !important;
+			color: #374151 !important; /* Crisp dark gray text for high readability */
+			cursor: not-allowed !important;
+		}
+		.ui-radio.ui-disabled label.ui-btn .ui-btn-text,
+		.ui-checkbox.ui-disabled label.ui-btn .ui-btn-text {
+			color: #374151 !important; /* Ensure clear text contrast */
+		}
+
+		/* Disabled Textarea & Text Input styling */
+		textarea:disabled,
+		input:disabled,
+		.form-input-textarea:disabled,
+		.ui-input-text.ui-state-disabled,
+		div.ui-input-text:has(textarea:disabled),
+		div.ui-input-text:has(input:disabled) {
+			background: #e5e7eb !important; /* Neutral distinct gray */
+			border: 1px solid #d1d5db !important;
+			color: #374151 !important;
+			opacity: 1 !important;
+			cursor: not-allowed !important;
+		}
+
 		.ui-radio,
 		.ui-checkbox {
 			margin: 4px 0 !important;
