@@ -72,6 +72,7 @@ public class AgreementController {
 	private static final String VIEW_PATH_APPROVE_SP_CCO = BASE_VIEW_PATH_SP + "approve_sp_cco.jsp";
 	private static final String VIEW_PATH_APPROVE_SP_LEGAL = BASE_VIEW_PATH_SP + "approve_sp_legal.jsp";
 	private static final String VIEW_PATH_DETAIL_SP = BASE_VIEW_PATH_SP + "detail_sp.jsp";
+	private static final String VIEW_PATH_CONFIRM_SP = BASE_VIEW_PATH_SP + "confirm_sp.jsp";
 
 	private static final String CHARSET_UTF8 = "UTF-8";
 	private static final String ERR_MSG_UNAUTHORIZED = "(Unauthorized access: User is not logged in.)";
@@ -199,6 +200,23 @@ public class AgreementController {
 		}
 
 		final String path = VIEW_PATH_CONFIRM;
+		return path;
+	}
+	
+	@RequestMapping(value = "confirm_sp")
+	public final String confirmSp(final Model model, final AgreementForm workflowRequestForm, final HttpServletRequest request) throws AccessSecurityException, IOException {
+		try {
+			AgreementWorkflowService workflowService = new AgreementWorkflowService();
+			AgreementForm savedFormData = workflowService.getAgreementFormData(workflowRequestForm.getImwSystemMatterId(), WorkflowCommonConstants.COLUMN_SYSTEM_MATTER_ID, request);
+
+			model.addAttribute(MODEL_KEY_SAVED_FORM_DATA, savedFormData);
+			model.addAttribute(MODEL_KEY_WORKFLOW_REQUEST_FORM, workflowRequestForm);
+		} catch (Exception e) {
+			System.out.println("Error Confirm Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		final String path = VIEW_PATH_CONFIRM_SP;
 		return path;
 	}
 
