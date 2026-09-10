@@ -664,7 +664,7 @@ input#spFileUpload {
 
 /* The native "Choose File" button inside Chrome/Safari/Edge */
 input#spFileUpload::-webkit-file-upload-button {
-	background: #2b3a4a !important;
+	background: #1d4ed8 !important;
 	color: #ffffff !important;
 	border: none !important;
 	border-radius: 6px !important;
