@@ -478,6 +478,40 @@ public class AgreementController {
 		}
 		return null;
 	}
+
+	@RequestMapping(value = "testExternalRepository")
+	@ResponseBody
+	public Object testExternalRepository(
+			@RequestParam(value = "action", defaultValue = "headers") String action,
+			@RequestParam(value = "headerId", defaultValue = "1") int headerId,
+			@RequestParam(value = "status", defaultValue = "PROCESSED") String status,
+			@RequestParam(value = "systemMatterId", defaultValue = "TEST_MATTER_001") String systemMatterId) {
+
+		AgreementExternalRepository extRepo = new AgreementExternalRepository();
+
+		try {
+			switch (action.toLowerCase()) {
+				case "headers":
+					return extRepo.findPendingHeaders();
+
+				case "payments":
+					return extRepo.findPaymentDetails(headerId);
+
+				case "attachments":
+					return extRepo.findAttachments(headerId);
+
+				case "update_status":
+					extRepo.updateSyncStatus(headerId, status, systemMatterId);
+					return "Successfully updated record ID " + headerId + " with status: " + status;
+
+				default:
+					return "Unknown action: '" + action + "'. Available actions: headers, payments, attachments, update_status";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Error executing action [" + action + "]: " + e.getMessage();
+		}
+	}
 	
 	private AgreementHeaderInfoModel mapResultSetToModel(ResultSet rs) throws Exception {
 		AgreementHeaderInfoModel model = new AgreementHeaderInfoModel();

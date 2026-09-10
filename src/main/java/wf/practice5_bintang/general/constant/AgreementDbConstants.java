@@ -12,6 +12,12 @@ public final class AgreementDbConstants {
     public static final String TABLE_ATTACH_TEMP = "wf_agreement_attach_file_temp";
     public static final String TABLE_PAYMENT_DETAILS = "wf_agreement_payment_details";
     public static final String TABLE_PAYMENT_DETAILS_TEMP = "wf_agreement_payment_details_temp";
+
+    public static final String EXT_DB_NAME = "db_mysql";
+
+    public static final String EXT_TABLE_HEADER_INFO = "ext_agreement_header_info";
+    public static final String EXT_TABLE_ATTACH_FILE = "ext_agreement_attach_file";
+    public static final String EXT_TABLE_PAYMENT_DETAILS = "ext_agreement_payment_details";
     
     public static final String COLUMN_FILE_NAME = "file_name";
     public static final String COLUMN_FILE_PATH = "file_path";

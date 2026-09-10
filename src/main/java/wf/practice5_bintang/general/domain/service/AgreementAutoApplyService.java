@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jp.co.intra_mart.foundation.database.ColumnValues;
-import jp.co.intra_mart.foundation.database.SQLManager;
-import jp.co.intra_mart.foundation.database.SearchCondition;
 import jp.co.intra_mart.foundation.service.client.information.Identifier;
 import jp.co.intra_mart.foundation.workflow.application.model.ApplyResultModel;
 import jp.co.intra_mart.foundation.workflow.application.model.param.ApplyParam;
@@ -18,7 +15,6 @@ import jp.co.intra_mart.foundation.workflow.application.process.ApplyManager;
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
-import java.sql.Connection;
 
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import wf.practice5_bintang.general.constant.AgreementFormConstants;
@@ -31,14 +27,20 @@ import wf.practice5_bintang.general.domain.util.DbValueUtils;
 public class AgreementAutoApplyService {
 
 	public String syncPending() {
+		return syncPending(new AgreementExternalRepository());
+	}
+
+	public String syncPending(String extDbName) {
+		return syncPending(new AgreementExternalRepository(extDbName));
+	}
+
+	public String syncPending(AgreementExternalRepository repository) {
 		try {
-			SQLManager sqlManager = new SQLManager();
-			String sql = "SELECT * FROM ext_agreement_header_info WHERE sync_status = 'PENDING'";
-			Collection<AgreementHeaderInfoModel> pendingList = sqlManager.select(AgreementHeaderInfoModel.class, sql, new ArrayList<>());
+			Collection<AgreementHeaderInfoModel> pendingList = repository.findPendingHeaders();
 
 			for (AgreementHeaderInfoModel pending : pendingList) {
 				try {
-					Map<String, Object> userParameter = buildUserParameter(pending);
+					Map<String, Object> userParameter = buildUserParameter(pending, repository);
 					ApplyParam applyParam = buildApplyParam(pending);
 
 					if (userParameter == null || applyParam == null) {
@@ -49,8 +51,9 @@ public class AgreementAutoApplyService {
 					ApplyManager applyManager = new ApplyManager();
 					ApplyResultModel result = applyManager.apply(applyParam, userParameter);
 
-					updateSyncStatus(pending.getId(), "PROCESSED", result.getSystemMatterId());
+					repository.updateSyncStatus(pending.getId(), "PROCESSED", result.getSystemMatterId());
 				} catch (Exception e) {
+					repository.updateSyncStatus(pending.getId(), "FAILED", null);
 					e.printStackTrace();
 				}
 			}
@@ -62,65 +65,11 @@ public class AgreementAutoApplyService {
 		}
 	}
 
-	public String syncPendingFromMySql() {
-		AgreementExternalRepository extRepo = new AgreementExternalRepository();
-
-		try (Connection conn = extRepo.getConnection()) {
-			List<AgreementHeaderInfoModel> pendingList = extRepo.findPendingHeaders(conn);
-
-			for (AgreementHeaderInfoModel pending : pendingList) {
-				try {
-					Map<String, Object> userParameter = buildUserParameterFromMySql(pending, extRepo, conn);
-					ApplyParam applyParam = buildApplyParam(pending);
-
-					if (userParameter == null || applyParam == null) {
-						System.out.println("Skipping record ID " + pending.getId() + " due to build error.");
-						continue;
-					}
-
-					ApplyManager applyManager = new ApplyManager();
-					ApplyResultModel result = applyManager.apply(applyParam, userParameter);
-
-					extRepo.updateSyncStatus(pending.getId(), "PROCESSED", result.getSystemMatterId(), conn);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-			return "TEST APPLIED!";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "ERROR";
-		}
-	}
-
-	private Map<String, Object> buildUserParameter(AgreementHeaderInfoModel pending) {
-		try {
-			SQLManager sqlManager = new SQLManager();
-			int externalId = pending.getId();
-
-			String detailSql = "SELECT * FROM ext_agreement_payment_details WHERE ext_header_id = ? ORDER BY row_no ASC, id ASC";
-			Collection<Object> detailParams = new ArrayList<>();
-			detailParams.add(externalId);
-			List<AgreementPaymentDetailModel> paymentDetailList = (ArrayList<AgreementPaymentDetailModel>) sqlManager.select(AgreementPaymentDetailModel.class, detailSql, detailParams);
-
-			String attachSql = "SELECT * FROM ext_agreement_attach_file WHERE ext_header_id = ?";
-			Collection<Object> attachParams = new ArrayList<>();
-			attachParams.add(externalId);
-			List<AgreementAttachmentModel> attachmentList = (ArrayList<AgreementAttachmentModel>) sqlManager.select(AgreementAttachmentModel.class, attachSql, attachParams);
-
-			return populateUserParameter(pending, paymentDetailList, attachmentList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private Map<String, Object> buildUserParameterFromMySql(AgreementHeaderInfoModel pending, AgreementExternalRepository extRepo, Connection conn) {
+	private Map<String, Object> buildUserParameter(AgreementHeaderInfoModel pending, AgreementExternalRepository repository) {
 		try {
 			int externalId = pending.getId();
-			List<AgreementPaymentDetailModel> paymentDetailList = extRepo.findPaymentDetails(externalId, conn);
-			List<AgreementAttachmentModel> attachmentList = extRepo.findAttachments(externalId, conn);
+			List<AgreementPaymentDetailModel> paymentDetailList = new ArrayList<>(repository.findPaymentDetails(externalId));
+			List<AgreementAttachmentModel> attachmentList = new ArrayList<>(repository.findAttachments(externalId));
 
 			return populateUserParameter(pending, paymentDetailList, attachmentList);
 		} catch (Exception e) {
@@ -257,26 +206,6 @@ public class AgreementAutoApplyService {
 				userParameter.put("f_upload_file_size", fileSizes);
 				userParameter.put("f_upload_file_extension", fileExtensions);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void updateSyncStatus(int id, String status, String systemMatterId) {
-		try {
-			SQLManager sqlManager = new SQLManager();
-
-			ColumnValues columnValues = new ColumnValues();
-			columnValues.add("sync_status", status);
-			columnValues.add("updated_at", new java.sql.Timestamp(System.currentTimeMillis()));
-			if (systemMatterId != null) {
-				columnValues.add("system_matter_id", systemMatterId);
-			}
-
-			SearchCondition searchCondition = new SearchCondition();
-			searchCondition.addCondition("id", id);
-
-			sqlManager.update("ext_agreement_header_info", columnValues, searchCondition);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
