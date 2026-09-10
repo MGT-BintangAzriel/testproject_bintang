@@ -115,25 +115,8 @@
 
 		<imsp:fieldContain label="Agreement Date:" required="true">
 			<imsp:datePicker id="f_legal_agreement_date" name="f_legal_agreement_date" format="yyyy/MM/dd" value="${f:h(savedFormData.f_legal_agreement_date)}"
-				placeholder="Enter agreement date" onClose="onClose" />
+				placeholder="Enter agreement date" onClose="onDatePickerClose" />
 			<div class="error_message"></div>
 		</imsp:fieldContain>
 	</div>
 </div>
-
-<script type="text/javascript">
-    function onClose() {
-      setTimeout(function() {
-        $('#f_legal_agreement_date').valid();
-      }, 100);
-    }
-
-    $(function() {
-      // When the delete/remove (x) button is tapped/clicked
-      $(document).on('tap click', 'a[data-imsp-role="datePicker-remove"]', function() {
-        setTimeout(function() {
-          $('#f_legal_agreement_date').valid();
-        }, 100);
-      });
-    });
- </script>

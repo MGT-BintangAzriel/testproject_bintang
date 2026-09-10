@@ -30,6 +30,7 @@
 
 		$(function() {
 			setupMobileRadioValidation();
+			setupMobileDatePickerValidation();
 
 			formatNumberText();
 			setupSubOptionToggle('f_agreement_status', 'amendment', 'f_total_duration', 'f_total_duration_1');
@@ -241,7 +242,7 @@
 					<imsp:fieldContain label="Effective From:" required="true">
 						<div class="custom-readonly">
 							<imsp:datePicker id="f_effective_from" name="f_effective_from" format="yyyy/MM/dd" value="${f:h(savedFormData.f_effective_from)}"
-								placeholder="Enter effective from..."/>
+								placeholder="Enter effective from..." onClose="onDatePickerClose"/>
 							<div class="error_message"></div>
 						</div>
 					</imsp:fieldContain>
@@ -249,7 +250,7 @@
 					<imsp:fieldContain label="Effective To:" required="true">
 						<div class="custom-readonly">
 							<imsp:datePicker id="f_effective_to" name="f_effective_to" format="yyyy/MM/dd" value="${f:h(savedFormData.f_effective_to)}"
-								placeholder="Enter effective to..."/>
+								placeholder="Enter effective to..." onClose="onDatePickerClose"/>
 							<div class="error_message"></div>
 						</div>
 					</imsp:fieldContain>
@@ -270,13 +271,13 @@
 
 					<imsp:fieldContain label="Estimated Delivery From:" required="true">
 						<imsp:datePicker id="f_estimated_delivery_from" name="f_estimated_delivery_from" format="yyyy/MM/dd" value="${f:h(savedFormData.f_estimated_delivery_from)}"
-							placeholder="Enter estimated delivery from..."/>
+							placeholder="Enter estimated delivery from..." onClose="onDatePickerClose"/>
 						<div class="error_message"></div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Estimated Delivery To:" required="true">
 						<imsp:datePicker id="f_estimated_delivery_to" name="f_estimated_delivery_to" format="yyyy/MM/dd" value="${f:h(savedFormData.f_estimated_delivery_to)}"
-							placeholder="Enter estimated delivery to..."/>
+							placeholder="Enter estimated delivery to..." onClose="onDatePickerClose"/>
 						<div class="error_message"></div>
 					</imsp:fieldContain>
 
@@ -317,7 +318,7 @@
 
 					<imsp:fieldContain label="Starting Using Date:" required="true">
 						<imsp:datePicker id="f_start_using_date" name="f_start_using_date" format="yyyy/MM/dd" value="${f:h(savedFormData.f_start_using_date)}"
-							placeholder="Enter starting using date..."/>
+							placeholder="Enter starting using date..." onClose="onDatePickerClose"/>
 						<div class="error_message"></div>
 					</imsp:fieldContain>
 

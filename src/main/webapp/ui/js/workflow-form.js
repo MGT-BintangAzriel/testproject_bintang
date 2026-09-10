@@ -139,6 +139,35 @@ function setupMobileRadioValidation() {
   });
 }
 
+// Generic onClose handler for all <imsp:datePicker> fields
+function onDatePickerClose() {
+  if (isApplyClicked) {
+    setTimeout(function() {
+      $(".imsp-datepicker-wrapper input[type='text']").each(function() {
+        if ($(this).is(":visible")) {
+          $(this).valid();
+        }
+      });
+    }, 200);
+  }
+}
+
+
+// Global delegated handler for mobile date pickers (change event + clear remove icon)
+function setupMobileDatePickerValidation() {
+  $(document).on("tap click", 'a[data-imsp-role="datePicker-remove"]', function() {
+    if (isApplyClicked) {
+      var $dateInput = $(this).closest(".ui-field-contain, .imsp-datepicker-wrapper")
+                              .find('input[data-imsp-type="datePicker"], input[type="text"]');
+      setTimeout(function() {
+        if ($dateInput.length) {
+          $dateInput.valid();
+        }
+      }, 200);
+    }
+  });
+}
+
 // Toggle depreciation check field
 function toggleDepreciation() {
   var category = $('input[name="f_purchase_category"]:checked').val();

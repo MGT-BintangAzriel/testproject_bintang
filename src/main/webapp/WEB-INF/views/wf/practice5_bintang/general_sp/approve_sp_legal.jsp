@@ -25,6 +25,8 @@
 
 	<script type="text/javascript">
 		$(function() {
+			setupMobileDatePickerValidation();
+
 			formatNumberText();
 
 			$('.back').click(function() {
