@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +25,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.context.model.AccountContext;
 import jp.co.intra_mart.foundation.context.model.ClientContext;
+import jp.co.intra_mart.foundation.database.SQLManager;
 import jp.co.intra_mart.foundation.multi_device.client_type.ClientTypeSwitcher;
 import jp.co.intra_mart.foundation.security.exception.AccessSecurityException;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
@@ -41,6 +45,7 @@ import wf.practice5_bintang.general.domain.model.AgreementAttachmentModel;
 import wf.practice5_bintang.general.domain.model.AgreementHeaderInfoModel;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileRepository;
 import wf.practice5_bintang.general.domain.repository.AgreementAttachFileTempRepository;
+import wf.practice5_bintang.general.domain.repository.AgreementExternalRepository;
 import wf.practice5_bintang.general.domain.service.AgreementGeneratePDFService;
 import wf.practice5_bintang.general.domain.service.AgreementWorkflowService;
 
@@ -431,6 +436,20 @@ public class AgreementController {
 					return mapResultSetToModel(rs);
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@RequestMapping(value = "testExternalSqlManager")
+	@ResponseBody
+	public AgreementHeaderInfoModel testExternalSqlManager() {
+		String sql = "SELECT * FROM ext_agreement_header_info";
+		try {
+			SQLManager sqlManager = new SQLManager("db_mysql", false);
+			Collection<AgreementHeaderInfoModel> result = sqlManager.select(AgreementHeaderInfoModel.class, sql, new ArrayList<>());
+			return result.iterator().next();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
