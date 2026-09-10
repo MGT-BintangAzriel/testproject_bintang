@@ -65,7 +65,7 @@
 	imwSystemMatterId='${f:h(workflowRequestForm.imwSystemMatterId)}'
 	imwUserDataId='${f:h(workflowRequestForm.imwUserDataId)}' />
 
-<div data-role="page" id="imw-sp-agreement-approve" data-theme="a">
+<div data-role="page" id="imw-sp-agreement-apply" data-theme="a">
 	<div data-theme="a" data-role="header" data-position="fixed">
 		<a data-role="button" data-icon="back" id="back" class="back">Back</a>
 		<h1>Agreement Workflow</h1>
@@ -132,18 +132,15 @@
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Currency:" required="true">
-						<div class="ui-field-contain">
-							<fieldset data-role="controlgroup">
-								<select name="f_currency" id="f_currency" data-native-menu="false" data-role="none" class="select2" disabled>
-									<option value="IDR" ${empty savedFormData.f_currency || savedFormData.f_currency == 'IDR' ? 'selected' : ''}>IDR - Indonesian Rupiah</option>
-									<option value="USD" ${savedFormData.f_currency == 'USD' ? 'selected' : ''}>USD - US Dollar</option>
-									<option value="JPY" ${savedFormData.f_currency == 'JPY' ? 'selected' : ''}>JPY - Japanese Yen</option>
-									<option value="EUR" ${savedFormData.f_currency == 'EUR' ? 'selected' : ''}>EUR - Euro</option>
-									<option value="SGD" ${savedFormData.f_currency == 'SGD' ? 'selected' : ''}>SGD - Singapore Dollar</option>
-								</select>
-							</fieldset>
-							<div class="error_message"></div>
-						</div>
+						<select name="f_currency" id="f_currency" data-native-menu="false" data-role="none" class="select2" disabled>
+							<option value="IDR" ${empty savedFormData.f_currency || savedFormData.f_currency == 'IDR' ? 'selected' : ''}>IDR - Indonesian Rupiah</option>
+							<option value="USD" ${savedFormData.f_currency == 'USD' ? 'selected' : ''}>USD - US Dollar</option>
+							<option value="JPY" ${savedFormData.f_currency == 'JPY' ? 'selected' : ''}>JPY - Japanese Yen</option>
+							<option value="EUR" ${savedFormData.f_currency == 'EUR' ? 'selected' : ''}>EUR - Euro</option>
+							<option value="SGD" ${savedFormData.f_currency == 'SGD' ? 'selected' : ''}>SGD - Singapore Dollar</option>
+						</select>
+						<input type="hidden" id="f_currency" name="f_currency" value="${f:h(empty savedFormData.f_currency ? 'IDR' : savedFormData.f_currency)}">
+						<div class="error_message"></div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="Total Amount (Without Tax):" required="true">
@@ -288,31 +285,36 @@
 					<imsp:fieldContain label="Purchase Category:" required="true">
 						<div class="custom-readonly">
 							<label for="f_purchase_category_tangible_asset">
-								<input type="radio" name="f_purchase_category" id="f_purchase_category_tangible_asset"
-									${f:h(savedFormData.f_purchase_category_tangible_asset)} disabled>
+								<input type="radio" name="f_purchase_category" id="f_purchase_category_1" value="tangible_asset"
+									${f:h(savedFormData.f_purchase_category_tangible_asset)}>
 								Tangible Asset
 							</label>
-							<label for="f_purchase_category_intangible_asset">
-								<input type="radio" name="f_purchase_category" id="f_purchase_category_intangible_asset"
-									${f:h(savedFormData.f_purchase_category_intangible_asset)} disabled>
+							<label for="f_purchase_category_2">
+								<input type="radio" name="f_purchase_category" id="f_purchase_category_2" value="intangible_asset"
+									${f:h(savedFormData.f_purchase_category_intangible_asset)}>
 								Intangible Asset
 							</label>
-							<label for="f_purchase_category_non_asset">
-								<input type="radio" name="f_purchase_category" id="f_purchase_category_non_asset" ${f:h(savedFormData.f_purchase_category_non_asset)} disabled>
+							<label for="f_purchase_category_3">
+								<input type="radio" name="f_purchase_category" id="f_purchase_category_3" value="non_asset" ${f:h(savedFormData.f_purchase_category_non_asset)}>
 								Non-Asset
 							</label>
+							<div class="error_message"></div>
 						</div>
 					</imsp:fieldContain>
 
-					<c:if test="${savedFormData.f_purchase_category_non_asset != 'checked'}">
-						<imsp:fieldContain label="Starting Using Date:">
-							<div class="custom-readonly">${f:h(savedFormData.f_start_using_date)}</div>
-						</imsp:fieldContain>
+					<imsp:fieldContain label="Starting Using Date:" required="true">
+						<imsp:datePicker id="f_start_using_date" name="f_start_using_date" format="yyyy/MM/dd" value="${f:h(savedFormData.f_start_using_date)}"
+							placeholder="Enter starting using date..."/>
+						<div class="error_message"></div>
+					</imsp:fieldContain>
 
-						<imsp:fieldContain label="Deprec Amount / Month:">
-							<div class="custom-readonly">${f:h(savedFormData.f_deprec_month)}</div>
-						</imsp:fieldContain>
-					</c:if>
+					<imsp:fieldContain label="Deprec Amount / Month:" required="true">
+						<div class="custom-readonly">
+							<input type="text" id="f_deprec_month" name="f_deprec_month" value="${f:h(savedFormData.f_deprec_month)}"
+								placeholder="Enter deprec amount / month...">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
 				</div>
 			</div>
 
@@ -325,133 +327,158 @@
 					<imsp:fieldContain label="Multiple Data Selection:">
 						<div class="custom-readonly">
 							<label for="f_multidata_pl">
-								<input type="checkbox" name="f_multidata_pl" id="f_multidata_pl" ${f:h(savedFormData.f_multidata_pl)} disabled>
+								<input type="checkbox" name="f_multidata" value="pl" id="f_multidata_pl" class="f_multidata" ${f:h(savedFormData.f_multidata_pl)}>
 								PL Impact
 							</label>
 							<label for="f_multidata_asset">
-								<input type="checkbox" name="f_multidata_asset" id="f_multidata_asset" ${f:h(savedFormData.f_multidata_asset)} disabled>
+								<input type="checkbox" name="f_multidata" value="asset" id="f_multidata_asset" class="f_multidata" ${f:h(savedFormData.f_multidata_asset)}>
 								Asset
 							</label>
 							<label for="f_multidata_estimated">
-								<input type="checkbox" name="f_multidata_estimated" id="f_multidata_estimated" ${f:h(savedFormData.f_multidata_estimated)} disabled>
+								<input type="checkbox" name="f_multidata" value="estimated" id="f_multidata_estimated" class="f_multidata" ${f:h(savedFormData.f_multidata_estimated)}>
 								Estimated Schedule
 							</label>
+							<div class="error_message"></div>
 						</div>
 					</imsp:fieldContain>
 				</div>
 			</div>
 
 			<!-- Practice 2: PL Impact Card -->
-			<c:if test="${savedFormData.f_multidata_pl == 'checked'}">
-				<div class="ui-corner-all custom-corners">
-					<div class="ui-bar ui-bar-a">
-						<h3>PL Impact</h3>
-					</div>
-					<div class="ui-body ui-body-a">
-						<!-- PL Impact Details -->
-						<imsp:fieldContain label="Budget PL Impact / Month:">
-							<div class="custom-readonly">${f:h(savedFormData.f_budget_pl_impact)} (${f:h(savedFormData.f_budget_pl_month)})</div>
-						</imsp:fieldContain>
-						<imsp:fieldContain label="Actual PL Impact / Month:">
-							<div class="custom-readonly">${f:h(savedFormData.f_pl_impact)} (${f:h(savedFormData.f_pl_month)})</div>
-						</imsp:fieldContain>
-					</div>
+			<div class="ui-corner-all custom-corners">
+				<div class="ui-bar ui-bar-a">
+					<h3>PL Impact</h3>
 				</div>
-			</c:if>
+				<div class="ui-body ui-body-a">
+					<!-- PL Impact Details -->
+					<imsp:fieldContain label="Budget PL Impact to current FY:" required="true">
+						<div class="custom-readonly">
+							<input type="text" id="f_budget_pl_impact" name="f_budget_pl_impact" value="${f:h(savedFormData.f_budget_pl_impact)}"
+								placeholder="Enter budget PL impact...">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
+					<imsp:fieldContain label="Budget PL Month:" required="true">
+						<div class="custom-readonly">
+							<input type="text" id="f_budget_pl_month" name="f_budget_pl_month" value="${f:h(savedFormData.f_budget_pl_month)}"
+								placeholder="Enter budget PL month...">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
+					<imsp:fieldContain label="PL Impact to current FY:" required="true">
+						<div class="custom-readonly">
+							<input type="text" id="f_pl_impact" name="f_pl_impact" value="${f:h(savedFormData.f_pl_impact)}"
+								placeholder="Enter PL impact...">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
+					<imsp:fieldContain label="PL Month:" required="true">
+						<div class="custom-readonly">
+							<input type="text" id="f_pl_month" name="f_pl_month" value="${f:h(savedFormData.f_pl_month)}"
+								placeholder="Enter PL month...">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
+				</div>
+			</div>
 
 			<!-- Practice 2: Asset Details Card -->
-			<c:if test="${savedFormData.f_multidata_asset == 'checked'}">
-				<div class="ui-corner-all custom-corners">
-					<div class="ui-bar ui-bar-a">
-						<h3>Asset Details</h3>
-					</div>
-					<div class="ui-body ui-body-a">
-						<!-- Asset Details -->
-						<imsp:fieldContain label="Asset Number:">
-							<div class="custom-readonly">${f:h(savedFormData.f_asset_number)}</div>
-						</imsp:fieldContain>
-						<imsp:fieldContain label="Book Value:">
-							<div class="custom-readonly">${f:h(savedFormData.f_book_value)}</div>
-						</imsp:fieldContain>
-					</div>
+			<div class="ui-corner-all custom-corners">
+				<div class="ui-bar ui-bar-a">
+					<h3>Asset</h3>
 				</div>
-			</c:if>
+				<div class="ui-body ui-body-a">
+					<!-- Asset Details -->
+					<imsp:fieldContain label="Asset Number:" required="true">
+						<div class="custom-readonly">
+							<input type="text" id="f_asset_number" name="f_asset_number" value="${f:h(savedFormData.f_asset_number)}"
+								placeholder="Enter asset number...">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
+					<imsp:fieldContain label="Book Value:" required="true">
+						<div class="custom-readonly">
+							<input type="text" id="f_book_value" name="f_book_value" value="${f:h(savedFormData.f_book_value)}"
+								placeholder="Enter book value...">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
+				</div>
+			</div>
 
 			<!-- Practice 2: Estimated Schedule (Payment Conditions Table) -->
-			<c:if test="${savedFormData.f_multidata_estimated == 'checked'}">
-				<div class="ui-corner-all custom-corners">
-					<div class="ui-bar ui-bar-a">
-						<h3>Estimated Schedule (Payment Conditions)</h3>
-					</div>
-					<div class="ui-body ui-body-a">
-						<div class="custom-readonly" style="overflow-x: scroll">
-							<table class="imui-form" style="min-width: 700px;">
-								<thead>
+			<div class="ui-corner-all custom-corners">
+				<div class="ui-bar ui-bar-a">
+					<h3>Estimated Schedule (Payment Conditions)</h3>
+				</div>
+				<div class="ui-body ui-body-a">
+					<div class="custom-readonly" style="overflow-x: scroll">
+						<table class="imui-form" style="min-width: 700px;">
+							<thead>
+								<tr>
+									<th class="header-cell" style="width: 40px; text-align: center;">No</th>
+									<th class="header-cell" style="width: 180px;">Brand & Type</th>
+									<th class="header-cell" style="width: 120px;">Amount</th>
+									<th class="header-cell" style="width: 110px;">Date</th>
+									<th class="header-cell" style="width: 100px;">Category</th>
+									<th class="header-cell" style="width: 90px;">Recurring</th>
+									<th class="last-cell" style="width: 100px;">Paid By</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${savedFormData.d_list_payment_detail}" var="item">
 									<tr>
-										<th class="header-cell" style="width: 40px; text-align: center;">No</th>
-										<th class="header-cell" style="width: 180px;">Brand & Type</th>
-										<th class="header-cell" style="width: 120px;">Amount</th>
-										<th class="header-cell" style="width: 110px;">Date</th>
-										<th class="header-cell" style="width: 100px;">Category</th>
-										<th class="header-cell" style="width: 90px;">Recurring</th>
-										<th class="last-cell" style="width: 100px;">Paid By</th>
+										<td style="text-align: center;">${f:h(item.row_no)}</td>
+										<td>
+											${f:h(item.brand)}
+											<c:if test="${not empty item.brand and not empty item.type}">&nbsp;/&nbsp;</c:if>
+											${f:h(item.type)}
+										</td>
+										<td>
+											<span class="payment-amount">${f:h(item.payment_amount)}</span>
+										</td>
+										<td>${f:h(item.payment_date)}</td>
+										<td>
+											<c:choose>
+												<c:when test="${item.category == '1'}">Equipment</c:when>
+												<c:when test="${item.category == '2'}">Software</c:when>
+												<c:when test="${item.category == '3'}">Utility</c:when>
+												<c:when test="${item.category == '4'}">Service</c:when>
+												<c:when test="${item.category == '5'}">Other</c:when>
+												<c:otherwise>-</c:otherwise>
+											</c:choose>
+										</td>
+										<td>
+											<c:choose>
+												<c:when test="${item.recurring_yes == 'checked'}">Yes</c:when>
+												<c:when test="${item.recurring_no == 'checked'}">No</c:when>
+												<c:otherwise>-</c:otherwise>
+											</c:choose>
+										</td>
+										<td>
+											<c:set var="paidBy" value="" />
+											<c:if test="${item.paid_by_card == 'checked'}">
+												<c:set var="paidBy" value="${empty paidBy ? 'Card' : paidBy.concat(', Card')}" />
+											</c:if>
+											<c:if test="${item.paid_by_cash == 'checked'}">
+												<c:set var="paidBy" value="${empty paidBy ? 'Cash' : paidBy.concat(', Cash')}" />
+											</c:if>
+											${empty paidBy ? '-' : paidBy}
+										</td>
 									</tr>
-								</thead>
-								<tbody>
-									<c:forEach items="${savedFormData.d_list_payment_detail}" var="item">
-										<tr>
-											<td style="text-align: center;">${f:h(item.row_no)}</td>
-											<td>
-												${f:h(item.brand)}
-												<c:if test="${not empty item.brand and not empty item.type}">&nbsp;/&nbsp;</c:if>
-												${f:h(item.type)}
-											</td>
-											<td>
-												<span class="payment-amount">${f:h(item.payment_amount)}</span>
-											</td>
-											<td>${f:h(item.payment_date)}</td>
-											<td>
-												<c:choose>
-													<c:when test="${item.category == '1'}">Equipment</c:when>
-													<c:when test="${item.category == '2'}">Software</c:when>
-													<c:when test="${item.category == '3'}">Utility</c:when>
-													<c:when test="${item.category == '4'}">Service</c:when>
-													<c:when test="${item.category == '5'}">Other</c:when>
-													<c:otherwise>-</c:otherwise>
-												</c:choose>
-											</td>
-											<td>
-												<c:choose>
-													<c:when test="${item.recurring_yes == 'checked'}">Yes</c:when>
-													<c:when test="${item.recurring_no == 'checked'}">No</c:when>
-													<c:otherwise>-</c:otherwise>
-												</c:choose>
-											</td>
-											<td>
-												<c:set var="paidBy" value="" />
-												<c:if test="${item.paid_by_card == 'checked'}">
-													<c:set var="paidBy" value="${empty paidBy ? 'Card' : paidBy.concat(', Card')}" />
-												</c:if>
-												<c:if test="${item.paid_by_cash == 'checked'}">
-													<c:set var="paidBy" value="${empty paidBy ? 'Cash' : paidBy.concat(', Cash')}" />
-												</c:if>
-												${empty paidBy ? '-' : paidBy}
-											</td>
-										</tr>
-									</c:forEach>
-								</tbody>
-								<tfoot>
-									<tr>
-										<th colspan="7" class="header-cell" style="text-align: left;">
-											Total Amount: <strong id="f_total_payment_amount">${f:h(savedFormData.f_total_payment_amount)}</strong>
-										</th>
-									</tr>
-								</tfoot>
-							</table>
-						</div>
+								</c:forEach>
+							</tbody>
+							<tfoot>
+								<tr>
+									<th colspan="7" class="header-cell" style="text-align: left;">
+										Total Amount: <strong id="f_total_payment_amount">${f:h(savedFormData.f_total_payment_amount)}</strong>
+									</th>
+								</tr>
+							</tfoot>
+						</table>
 					</div>
 				</div>
-			</c:if>
+			</div>
 
 			<!-- Practice 7: Agreement Classification & Multiple Branch Card -->
 			<div class="ui-corner-all custom-corners">
@@ -463,103 +490,96 @@
 						<div class="custom-readonly">
 							<!-- PD Approval -->
 							<label for="f_agreement_classification_pd">
-								<input type="radio" name="f_agreement_classification" id="f_agreement_classification_pd" ${f:h(savedFormData.f_agreement_classification_pd)}
-									disabled>
+								<input type="radio" name="f_agreement_classification" id="f_agreement_classification_2" value="pd" ${f:h(savedFormData.f_agreement_classification_pd)}>
 								PD Approval (either one of condition below)
 							</label>
 
 							<!-- PD Approval Sub-Options (Indented) -->
-							<div
-								style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_pd == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
+							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_pd == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
 								<label for="f_agreement_classification_pd_more_than_1_billion">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_1_billion"
-										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_more_than_1_billion) : ''}
-										disabled>
+									<input type="radio" name="f_pd_sub_condition" id="f_pd_sub_1" value="pd_more_than_1_billion"
+										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_more_than_1_billion) : ''}>
 									Agreement with amount is equal or more than 1 billion
 								</label>
 								<label for="f_agreement_classification_pd_more_than_12_months">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_more_than_12_months"
-										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_more_than_12_months) : ''}
-										disabled>
+									<input type="radio" name="f_pd_sub_condition" id="f_pd_sub_2" value="pd_more_than_12_months"
+										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_more_than_12_months) : ''}>
 									Period is equal or more than 12 months
 								</label>
 								<label for="f_agreement_classification_pd_specific_party">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_specific_party"
-										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_specific_party) : ''} disabled>
+									<input type="radio" name="f_pd_sub_condition" id="f_pd_sub_3" value="pd_specific_party"
+										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_specific_party) : ''}>
 									Agreement related to specific party
 								</label>
 								<div style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 4px;">
 									<em>Bank, Related Parties, Dealer, Consultant/Lawyer/Appraise, Government, Production, Customer, Etc</em>
 								</div>
 								<label for="f_agreement_classification_pd_special_issue">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_special_issue"
-										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_special_issue) : ''} disabled>
+									<input type="radio" name="f_pd_sub_condition" id="f_pd_sub_4" value="pd_special_issue"
+										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_special_issue) : ''}>
 									Special issue
 								</label>
 								<div style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 4px;">
 									<em>New project/issue (more than 50 M), not included in budget plan</em>
 								</div>
 								<label for="f_agreement_classification_pd_direct_procurement">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_direct_procurement"
-										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_direct_procurement) : ''}
-										disabled>
+									<input type="radio" name="f_pd_sub_condition" id="f_pd_sub_5" value="pd_direct_procurement"
+										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_direct_procurement) : ''}>
 									Direct Procurement (Emergency or Specific Goods/Items)
 								</label>
 								<label for="f_agreement_classification_pd_agreement_not_more_than_12_months">
-									<input type="radio" name="f_agreement_classification_pd_sub" id="f_agreement_classification_pd_agreement_not_more_than_12_months"
-										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_agreement_not_more_than_12_months) : ''}
-										disabled>
+									<input type="radio" name="f_pd_sub_condition" id="f_pd_sub_6" value="pd_agreement_not_more_than_12_months"
+										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_agreement_not_more_than_12_months) : ''}>
 									Agreement not more than 12 months
 								</label>
 							</div>
 
 							<!-- DIC Director Approval -->
 							<label for="f_agreement_classification_dic_director_approval">
-								<input type="radio" name="f_agreement_classification" id="f_agreement_classification_dic_director_approval"
-									${f:h(savedFormData.f_agreement_classification_dic_director_approval)} disabled>
+								<input type="radio" name="f_agreement_classification" id="f_agreement_classification_3" value="dic_director_approval"
+									${f:h(savedFormData.f_agreement_classification_dic_director_approval)}>
 								DIC Director Approval
 							</label>
+							<div class="error_message"></div>
 						</div>
 					</imsp:fieldContain>
 
 					<imsp:fieldContain label="EC Approval is Required or Not:" required="true">
 						<div class="custom-readonly">
 							<!-- Yes -->
-							<label for="f_agreement_classification_ec_approval_yes">
-								<input type="radio" name="f_agreement_classification_ec_approval" id="f_agreement_classification_ec_approval_yes"
-									${f:h(savedFormData.f_agreement_classification_ec_approval_yes)} disabled>
+							<label for="f_ec_approval_1">
+								<input type="radio" name="f_ec_approval" id="f_ec_approval_1" value="yes"
+									${f:h(savedFormData.f_agreement_classification_ec_approval_yes)}>
 								Yes
 							</label>
 
 							<!-- EC Approval Sub-Options (Indented) -->
 							<div
 								style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
-								<label for="f_agreement_classification_ec_amount_equal_more_than_1_billion">
-									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_amount_equal_more_than_1_billion"
-										${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_amount_equal_more_than_1_billion) : ''}
-										disabled>
+								<label for="f_ec_sub_1">
+									<input type="radio" name="f_ec_sub_condition" id="f_ec_sub_1" value="ec_amount_equal_more_than_1_billion"
+										${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_amount_equal_more_than_1_billion) : ''}>
 									Amount is equal or more than 1 billion
 								</label>
-								<label for="f_agreement_classification_ec_period_equal_more_than_12_months">
-									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_period_equal_more_than_12_months"
-										${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_period_equal_more_than_12_months) : ''}
-										disabled>
+								<label for="f_ec_sub_2">
+									<input type="radio" name="f_ec_sub_condition" id="f_ec_sub_2" value="ec_period_equal_more_than_12_months"
+										${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_period_equal_more_than_12_months) : ''}>
 									Period is equal or more than 12 months
 								</label>
-								<label for="f_agreement_classification_ec_escalate_issue_to_ec">
-									<input type="radio" name="f_agreement_classification_ec_sub" id="f_agreement_classification_ec_escalate_issue_to_ec"
-										${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_escalate_issue_to_ec) : ''}
-										disabled>
+								<label for="f_ec_sub_3">
+									<input type="radio" name="f_ec_sub_condition" id="f_ec_sub_3" value="ec_escalate_issue_to_ec"
+										${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_escalate_issue_to_ec) : ''}>
 									Director believes it is necessary to escalate the issue to EC
 								</label>
 							</div>
 
 							<!-- No -->
-							<label for="f_agreement_classification_ec_approval_no">
-								<input type="radio" name="f_agreement_classification_ec_approval" id="f_agreement_classification_ec_approval_no"
-									${f:h(savedFormData.f_agreement_classification_ec_approval_no)} disabled>
+							<label for="f_ec_approval_0">
+								<input type="radio" name="f_ec_approval" id="f_ec_approval_0" value="no"
+									${f:h(savedFormData.f_agreement_classification_ec_approval_no)}>
 								No
 							</label>
+							<div class="error_message"></div>
 						</div>
 					</imsp:fieldContain>
 				</div>
@@ -567,6 +587,47 @@
 
 			<jsp:include page="include/practice8_sp_display.jsp" />
 
+		<div class="file_attachment">
+			<input type='text' value='' name='f_attachment_anchor' id='f_attachment_anchor' class="f_attachment_anchor"
+				data-role="none"
+				style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; border: 0; margin: 0; padding: 0; outline: none;" tabindex="-1">
+			<c:forEach items="${savedFormData.d_list_attachment}" var="attachment">
+				<div class="${attachment.file_real_name}">
+					<input type='hidden' value='${attachment.id}' id='f_upload_file_id' name='f_upload_file_id' class='f_upload_file_id'>
+					<input type='hidden' value="${attachment.file_name}" id='f_upload_file_name' name='f_upload_file_name'>
+					<input type='hidden' value="${attachment.file_real_name}" id='f_upload_file_real_name' name='f_upload_file_real_name'>
+					<input type='hidden' value="${attachment.file_type}" id="f_upload_file_type" name="f_upload_file_type">
+					<input type='hidden' value="${attachment.file_size}" id="f_upload_file_size" name="f_upload_file_size">
+					<input type='hidden' value="${attachment.file_extension}" id="f_upload_file_extension" name="f_upload_file_extension">
+				</div>
+			</c:forEach>
+		</div>
+
+		</workflowSmartphone:spWorkflowOpenPage>
+
+		<c:if test="${workflowRequestForm.imwPageType == '10' || workflowRequestForm.imwPageType == '13'}">
+			<div class="ui-corner-all custom-corners">
+				<div class="ui-bar ui-bar-a">
+					<h3>Upload Document by DIC : Agreement, DD, etc</h3>
+				</div>
+				<div class="ui-body ui-body-a attachment-card-body">
+					<imsp:fieldContain label="Upload File" required="true">
+						<imsp:fileUpload 
+							id="spFileUpload" 
+							storeTo="file_attachment/" 
+							autoUpload="true" 
+							multiple="true" 
+							enableDelete="true" 
+							onSuccess="callbackSuccessSp" 
+							onError="callbackErrorSp"
+							onRemove="callbackRemoveSp" />
+						</imsp:fieldContain>
+					<div class="error_message_upload"></div>
+				</div>
+			</div>
+		</c:if>
+
+		<c:if test="${workflowRequestForm.imwPageType == '13' || workflowRequestForm.imwPageType == '14' || workflowRequestForm.imwPageType == '15'}">
 			<!-- Practice 3: Attachments Card -->
 			<div class="ui-corner-all custom-corners">
 				<div class="ui-bar ui-bar-a">
@@ -599,8 +660,7 @@
 					</c:choose>
 				</div>
 			</div>
-
-		</workflowSmartphone:spWorkflowOpenPage>
+		</c:if>
 
 		<!-- Action Button -->
 		<fieldset style="margin-top: 10px; margin-bottom: 20px;">

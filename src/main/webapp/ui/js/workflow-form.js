@@ -38,6 +38,59 @@ function callbackError(e, data) {
   var file = data.files[0];
 }
 
+// Smartphone Dedicated File Attachment Callbacks
+function callbackSuccessSp(data) {
+  if (!data || !data.result || data.result.length === 0) {
+    return;
+  }
+
+  for (var i = 0; i < data.result.length; i++) {
+    var receiveFile = data.result[i];
+    var receiveFileName = receiveFile.name;
+    var receivePhysicalFileName = receiveFile.physicalName;
+    var receiveFileSize = receiveFile.size || "";
+
+    var file = (data.files && data.files[i]) ? data.files[i] : {};
+    var fileExtension = file.type || "application/octet-stream";
+
+    var fileHtml = `
+      <div class="${receivePhysicalFileName}">
+        <input type="hidden" value="0" class="f_upload_file_id" name="f_upload_file_id">
+        <input type="hidden" value="${receiveFileName}" class="f_upload_file_name" name="f_upload_file_name">
+        <input type="hidden" value="${receivePhysicalFileName}" class="f_upload_file_real_name" name="f_upload_file_real_name">
+        <input type="hidden" value="${receiveFileSize}" class="f_upload_file_size" name="f_upload_file_size">
+        <input type="hidden" value="${fileExtension}" class="f_upload_file_extension" name="f_upload_file_extension">
+        <input type="hidden" value="agreement" class="f_upload_file_type" name="f_upload_file_type">
+      </div>
+    `;
+
+    $(".file_attachment").prepend(fileHtml);
+  }
+
+  validateWorkflowForm();
+}
+
+function callbackRemoveSp(data) {
+  if (!data) return;
+
+  var targetName = "";
+  if (data.result && data.result.length > 0) {
+    targetName = data.result[0].physicalName;
+  } else if (data.files && data.files.length > 0) {
+    targetName = data.files[0].physicalName || data.files[0].name;
+  }
+
+  if (targetName) {
+    $("." + targetName).remove();
+  }
+
+  validateWorkflowForm();
+}
+
+function callbackErrorSp(data) {
+  console.error("Smartphone upload error:", data);
+}
+
 // Toggle radio sub option
 function setupSubOptionToggle(
   parentRadioName,

@@ -643,3 +643,40 @@ label.error:empty {
 ::-webkit-scrollbar-track {
 	background-color: #f3f4f6;
 }
+
+/* ==========================================================================
+   11. MOBILE FILE UPLOAD STYLING
+   ========================================================================== */
+#spFileUpload-selectbutton .ui-input-text:hover {
+	border-color: #3b82f6 !important;
+}
+
+/* The actual file input inside */
+input#spFileUpload {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	font-size: 13px !important;
+	color: #475569 !important;
+	cursor: pointer !important;
+	width: 100% !important;
+}
+
+/* The native "Choose File" button inside Chrome/Safari/Edge */
+input#spFileUpload::-webkit-file-upload-button {
+	background: #2b3a4a !important;
+	color: #ffffff !important;
+	border: none !important;
+	border-radius: 6px !important;
+	padding: 6px 14px !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	cursor: pointer !important;
+	margin-right: 12px !important;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+	transition: background 0.15s ease !important;
+}
+
+input#spFileUpload::-webkit-file-upload-button:hover {
+	background: #3b4d61 !important;
+}
