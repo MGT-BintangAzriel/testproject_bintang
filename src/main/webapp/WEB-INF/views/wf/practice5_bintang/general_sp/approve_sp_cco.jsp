@@ -26,6 +26,8 @@
 	<script type="text/javascript">
 
 		$(function() {
+			setupMobileRadioValidation();
+
 			formatNumberText();
 
 			$('.back').click(function() {

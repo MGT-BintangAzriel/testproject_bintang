@@ -121,13 +121,3 @@
 		</imsp:fieldContain>
 	</div>
 </div>
-
-<script type="text/javascript">
-    $(function() {
-        $('input[name="f_dd_process"], input[name="f_anti_bribery"], input[name="f_audit_rights"]').on('change', function() {
-            if (isApplyClicked) {
-                $(this).valid();
-            }
-        });
-    });
-</script>

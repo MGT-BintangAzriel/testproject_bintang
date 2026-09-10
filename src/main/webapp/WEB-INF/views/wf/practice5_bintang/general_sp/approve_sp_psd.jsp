@@ -28,6 +28,8 @@
 
 			$('input[name="f_psd_area"]').on("change", togglePsdField).trigger("change");
 	  		$('input[name="f_psd_process"]').on("change", toggleDicReason).trigger("change");
+
+			setupMobileRadioValidation();
 			
 			formatNumberText();
 

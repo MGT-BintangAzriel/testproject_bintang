@@ -116,9 +116,27 @@ function setupSubOptionToggle(
         .find(".error_message")
         .empty();
     }
+    if (typeof $('input[name="' + parentRadioName + '"]').checkboxradio === "function") {
+      try {
+        $('input[name="' + parentRadioName + '"]').checkboxradio("refresh");
+        $('input[name="' + subRadioName + '"]').checkboxradio("refresh");
+      } catch (e) {}
+    }
   }
   $('input[name="' + parentRadioName + '"]').on("change", toggle);
   toggle();
+}
+
+// Global automatic revalidation for mobile radio buttons & checkboxes
+function setupMobileRadioValidation() {
+  $(document).on("change", 'input[type="radio"], input[type="checkbox"]', function() {
+    if (isApplyClicked) {
+      var $input = $(this);
+      setTimeout(function() {
+        $input.valid();
+      }, 10);
+    }
+  });
 }
 
 // Toggle depreciation check field

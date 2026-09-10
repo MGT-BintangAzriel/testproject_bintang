@@ -116,13 +116,3 @@
 		</imsp:fieldContain>
 	</div>
 </div>
-
-<script type="text/javascript">
-    $(function() {
-        $('input[name="f_psd_area"], input[name="f_psd_process"]').on('change', function() {
-            if (isApplyClicked) {
-                $(this).valid();
-            }
-        });
-    });
-</script>

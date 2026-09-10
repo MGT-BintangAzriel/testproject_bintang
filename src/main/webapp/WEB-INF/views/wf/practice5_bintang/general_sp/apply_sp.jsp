@@ -29,7 +29,12 @@
 	<script type="text/javascript">
 
 		$(function() {
+			setupMobileRadioValidation();
+
 			formatNumberText();
+			setupSubOptionToggle('f_agreement_status', 'amendment', 'f_total_duration', 'f_total_duration_1');
+      		setupSubOptionToggle('f_agreement_classification', 'pd', 'f_pd_sub_condition', 'f_pd_sub_1');
+      		setupSubOptionToggle('f_ec_approval', 'yes', 'f_ec_sub_condition', 'f_ec_sub_1');
 
 			$('.back').click(function() {
 				$('#backForm').submit();
