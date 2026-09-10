@@ -114,6 +114,14 @@
 					<imsp:fieldContain label="Position / Post:">
 						<div class="custom-readonly">${f:h(savedFormData.f_applicant_post)}</div>
 					</imsp:fieldContain>
+
+					<input type="hidden" id="f_application_number" name="f_application_number" value="${f:h(savedFormData.f_application_number)}">
+					<input type="hidden" id="f_application_date" name="f_application_date" value="${f:h(savedFormData.f_application_date)}">
+					<input type="hidden" id="f_applicant_number" name="f_applicant_number" value="${f:h(savedFormData.f_applicant_number)}">
+					<input type="hidden" id="f_applicant_name" name="f_applicant_name" value="${f:h(savedFormData.f_applicant_name)}">
+					<input type="hidden" id="f_applicant_department" name="f_applicant_department" value="${f:h(savedFormData.f_applicant_department)}">
+					<input type="hidden" id="f_applicant_post" name="f_applicant_post" value="${f:h(savedFormData.f_applicant_post)}">
+					
 				</div>
 			</div>
 
