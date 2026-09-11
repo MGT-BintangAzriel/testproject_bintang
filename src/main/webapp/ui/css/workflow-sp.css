@@ -42,8 +42,9 @@ body {
 .custom-corners .ui-bar h3 {
 	color: #ffffff !important;
 	margin: 6px 0 !important;
-	font-size: 15px !important;
-	font-weight: 600 !important;
+	font-size: 16px !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.2px !important;
 }
 
 /* White body area inside the card */
@@ -73,8 +74,8 @@ body {
 	color: #1f2937 !important;
 	font-weight: 600 !important;
 	text-shadow: none !important;
-	font-size: 13px !important;
-	margin-bottom: 4px !important;
+	font-size: 14.5px !important;
+	margin-bottom: 5px !important;
 }
 
 /* Ensure mobile text inputs and datepicker wrappers span 100% full width */
@@ -103,7 +104,7 @@ body {
 /* Base container for readonly text */
 .custom-readonly {
 	color: #111827 !important;
-	font-size: 14px !important;
+	font-size: 15px !important;
 	font-weight: 500 !important;
 	line-height: 1.5 !important;
 	text-shadow: none !important;
@@ -123,9 +124,9 @@ body {
 	text-shadow: none !important;
 	border: 1px solid #d1d5db !important;
 	border-radius: 6px !important;
-	font-size: 14px !important;
+	font-size: 15px !important;
 	font-weight: 500 !important;
-	padding: 6px 10px !important;
+	padding: 9px 12px !important;
 	box-shadow: none !important;
 	-webkit-box-shadow: none !important;
 }
@@ -140,6 +141,8 @@ textarea.ui-input-text {
 	border: 1px solid #9ca3af !important;
 	color: #111827 !important;
 	cursor: text !important;
+	font-size: 15px !important;
+	padding: 9px 12px !important;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
@@ -192,12 +195,12 @@ input.ui-input-text {
 	background: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
-	padding: 8px 10px !important;
-	font-size: 13px !important;
+	padding: 9px 12px !important;
+	font-size: 15px !important;
 	color: #1f2937 !important;
 	font-weight: 500 !important;
 	line-height: 1.4 !important;
-	min-height: 20px !important;
+	min-height: 22px !important;
 	width: 100% !important;
 	box-sizing: border-box !important;
 	outline: none !important;
@@ -226,7 +229,7 @@ div.ui-input-text.ui-focus,
 /* Main closed Select2 trigger box */
 .select2-container--classic .select2-selection--single,
 .select2-container--default .select2-selection--single {
-	height: 40px !important;
+	height: 42px !important;
 	border: 1px solid #9ca3af !important;
 	border-radius: 6px !important;
 	background: #ffffff !important;
@@ -238,10 +241,10 @@ div.ui-input-text.ui-focus,
 
 /* Selected text display */
 .select2-container .select2-selection--single .select2-selection__rendered {
-	font-size: 14px !important;
+	font-size: 15px !important;
 	color: #111827 !important;
 	font-weight: 500 !important;
-	line-height: 38px !important;
+	line-height: 40px !important;
 	padding-left: 12px !important;
 	padding-right: 32px !important;
 	width: 100% !important;
@@ -420,8 +423,8 @@ div.ui-input-text.ui-focus,
 
 .ui-radio label.ui-btn .ui-btn-inner,
 .ui-checkbox label.ui-btn .ui-btn-inner {
-	padding: 6px 10px 6px 36px !important; /* Left space for circle/check icon */
-	font-size: 13px !important;
+	padding: 9px 12px 9px 38px !important; /* Left space for circle/check icon */
+	font-size: 15px !important;
 	font-weight: 500 !important;
 	border: none !important;
 }
@@ -601,7 +604,7 @@ div.ui-input-text.ui-focus,
 .ui-field-contain label.error,
 label.error {
 	color: #dc2626 !important;
-	font-size: 12px !important;
+	font-size: 13px !important;
 	margin-top: 4px !important;
 	font-weight: 500 !important;
 	text-shadow: none !important;
