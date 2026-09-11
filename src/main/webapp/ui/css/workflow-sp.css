@@ -596,6 +596,8 @@ div.ui-input-text.ui-focus,
 /* Red error text */
 .error_message,
 .error_message label,
+.error_message_upload,
+.error_message_upload label,
 .ui-field-contain label.error,
 label.error {
 	color: #dc2626 !important;
@@ -605,8 +607,16 @@ label.error {
 	text-shadow: none !important;
 }
 
+/* Specific spacing for upload error message under file upload control */
+.error_message_upload {
+	margin-top: 6px !important;
+	margin-bottom: 10px !important;
+	padding-left: 2px !important;
+}
+
 /* Flex layout when error is populated */
 .ui-field-contain label.error:not(:empty),
+.error_message_upload label.error:not(:empty),
 label.error:not(:empty) {
 	display: inline-flex !important;
 	align-items: center !important;
@@ -615,6 +625,7 @@ label.error:not(:empty) {
 
 /* Warning circle icon prepended before error message */
 .ui-field-contain label.error:not(:empty)::before,
+.error_message_upload label.error:not(:empty)::before,
 label.error:not(:empty)::before {
 	font-family: "Font Awesome 6 Free" !important;
 	font-weight: 900 !important;
@@ -625,6 +636,7 @@ label.error:not(:empty)::before {
 }
 
 /* Hide error label when empty */
+.error_message_upload:empty,
 label.error:empty {
 	display: none !important;
 }

@@ -612,7 +612,7 @@
 		<div class="file_attachment">
 			<input type='text' value='' name='f_attachment_anchor' id='f_attachment_anchor' class="f_attachment_anchor"
 				data-role="none"
-				style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; border: 0; margin: 0; padding: 0; outline: none;" tabindex="-1">
+				style="position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; left: -9999px; border: 0; margin: 0; padding: 0; outline: none;" tabindex="-1">
 			<c:forEach items="${savedFormData.d_list_attachment}" var="attachment">
 				<div class="${attachment.file_real_name}">
 					<input type='hidden' value='${attachment.id}' id='f_upload_file_id' name='f_upload_file_id' class='f_upload_file_id'>
@@ -643,8 +643,8 @@
 							onSuccess="callbackSuccessSp" 
 							onError="callbackErrorSp"
 							onRemove="callbackRemoveSp" />
-						</imsp:fieldContain>
-					<div class="error_message_upload"></div>
+						<div class="error_message_upload"></div>
+					</imsp:fieldContain>
 				</div>
 			</div>
 		</c:if>
