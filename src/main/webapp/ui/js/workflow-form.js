@@ -171,8 +171,12 @@ function setupMobileDatePickerValidation() {
 // Toggle depreciation check field
 function toggleDepreciation() {
   var category = $('input[name="f_purchase_category"]:checked').val();
+  var isNonAsset = (category === "non_asset");
 
-  if (category === "non_asset") {
+  // PC uses <tr>, Mobile uses #section-depreciation
+  var $deprecSection = $("#section-depreciation, #f_start_using_date, #f_deprec_month").closest("tr, #section-depreciation");
+
+  if (isNonAsset) {
     $("#f_start_using_date, #f_deprec_month")
       .prop("disabled", true)
       .val("")
@@ -180,10 +184,18 @@ function toggleDepreciation() {
       .siblings(".error_message")
       .empty();
 
-    $("#f_start_using_date, #f_deprec_month").closest("tr").hide();
+    $deprecSection.hide();
   } else {
-    $("#f_start_using_date, #f_deprec_month").closest("tr").show();
     $("#f_start_using_date, #f_deprec_month").prop("disabled", false);
+    $deprecSection.show();
+
+    if ($.mobile) {
+      $deprecSection.trigger("create");
+    }
+  }
+
+  if ($.mobile) {
+    $(document).trigger("updatelayout");
   }
 }
 

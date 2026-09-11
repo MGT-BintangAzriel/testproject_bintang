@@ -37,6 +37,8 @@
       		setupSubOptionToggle('f_agreement_classification', 'pd', 'f_pd_sub_condition', 'f_pd_sub_1');
       		setupSubOptionToggle('f_ec_approval', 'yes', 'f_ec_sub_condition', 'f_ec_sub_1');
 
+			toggleDepreciation();
+      		$('input[name="f_purchase_category"]').on("change", toggleDepreciation);
 			$('.back').click(function() {
 				$('#backForm').submit();
 				return false;
@@ -316,7 +318,8 @@
 						</div>
 					</imsp:fieldContain>
 
-					<imsp:fieldContain label="Starting Using Date:" required="true">
+					<div id="section-depreciation">
+						<imsp:fieldContain label="Starting Using Date:" required="true">
 						<imsp:datePicker id="f_start_using_date" name="f_start_using_date" format="yyyy/MM/dd" value="${f:h(savedFormData.f_start_using_date)}"
 							placeholder="Enter starting using date..." onClose="onDatePickerClose"/>
 						<div class="error_message"></div>
@@ -329,6 +332,7 @@
 							<div class="error_message"></div>
 						</div>
 					</imsp:fieldContain>
+					</div>
 				</div>
 			</div>
 
