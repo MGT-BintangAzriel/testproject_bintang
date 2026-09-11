@@ -52,6 +52,24 @@
 				theme: "classic",
 			});
 
+			// Format numeric field
+			$("#f_total_amount, #f_total_payment_amount").on("change", function() {
+				var input = $(this);
+				var value = input.val();
+				if (value) {
+					var unformatted = value.replace(/[^0-9.]/g, '');
+					var unformattedNum = parseFloat(unformatted) || 0;
+					if (unformattedNum) {
+						input.val(unformattedNum.toLocaleString('en-US', {
+						minimumFractionDigits : 2,
+						maximumFractionDigits : 2
+						}));
+					} else {
+						input.val('');
+					}
+				}
+			});
+
 			$('#openPage').click(function() {
 				isApplyClicked = true;
 				var valid = validateWorkflowForm();
