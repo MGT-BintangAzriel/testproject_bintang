@@ -33,12 +33,16 @@
 			setupMobileDatePickerValidation();
 
 			formatNumberText();
+
 			setupSubOptionToggle('f_agreement_status', 'amendment', 'f_total_duration', 'f_total_duration_1');
       		setupSubOptionToggle('f_agreement_classification', 'pd', 'f_pd_sub_condition', 'f_pd_sub_1');
       		setupSubOptionToggle('f_ec_approval', 'yes', 'f_ec_sub_condition', 'f_ec_sub_1');
 
 			toggleDepreciation();
       		$('input[name="f_purchase_category"]').on("change", toggleDepreciation);
+
+			setupMultiDataToggle();
+
 			$('.back').click(function() {
 				$('#backForm').submit();
 				return false;
@@ -363,7 +367,7 @@
 			</div>
 
 			<!-- Practice 2: PL Impact Card -->
-			<div class="ui-corner-all custom-corners">
+			<div id="section-pl" class="ui-corner-all custom-corners">
 				<div class="ui-bar ui-bar-a">
 					<h3>PL Impact</h3>
 				</div>
@@ -401,7 +405,7 @@
 			</div>
 
 			<!-- Practice 2: Asset Details Card -->
-			<div class="ui-corner-all custom-corners">
+			<div id="section-asset" class="ui-corner-all custom-corners">
 				<div class="ui-bar ui-bar-a">
 					<h3>Asset</h3>
 				</div>
@@ -425,7 +429,7 @@
 			</div>
 
 			<!-- Practice 2: Estimated Schedule (Payment Conditions Table) -->
-			<div class="ui-corner-all custom-corners">
+			<div id="section-estimated" class="ui-corner-all custom-corners">
 				<div class="ui-bar ui-bar-a">
 					<h3>Estimated Schedule (Payment Conditions)</h3>
 				</div>

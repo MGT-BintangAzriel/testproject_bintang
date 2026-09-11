@@ -545,6 +545,12 @@ function setupMultiDataToggle() {
     } else {
       resetPaymentTable();
     }
+
+    // Refresh jQuery Mobile layout and styles if on mobile
+    if ($.mobile) {
+        $("#section-pl, #section-asset, #section-estimated").trigger("create");
+        $(document).trigger("updatelayout");
+    }
   });
 
   $("input[name='f_multidata']").trigger("change");
