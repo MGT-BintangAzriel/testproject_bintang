@@ -42,6 +42,7 @@
       		$('input[name="f_purchase_category"]').on("change", toggleDepreciation);
 
 			setupMultiDataToggle();
+			setupDynamicPaymentSp();
 
 			$('.back').click(function() {
 				$('#backForm').submit();
@@ -451,72 +452,161 @@
 				<div class="ui-bar ui-bar-a">
 					<h3>Estimated Schedule (Payment Conditions)</h3>
 				</div>
-				<div class="ui-body ui-body-a">
-					<div class="custom-readonly" style="overflow-x: scroll">
-						<table class="imui-form" style="min-width: 700px;">
-							<thead>
-								<tr>
-									<th class="header-cell" style="width: 40px; text-align: center;">No</th>
-									<th class="header-cell" style="width: 180px;">Brand & Type</th>
-									<th class="header-cell" style="width: 120px;">Amount</th>
-									<th class="header-cell" style="width: 110px;">Date</th>
-									<th class="header-cell" style="width: 100px;">Category</th>
-									<th class="header-cell" style="width: 90px;">Recurring</th>
-									<th class="last-cell" style="width: 100px;">Paid By</th>
-								</tr>
-							</thead>
-							<tbody>
+				<div class="ui-body ui-body-a" style="padding: 10px 8px !important;">
+					<div id="sp_payment_cards_container">
+						<c:choose>
+							<c:when test="${not empty savedFormData.d_list_payment_detail}">
 								<c:forEach items="${savedFormData.d_list_payment_detail}" var="item">
-									<tr>
-										<td style="text-align: center;">${f:h(item.row_no)}</td>
-										<td>
-											${f:h(item.brand)}
-											<c:if test="${not empty item.brand and not empty item.type}">&nbsp;/&nbsp;</c:if>
-											${f:h(item.type)}
-										</td>
-										<td>
-											<span class="payment-amount">${f:h(item.payment_amount)}</span>
-										</td>
-										<td>${f:h(item.payment_date)}</td>
-										<td>
-											<c:choose>
-												<c:when test="${item.category == '1'}">Equipment</c:when>
-												<c:when test="${item.category == '2'}">Software</c:when>
-												<c:when test="${item.category == '3'}">Utility</c:when>
-												<c:when test="${item.category == '4'}">Service</c:when>
-												<c:when test="${item.category == '5'}">Other</c:when>
-												<c:otherwise>-</c:otherwise>
-											</c:choose>
-										</td>
-										<td>
-											<c:choose>
-												<c:when test="${item.recurring_yes == 'checked'}">Yes</c:when>
-												<c:when test="${item.recurring_no == 'checked'}">No</c:when>
-												<c:otherwise>-</c:otherwise>
-											</c:choose>
-										</td>
-										<td>
-											<c:set var="paidBy" value="" />
-											<c:if test="${item.paid_by_card == 'checked'}">
-												<c:set var="paidBy" value="${empty paidBy ? 'Card' : paidBy.concat(', Card')}" />
-											</c:if>
-											<c:if test="${item.paid_by_cash == 'checked'}">
-												<c:set var="paidBy" value="${empty paidBy ? 'Cash' : paidBy.concat(', Cash')}" />
-											</c:if>
-											${empty paidBy ? '-' : paidBy}
-										</td>
-									</tr>
+									<div class="payment-card payment-row">
+										<div class="payment-card-header">
+											<span class="payment-card-title">Payment Item #<span class="row-seq-no">${f:h(item.row_no)}</span></span>
+											<button type="button" class="btn-delete-row payment-card-del-btn" data-role="none">
+												<i class="fa-solid fa-trash-can"></i> Delete
+											</button>
+										</div>
+										<div class="payment-card-body">
+											<imsp:fieldContain label="Brand & Type:" required="true">
+												<div style="display: flex; gap: 8px;">
+													<input type="text" name="f_brand_${item.row_no}" class="f_brand" value="${f:h(item.brand)}" placeholder="Enter brand...">
+													<input type="text" name="f_type_${item.row_no}" class="f_type" value="${f:h(item.type)}" placeholder="Enter type...">
+												</div>
+												<div class="error_message"></div>
+											</imsp:fieldContain>
+
+											<imsp:fieldContain label="Amount:" required="true">
+												<input type="text" name="f_payment_amount_${item.row_no}" class="payment-amount f_payment_amount" value="${f:h(item.payment_amount)}" placeholder="Enter amount...">
+												<div class="error_message"></div>
+											</imsp:fieldContain>
+
+											<imsp:fieldContain label="Payment Date:" required="true">
+												<imsp:datePicker id="f_payment_date_${item.row_no}" name="f_payment_date_${item.row_no}" class="payment-date f_payment_date" format="yyyy/MM/dd" value="${f:h(item.payment_date)}"
+																placeholder="Enter payment date..." onClose="onDatePickerClose"/>
+												<div class="error_message"></div>
+											</imsp:fieldContain>
+
+											<imsp:fieldContain label="Category:" required="true">
+												<select name="f_category_${item.row_no}" id="f_category_${item.row_no}" data-native-menu="false" data-role="none" class="select2 f_category">
+													<option value="">Choose category...</option>
+													<option value="1" ${item.category == '1' ? 'selected' : ''}>Equipment</option>
+													<option value="2" ${item.category == '2' ? 'selected' : ''}>Software</option>
+													<option value="3" ${item.category == '3' ? 'selected' : ''}>Utility</option>
+													<option value="4" ${item.category == '4' ? 'selected' : ''}>Service</option>
+													<option value="5" ${item.category == '5' ? 'selected' : ''}>Other</option>
+												</select>
+												<div class="error_message"></div>
+											</imsp:fieldContain>
+
+											<imsp:fieldContain label="Recurring:" required="true">
+												<div class="custom-readonly">
+													<label for="f_recurring_yes_${item.row_no}">
+														<input type="radio" name="f_recurring_${item.row_no}" id="f_recurring_yes_${item.row_no}" value="yes" ${f:h(item.recurring_yes)} class="f_recurring"> Yes
+													</label>
+													<label for="f_recurring_no_${item.row_no}">
+														<input type="radio" name="f_recurring_${item.row_no}" id="f_recurring_no_${item.row_no}" value="no" ${f:h(item.recurring_no)} class="f_recurring"> No
+													</label>
+													<div class="error_message"></div>
+												</div>
+											</imsp:fieldContain>
+
+											<imsp:fieldContain label="Paid By:" required="true">
+												<div class="custom-readonly">
+													<label for="f_paid_by_card_${item.row_no}">
+														<input type="checkbox" name="f_paid_by_${item.row_no}" id="f_paid_by_card_${item.row_no}" value="card" ${f:h(item.paid_by_card)} class="f_paid_by"> Card
+													</label>
+													<label for="f_paid_by_cash_${item.row_no}">
+														<input type="checkbox" name="f_paid_by_${item.row_no}" id="f_paid_by_cash_${item.row_no}" value="cash" ${f:h(item.paid_by_cash)} class="f_paid_by"> Cash
+													</label>
+													<div class="error_message"></div>
+												</div>
+											</imsp:fieldContain>
+										</div>
+									</div>
 								</c:forEach>
-							</tbody>
-							<tfoot>
-								<tr>
-									<th colspan="7" class="header-cell" style="text-align: left;">
-										Total Amount: <strong id="f_total_payment_amount">${f:h(savedFormData.f_total_payment_amount)}</strong>
-									</th>
-								</tr>
-							</tfoot>
-						</table>
+							</c:when>
+							<c:otherwise>
+								<!-- Initial Default Item #1 -->
+								<div class="payment-card payment-row">
+									<div class="payment-card-header">
+										<span class="payment-card-title">Payment Item #<span class="row-seq-no">1</span></span>
+										<button type="button" class="btn-delete-row payment-card-del-btn" data-role="none">
+											<i class="fa-solid fa-trash-can"></i> Delete
+										</button>
+									</div>
+									<div class="payment-card-body">
+										<imsp:fieldContain label="Brand & Type:" required="true">
+											<div style="display: flex; gap: 8px;">
+												<input type="text" name="f_brand_1" class="f_brand" placeholder="Enter brand...">
+												<input type="text" name="f_type_1" class="f_type" placeholder="Enter type...">
+											</div>
+											<div class="error_message"></div>
+										</imsp:fieldContain>
+
+										<imsp:fieldContain label="Amount:" required="true">
+											<input type="text" name="f_payment_amount_1" class="payment-amount f_payment_amount" placeholder="Enter amount...">
+											<div class="error_message"></div>
+										</imsp:fieldContain>
+
+										<imsp:fieldContain label="Payment Date:" required="true">
+											<imsp:datePicker id="f_payment_date_1" name="f_payment_date_1" class="payment-date f_payment_date" format="yyyy/MM/dd" value=""
+																placeholder="Enter payment date..." onClose="onDatePickerClose"/>
+											<div class="error_message"></div>
+										</imsp:fieldContain>
+
+										<imsp:fieldContain label="Category:" required="true">
+											<select name="f_category_1" class="select2 f_category" id="f_category_1" data-native-menu="false" data-role="none">
+												<option value="">Choose category...</option>
+												<option value="1">Equipment</option>
+												<option value="2">Software</option>
+												<option value="3">Utility</option>
+												<option value="4">Service</option>
+												<option value="5">Other</option>
+											</select>
+											<div class="error_message"></div>
+										</imsp:fieldContain>
+
+										<imsp:fieldContain label="Recurring:" required="true">
+											<div class="custom-readonly">
+												<label for="f_recurring_yes_1">
+													<input type="radio" name="f_recurring_1" id="f_recurring_yes_1" value="yes" class="f_recurring"> Yes
+												</label>
+												<label for="f_recurring_no_1">
+													<input type="radio" name="f_recurring_1" id="f_recurring_no_1" value="no" class="f_recurring"> No
+												</label>
+												<div class="error_message"></div>
+											</div>
+										</imsp:fieldContain>
+
+										<imsp:fieldContain label="Paid By:" required="true">
+											<div class="custom-readonly">
+												<label for="f_paid_by_card_1">
+													<input type="checkbox" name="f_paid_by_1" id="f_paid_by_card_1" value="card" class="f_paid_by"> Card
+												</label>
+												<label for="f_paid_by_cash_1">
+													<input type="checkbox" name="f_paid_by_1" id="f_paid_by_cash_1" value="cash" class="f_paid_by"> Cash
+												</label>
+												<div class="error_message"></div>
+											</div>
+										</imsp:fieldContain>
+									</div>
+								</div>
+							</c:otherwise>
+						</c:choose>
 					</div>
+
+					<!-- Button to Add Payment Item -->
+					<div style="margin: 14px 0 10px 0;">
+						<button type="button" id="btn_add_payment_sp" class="btn-add-payment-sp" data-role="none">
+							<i class="fa-solid fa-plus"></i> Add Payment Item
+						</button>
+					</div>
+
+					<!-- Total Payment Amount -->
+					<imsp:fieldContain label="Total Payment Amount:">
+						<div class="custom-readonly">
+							<input type="text" id="f_total_payment_amount" name="f_total_payment_amount" value="${f:h(savedFormData.f_total_payment_amount)}" readonly placeholder="0.00">
+							<div class="error_message"></div>
+						</div>
+					</imsp:fieldContain>
 				</div>
 			</div>
 

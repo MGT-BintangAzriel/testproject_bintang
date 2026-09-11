@@ -695,3 +695,100 @@ input#spFileUpload::-webkit-file-upload-button {
 input#spFileUpload::-webkit-file-upload-button:hover {
 	background: #3b4d61 !important;
 }
+
+/* ==========================================================================
+   12. MOBILE PAYMENT CARDS (Estimated Schedule Dynamic Items)
+   ========================================================================== */
+
+/* Individual Payment Card Item */
+.payment-card {
+	background: #ffffff !important;
+	border: 1px solid #cbd5e1 !important;
+	border-radius: 8px !important;
+	margin-bottom: 12px !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+	overflow: hidden !important;
+	transition: all 0.2s ease !important;
+}
+
+/* Payment Card Top Header with Item # and Delete Button */
+.payment-card-header {
+	background: #f1f5f9 !important;
+	border-bottom: 1px solid #cbd5e1 !important;
+	padding: 8px 12px !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+}
+
+.payment-card-title {
+	font-size: 14.5px !important;
+	font-weight: 700 !important;
+	color: #1e293b !important;
+	letter-spacing: 0.1px !important;
+}
+
+/* Delete Button on top right of the card */
+.payment-card-del-btn {
+	background: #fee2e2 !important;
+	color: #dc2626 !important;
+	border: 1px solid #fca5a5 !important;
+	border-radius: 5px !important;
+	padding: 5px 10px !important;
+	font-size: 12.5px !important;
+	font-weight: 600 !important;
+	cursor: pointer !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+	transition: all 0.15s ease !important;
+	text-shadow: none !important;
+}
+
+.payment-card-del-btn:hover,
+.payment-card-del-btn:active {
+	background: #dc2626 !important;
+	color: #ffffff !important;
+	border-color: #dc2626 !important;
+}
+
+/* Inner Body of the Card */
+.payment-card-body {
+	padding: 6px 12px !important;
+}
+
+.payment-card-body .ui-field-contain {
+	margin: 8px 0 !important;
+	border-bottom: 1px dashed #e2e8f0 !important;
+	padding-bottom: 8px !important;
+}
+
+.payment-card-body .ui-field-contain:last-child {
+	border-bottom: none !important;
+	padding-bottom: 0 !important;
+}
+
+/* Add Payment Item Button */
+.btn-add-payment-sp {
+	background: #2563eb !important;
+	color: #ffffff !important;
+	border: none !important;
+	border-radius: 6px !important;
+	padding: 10px 16px !important;
+	font-size: 14.5px !important;
+	font-weight: 600 !important;
+	width: 100% !important;
+	cursor: pointer !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 8px !important;
+	box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3) !important;
+	transition: background 0.15s ease !important;
+	text-shadow: none !important;
+}
+
+.btn-add-payment-sp:hover,
+.btn-add-payment-sp:active {
+	background: #1d4ed8 !important;
+}

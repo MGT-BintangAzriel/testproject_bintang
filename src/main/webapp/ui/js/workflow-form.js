@@ -569,6 +569,10 @@ function resetPaymentTable() {
   $firstRow.find(".error_message").empty();
   $firstRow.find(".imui-validation-error").removeClass("imui-validation-error");
 
+  if($.mobile) {
+	  resetPaymentCardsSp();
+  }
+
   $("#f_total_payment_amount").val("");
 }
 
@@ -669,4 +673,260 @@ function setupDateCrossValidation() {
     $("#f_estimated_delivery_from, #f_estimated_delivery_to").valid();
   });
 }
+function calculateTotalPaymentAmountSp() {
+  var totalSum = 0;
+  $("#sp_payment_cards_container .payment-amount").each(function () {
+    var rawValue = $(this).val();
+    if (rawValue) {
+      var num = parseFloat(rawValue.replace(/[^0-9.]/g, "")) || 0;
+      totalSum += num;
+    }
+  });
+
+  if (totalSum > 0) {
+    $("#f_total_payment_amount").val(
+      totalSum.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
+  } else {
+    $("#f_total_payment_amount").val("");
+  }
+}
+
+function refreshSequenceNumbersSp() {
+  $("#sp_payment_cards_container .payment-card").each(function (index) {
+    var newSerial = index + 1;
+
+    $(this).find(".row-seq-no").text(newSerial);
+
+    $(this)
+      .find("input[name^='f_brand_']")
+      .attr("name", "f_brand_" + newSerial);
+    $(this)
+      .find("input[name^='f_type_']")
+      .attr("name", "f_type_" + newSerial);
+    $(this)
+      .find("input[name^='f_payment_amount_']")
+      .attr("name", "f_payment_amount_" + newSerial);
+    $(this)
+      .find("div[id^='f_payment_date_'][id$='_form']")
+      .attr("id", "f_payment_date_" + newSerial + "_form");
+    $(this)
+      .find("a[href^='#f_payment_date_'][href$='_pop']")
+      .attr("href", "#f_payment_date_" + newSerial + "_pop");
+    $(this)
+      .find("input[name^='f_payment_date_']")
+      .attr("name", "f_payment_date_" + newSerial)
+      .attr("id", "f_payment_date_" + newSerial);
+    $(this)
+      .find("select[name^='f_category_']")
+      .attr("name", "f_category_" + newSerial)
+      .attr("id", "f_category_" + newSerial);
+    $(this)
+      .find("input[name^='f_recurring_']")
+      .attr("name", "f_recurring_" + newSerial);
+
+    // Update radio IDs and label for attributes
+    $(this)
+      .find("input[id^='f_recurring_yes_']")
+      .attr("id", "f_recurring_yes_" + newSerial);
+    $(this)
+      .find("label[for^='f_recurring_yes_']")
+      .attr("for", "f_recurring_yes_" + newSerial);
+    $(this)
+      .find("input[id^='f_recurring_no_']")
+      .attr("id", "f_recurring_no_" + newSerial);
+    $(this)
+      .find("label[for^='f_recurring_no_']")
+      .attr("for", "f_recurring_no_" + newSerial);
+
+    // Checkboxes
+    $(this)
+      .find("input[name^='f_paid_by_']")
+      .attr("name", "f_paid_by_" + newSerial);
+    $(this)
+      .find("input[id^='f_paid_by_card_']")
+      .attr("id", "f_paid_by_card_" + newSerial);
+    $(this)
+      .find("label[for^='f_paid_by_card_']")
+      .attr("for", "f_paid_by_card_" + newSerial);
+    $(this)
+      .find("input[id^='f_paid_by_cash_']")
+      .attr("id", "f_paid_by_cash_" + newSerial);
+    $(this)
+      .find("label[for^='f_paid_by_cash_']")
+      .attr("for", "f_paid_by_cash_" + newSerial);
+  });
+}
+
+function resetPaymentCardsSp() {
+  $("#sp_payment_cards_container .payment-card:gt(0)").remove();
+
+  var $firstCard = $("#sp_payment_cards_container .payment-card:first");
+  if ($firstCard.length) {
+    $firstCard.find("input[type='text']").val("");
+    $firstCard
+      .find("input[type='radio'], input[type='checkbox']")
+      .prop("checked", false);
+    if (typeof $.fn.checkboxradio === "function") {
+      try {
+        $firstCard
+          .find("input[type='radio'], input[type='checkbox']")
+          .checkboxradio("refresh");
+      } catch (e) {}
+    }
+    $firstCard.find(".select2").val("").trigger("change");
+    $firstCard.find(".error_message").empty();
+    $firstCard.find(".imui-validation-error").removeClass("imui-validation-error");
+  }
+
+  $("#f_total_payment_amount").val("");
+}
+
+function setupDynamicPaymentSp() {
+  // Live calculation on card amount inputs
+  $(document).on("input change", "#sp_payment_cards_container .payment-amount", function () {
+    calculateTotalPaymentAmountSp();
+  });
+
+  // Formatting amount on blur/change
+  $(document).on("change", "#sp_payment_cards_container .payment-amount", function () {
+    var input = $(this);
+    var val = input.val();
+    if (val) {
+      var num = parseFloat(val.replace(/[^0-9.]/g, "")) || 0;
+      if (num) {
+        input.val(
+          num.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        );
+      } else {
+        input.val("");
+      }
+    }
+  });
+
+  // Mobile: Add Payment Card Button
+  $(document).on("click", "#btn_add_payment_sp", function () {
+    var cardIdx = $("#sp_payment_cards_container .payment-card").length + 1;
+    var cardTemplate =
+      '<div class="payment-card payment-row">' +
+      '<div class="payment-card-header">' +
+      '<span class="payment-card-title">Payment Item #<span class="row-seq-no">' + cardIdx + '</span></span>' +
+      '<button type="button" class="btn-delete-row payment-card-del-btn" data-role="none">' +
+      '<i class="fa-solid fa-trash-can"></i> Delete' +
+      '</button>' +
+      '</div>' +
+      '<div class="payment-card-body">' +
+      '<div class="ui-field-contain">' +
+      '<label class="ui-input-text">Brand & Type: <span class="required-symbol">*</span></label>' +
+      '<div style="display: flex; gap: 8px;">' +
+      '<input type="text" name="f_brand_' + cardIdx + '" class="f_brand" placeholder="Enter brand...">' +
+      '<input type="text" name="f_type_' + cardIdx + '" class="f_type" placeholder="Enter type...">' +
+      '</div>' +
+      '<div class="error_message"></div>' +
+      '</div>' +
+      '<div class="ui-field-contain">' +
+      '<label class="ui-input-text">Amount: <span class="required-symbol">*</span></label>' +
+      '<input type="text" name="f_payment_amount_' + cardIdx + '" class="payment-amount f_payment_amount" placeholder="Enter amount...">' +
+      '<div class="error_message"></div>' +
+      '</div>' +
+      '<div class="ui-field-contain">' +
+      '<label class="ui-input-text">Payment Date: <span class="required-symbol">*</span></label>' +
+      '<div id="f_payment_date_' + cardIdx + '_form" class="imsp-datepicker-wrapper">' +
+      '<span class="imsp-textbox">' +
+      '<input type="text" id="f_payment_date_' + cardIdx + '" name="f_payment_date_' + cardIdx + '" value="" readonly="" placeholder="Enter payment date..." class="payment-date f_payment_date" data-imsp-type="datePicker">' +
+      '</span>' +
+      '<span>' +
+      '<a data-role="button" href="#f_payment_date_' + cardIdx + '_pop" data-rel="dialog" data-icon="grid" data-iconpos="notext" data-theme="a" class="btn-datepicker-grid"></a>' +
+      '</span>' +
+      '<span>' +
+      '<a data-imsp-role="datePicker-remove" data-role="button" data-icon="delete" data-inline="true" data-iconpos="notext" data-theme="a"></a>' +
+      '</span>' +
+      '</div>' +
+      '<div class="error_message"></div>' +
+      '</div>' +
+      '<div class="ui-field-contain">' +
+      '<label class="ui-input-text">Category: <span class="required-symbol">*</span></label>' +
+      '<select name="f_category_' + cardIdx + '" id="f_category_' + cardIdx + '" data-native-menu="false" data-role="none" class="select2 f_category">' +
+      '<option value="">Choose category...</option>' +
+      '<option value="1">Equipment</option>' +
+      '<option value="2">Software</option>' +
+      '<option value="3">Utility</option>' +
+      '<option value="4">Service</option>' +
+      '<option value="5">Other</option>' +
+      '</select>' +
+      '<div class="error_message"></div>' +
+      '</div>' +
+      '<div class="ui-field-contain">' +
+      '<label class="ui-input-text">Recurring: <span class="required-symbol">*</span></label>' +
+      '<div class="custom-readonly">' +
+      '<label for="f_recurring_yes_' + cardIdx + '">' +
+      '<input type="radio" name="f_recurring_' + cardIdx + '" id="f_recurring_yes_' + cardIdx + '" value="yes" class="f_recurring"> Yes' +
+      '</label>' +
+      '<label for="f_recurring_no_' + cardIdx + '">' +
+      '<input type="radio" name="f_recurring_' + cardIdx + '" id="f_recurring_no_' + cardIdx + '" value="no" class="f_recurring"> No' +
+      '</label>' +
+      '<div class="error_message"></div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="ui-field-contain">' +
+      '<label class="ui-input-text">Paid By: <span class="required-symbol">*</span></label>' +
+      '<div class="custom-readonly">' +
+      '<label for="f_paid_by_card_' + cardIdx + '">' +
+      '<input type="checkbox" name="f_paid_by_' + cardIdx + '" id="f_paid_by_card_' + cardIdx + '" value="card" class="f_paid_by"> Card' +
+      '</label>' +
+      '<label for="f_paid_by_cash_' + cardIdx + '">' +
+      '<input type="checkbox" name="f_paid_by_' + cardIdx + '" id="f_paid_by_cash_' + cardIdx + '" value="cash" class="f_paid_by"> Cash' +
+      '</label>' +
+      '<div class="error_message"></div>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+
+    var $newCard = $(cardTemplate);
+    $("#sp_payment_cards_container").append($newCard);
+
+    // Enhance newly added card with jQuery Mobile 1.3.0
+    if ($.mobile) {
+      $newCard.trigger("create");
+      $(document).trigger("updatelayout");
+    }
+
+    // Initialize Select2 dropdown
+    $newCard.find(".select2").select2({
+      theme: "classic",
+    });
+    $newCard.find(".select2").on("change", function () {
+      if (typeof isApplyClicked !== "undefined" && isApplyClicked) {
+        $(this).valid();
+      }
+    });
+  });
+
+  // Delegated Delete Card Handler
+  $(document).on("click", "#sp_payment_cards_container .btn-delete-row", function () {
+    var totalCards = $("#sp_payment_cards_container .payment-card").length;
+
+    if (totalCards > 1) {
+      $(this).closest(".payment-card").remove();
+      refreshSequenceNumbersSp();
+      calculateTotalPaymentAmountSp();
+
+      if ($.mobile) {
+        $(document).trigger("updatelayout");
+      }
+    } else {
+      alert("At least one payment item is required.");
+    }
+  });
+
+  calculateTotalPaymentAmountSp();
+}
+
 
