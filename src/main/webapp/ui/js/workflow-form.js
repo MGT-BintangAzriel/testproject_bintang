@@ -100,26 +100,35 @@ function setupSubOptionToggle(
 ) {
   function toggle() {
     var selectedVal = $('input[name="' + parentRadioName + '"]:checked').val();
-    if (selectedVal === activeValue) {
-      $('input[name="' + subRadioName + '"]').prop("disabled", false);
+    var $subInputs = $('input[name="' + subRadioName + '"]');
+    var $subContainer = $subInputs.closest(".sub-option-container");
 
-      if (!$('input[name="' + subRadioName + '"]:checked').val()) {
+    if (selectedVal === activeValue) {
+      if ($subContainer.length) {
+        $subContainer.addClass("sub-option-active");
+      }
+      $subInputs.prop("disabled", false);
+
+      if (!$subInputs.filter(":checked").val()) {
         $("#" + defaultSubRadioId).prop("checked", true);
       }
     } else {
-      $('input[name="' + subRadioName + '"]')
+      if ($subContainer.length) {
+        $subContainer.removeClass("sub-option-active");
+      }
+      $subInputs
         .prop("checked", false)
         .prop("disabled", true)
         .removeClass("imui-validation-error");
-      $('input[name="' + subRadioName + '"]')
-        .closest("td")
+      $subInputs
+        .closest("td, .ui-field-contain")
         .find(".error_message")
         .empty();
     }
     if (typeof $('input[name="' + parentRadioName + '"]').checkboxradio === "function") {
       try {
         $('input[name="' + parentRadioName + '"]').checkboxradio("refresh");
-        $('input[name="' + subRadioName + '"]').checkboxradio("refresh");
+        $subInputs.checkboxradio("refresh");
       } catch (e) {}
     }
   }
