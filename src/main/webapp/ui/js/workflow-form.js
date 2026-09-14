@@ -907,6 +907,78 @@ function setupDynamicPaymentSp() {
         $(this).valid();
       }
     });
+
+    // Dynamic SP Datepicker Initialization using intra-mart's native imspDialogCalendar
+    var newPopId = "f_payment_date_" + cardIdx + "_pop";
+    $("#" + newPopId).remove(); // Remove if already exists
+
+    // Clean dialog template matching intra-mart's native pre-enhanced structure
+    var popTemplate =
+      '<div data-role="page" id="' + newPopId + '" data-close-btn="none" data-url="' + newPopId + '">' +
+      '<div data-role="header">' +
+      '<a data-role="button" data-iconpos="notext" data-icon="delete" data-rel="back"></a>' +
+      '<h3>Date settings</h3>' +
+      '<a data-role="button" data-iconpos="notext" data-icon="gear" data-imsp-role="datePicker-change"></a>' +
+      '</div>' +
+      '<div data-role="content" data-theme="c">' +
+      '<div data-imsp-role="calendarLayer">' +
+      '<span class="imui-smart-ui-calendar-header">' +
+      '<a data-role="button" data-imsp-role="previous" data-icon="minus" data-inline="true" data-iconpos="notext"></a>' +
+      '</span>' +
+      '<span class="imui-smart-ui-calendar-header imui-smart-ui-calendar-title" data-imsp-role="calendar-title"></span>' +
+      '<span class="imui-smart-ui-calendar-header imui-smart-ui-calendar-header-right">' +
+      '<a data-role="button" data-imsp-role="next" data-icon="plus" data-inline="true" data-iconpos="notext"></a>' +
+      '</span>' +
+      '<table width="100%" cellpadding="3" cellspacing="0" style="font-size:9pt;color:black" data-imsp-role="calendarBody">' +
+      '</table>' +
+      '<a data-role="button" data-imsp-role="desideDate">Select</a>' +
+      '</div>' +
+      '<div data-imsp-role="dateSelectLayer" style="display:none;width:100%">' +
+      '<div style="float:left;width:40%;">' +
+      '<div style="text-align:center"><a data-role="button" data-imsp-role="datePicker-addYear" data-inline="true" data-icon="plus" data-iconpos="bottom"></a></div>' +
+      '<div style="text-align:center"><input type="text" readonly="" style="text-align:center"></div>' +
+      '<div style="text-align:center"><a data-role="button" data-imsp-role="datePicker-pullYear" data-inline="true" data-icon="minus" data-iconpos="bottom"></a></div>' +
+      '</div>' +
+      '<div style="float:left;width:40%;margin-right:0px;padding-left:15%">' +
+      '<div style="text-align:center"><a data-role="button" data-imsp-role="datePicker-addMonth" data-inline="true" data-icon="plus" data-iconpos="bottom"></a></div>' +
+      '<div style="text-align:center"><input type="text" readonly="" style="text-align:center"></div>' +
+      '<div style="text-align:center"><a data-role="button" data-imsp-role="datePicker-pullMonth" data-inline="true" data-icon="minus" data-iconpos="bottom"></a></div>' +
+      '</div>' +
+      '<table width="100%"></table>' +
+      '<a data-role="button" data-imsp-role="datePicker-jumpDate" data-icon="check">Decide</a>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+
+    var $newPop = $(popTemplate);
+    $newPop.appendTo(document.body);
+
+    // Wire clear button inside the card form
+    $("#f_payment_date_" + cardIdx + "_form")
+      .find("a[data-imsp-role='datePicker-remove']")
+      .unbind("tap click")
+      .bind("tap click", function () {
+        $("input[name='f_payment_date_" + cardIdx + "']").val("");
+        if (typeof isApplyClicked !== "undefined" && isApplyClicked) {
+          $("input[name='f_payment_date_" + cardIdx + "']").valid();
+        }
+      });
+
+    // Initialize intra-mart native dialog calendar plugin
+    if (typeof $.fn.imspDialogCalendar === "function") {
+      $newPop.imspDialogCalendar({
+        calendarId: "USA_CAL",
+        format: "yyyy/MM/dd",
+        displayFormat: "MMM d, yyyy",
+        dayLabels: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
+        actionGetHoliday: "/imarttraining/system/common/parts/mobile_fw/calendar/spCalendar/getHoliday",
+        actionFormatDate: "/imarttraining/system/common/parts/mobile_fw/calendar/spCalendar/formatDate",
+        firstDay: 0,
+        date: new Date(),
+        callbackFunction: onDatePickerClose,
+        targetName: "f_payment_date_" + cardIdx,
+      });
+    }
   });
 
   // Delegated Delete Card Handler
@@ -914,7 +986,15 @@ function setupDynamicPaymentSp() {
     var totalCards = $("#sp_payment_cards_container .payment-card").length;
 
     if (totalCards > 1) {
-      $(this).closest(".payment-card").remove();
+      var $card = $(this).closest(".payment-card");
+      var cardSeq = $card.find(".row-seq-no").text().trim();
+
+      // Remove accompanying dialog popup if it was dynamically created
+      if (cardSeq && cardSeq !== "1") {
+        $("#f_payment_date_" + cardSeq + "_pop").remove();
+      }
+
+      $card.remove();
       refreshSequenceNumbersSp();
       calculateTotalPaymentAmountSp();
 
