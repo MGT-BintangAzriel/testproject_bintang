@@ -50,7 +50,7 @@
 	imwSystemMatterId='${f:h(workflowRequestForm.imwSystemMatterId)}'
 	imwUserDataId='${f:h(workflowRequestForm.imwUserDataId)}' />
 
-<div data-role="page" id="imw-sp-agreement-approve" data-theme="a">
+<div data-role="page" id="imw-sp-agreement" data-theme="a">
 	<div data-theme="a" data-role="header" data-position="fixed">
 		<a data-role="button" data-icon="back" id="back" class="back">Back</a>
 		<h1>Agreement Workflow</h1>

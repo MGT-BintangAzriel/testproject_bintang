@@ -96,7 +96,7 @@
 	imwSystemMatterId='${f:h(workflowRequestForm.imwSystemMatterId)}'
 	imwUserDataId='${f:h(workflowRequestForm.imwUserDataId)}' />
 
-<div data-role="page" id="imw-sp-agreement-apply" data-theme="a">
+<div data-role="page" id="imw-sp-agreement" data-theme="a">
 	<div data-theme="a" data-role="header" data-position="fixed">
 		<a data-role="button" data-icon="back" id="back" class="back">Back</a>
 		<h1>Agreement Workflow</h1>
@@ -205,7 +205,7 @@
 							</label>
 
 							<!-- Sub-options under Amendment (Indented) -->
-							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_status_amendment == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
+							<div class="sub-option-container ${savedFormData.f_agreement_status_amendment == 'checked' ? 'sub-option-active' : ''}">
 								<div style="font-size: 12px; color: #4b5563; margin-bottom: 4px; font-weight: 600;">Total Duration from first cooperation until now:</div>
 								<label for="f_total_duration_1">
 									<input type="radio" name="f_total_duration" id="f_total_duration_1" value="more_than_1_year"
@@ -625,7 +625,7 @@
 							</label>
 
 							<!-- PD Approval Sub-Options (Indented) -->
-							<div style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_pd == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
+							<div class="sub-option-container ${savedFormData.f_agreement_classification_pd == 'checked' ? 'sub-option-active' : ''}">
 								<label for="f_agreement_classification_pd_more_than_1_billion">
 									<input type="radio" name="f_pd_sub_condition" id="f_pd_sub_1" value="pd_more_than_1_billion"
 										${savedFormData.f_agreement_classification_pd == 'checked' ? f:h(savedFormData.f_agreement_classification_pd_more_than_1_billion) : ''}>
@@ -684,8 +684,7 @@
 							</label>
 
 							<!-- EC Approval Sub-Options (Indented) -->
-							<div
-								style="margin-left: 20px; padding-left: 12px; ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? 'border-left: 2px solid #3b82f6;' : ''} margin-bottom: 8px;">
+							<div class="sub-option-container ${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? 'sub-option-active' : ''}">
 								<label for="f_ec_sub_1">
 									<input type="radio" name="f_ec_sub_condition" id="f_ec_sub_1" value="ec_amount_equal_more_than_1_billion"
 										${savedFormData.f_agreement_classification_ec_approval_yes == 'checked' ? f:h(savedFormData.f_agreement_classification_ec_amount_equal_more_than_1_billion) : ''}>

@@ -11,9 +11,9 @@ body {
 	color: #333333 !important;
 }
 
-/* jQuery Mobile page & content area background */
-.ui-page,
-.ui-content {
+/* jQuery Mobile page & content area background for Agreement form */
+#imw-sp-agreement .ui-page,
+#imw-sp-agreement .ui-content {
 	background: #f4f5f7 !important;
 	color: #333333 !important;
 }
@@ -68,9 +68,9 @@ body {
 	padding: 0.1em 0 !important;
 }
 
-/* Field label styling (bold, dark charcoal) */
-.ui-field-contain label,
-.ui-field-contain .ui-controlgroup-label {
+/* Field label styling on application page (bold, dark charcoal) */
+#imw-sp-agreement .ui-field-contain label,
+#imw-sp-agreement .ui-field-contain .ui-controlgroup-label {
 	color: #1f2937 !important;
 	font-weight: 600 !important;
 	text-shadow: none !important;
@@ -791,4 +791,17 @@ input#spFileUpload::-webkit-file-upload-button:hover {
 .btn-add-payment-sp:hover,
 .btn-add-payment-sp:active {
 	background: #1d4ed8 !important;
+}
+
+/* Sub-option container indentation and dynamic left border */
+.sub-option-container {
+	margin-left: 20px !important;
+	padding-left: 12px !important;
+	margin-bottom: 8px !important;
+	border-left: 2px solid transparent;
+	transition: border-color 0.2s ease;
+}
+
+.sub-option-container.sub-option-active {
+	border-left: 2px solid #3b82f6 !important;
 }
